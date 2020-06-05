@@ -11,5 +11,86 @@
 
   <artifactId>wrapper</artifactId>
 
+  <dependencies>
+    <!-- Redis Client -->
+    <dependency>
+      <artifactId>jedis</artifactId>
+      <groupId>redis.clients</groupId>
+      <type>jar</type>
+      <version>3.2.0</version>
+    </dependency>
+    <!-- slf4j -->
+    <dependency>
+      <artifactId>slf4j-api</artifactId>
+      <groupId>org.slf4j</groupId>
+      <scope>compile</scope>
+      <version>1.8.0-beta4</version>
+    </dependency>
+    <!-- commons-io -->
+    <dependency>
+      <artifactId>commons-io</artifactId>
+      <groupId>commons-io</groupId>
+      <version>2.6</version>
+    </dependency>
+    <!-- nats -->
+    <dependency>
+      <artifactId>jnats</artifactId>
+      <groupId>io.nats</groupId>
+      <version>2.6.7</version>
+      <scope>compile</scope>
+    </dependency>
+  </dependencies>
 
+  <build>
+    <plugins>
+      <plugin>
+        <artifactId>maven-jar-plugin</artifactId>
+        <configuration>
+          <archive>
+            <manifest>
+              <mainClass>eu.unyfy.wrapper.Main</mainClass>
+            </manifest>
+
+          </archive>
+        </configuration>
+        <groupId>org.apache.maven.plugins</groupId>
+        <version>3.0.2</version>
+      </plugin>
+      <plugin>
+        <artifactId>maven-assembly-plugin</artifactId>
+        <configuration>
+          <descriptorRefs>
+            <descriptorRef>jar-with-dependencies</descriptorRef>
+          </descriptorRefs>
+        </configuration>
+        <version>2.6</version>
+
+      </plugin>
+      <plugin>
+        <artifactId>maven-compiler-plugin</artifactId>
+        <configuration>
+          <source>1.8</source>
+          <target>1.8</target>
+        </configuration>
+        <groupId>org.apache.maven.plugins</groupId>
+        <version>3.8.0</version>
+      </plugin>
+
+      <plugin>
+
+        <artifactId>maven-shade-plugin</artifactId>
+        <executions>
+          <execution>
+            <goals>
+              <goal>shade</goal>
+            </goals>
+            <phase>package</phase>
+          </execution>
+        </executions>
+        <groupId>org.apache.maven.plugins</groupId>
+        <version>3.1.0</version>
+      </plugin>
+    </plugins>
+
+  </build>
 </project>
