@@ -11,15 +11,23 @@ import lombok.Setter;
 @Setter
 public class WrapperServer {
 
-  private final Random random = new Random();
   private final List<Integer> portList = new ArrayList<>();
   private final List<SessionServer> serverSessionList = new ArrayList<>();
+  //
   private String hostName;
-  private Integer memorySize = 0;
+  private int weightClass;
+  private boolean master;
+  private String wrapperID;
+  private int priority;
+  private WrapperType wrapperType;
 
-  public void fetch(int memory, String hostName) {
-    this.memorySize = memory;
+  public void fetch(String wrapperID, String hostName, WrapperType wrapperType, int weightClass, int priority) {
+    this.wrapperID = wrapperID;
     this.hostName = hostName;
+    this.wrapperType = wrapperType;
+    this.weightClass = weightClass;
+    this.priority = priority;
+
     for (int id = 26000; id < 27000; id++) {
       this.portList.add(id);
     }
@@ -29,16 +37,19 @@ public class WrapperServer {
     this.serverSessionList.add(sessionServer);
     System.out.println("port: " + sessionServer.getPort());
     this.portList.remove((Integer) sessionServer.getPort());
-    this.memorySize = this.memorySize - sessionServer.getMemory();
+    this.weightClass = this.weightClass - sessionServer.getWeightClass();
   }
 
   public void removeServer(SessionServer sessionServer) {
     this.serverSessionList.remove(sessionServer);
     this.portList.add(sessionServer.getPort());
-    this.memorySize = memorySize + sessionServer.getMemory();
+    this.weightClass = weightClass + sessionServer.getWeightClass();
   }
 
   public Integer getPort() {
-    return this.portList.get(random.nextInt(this.portList.size()));
+    return this.portList.get(new Random().nextInt(this.portList.size()));
   }
+
+
 }
+

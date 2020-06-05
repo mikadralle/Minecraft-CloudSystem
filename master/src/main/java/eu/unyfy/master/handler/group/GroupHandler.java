@@ -72,7 +72,7 @@ public class GroupHandler {
 
     serverDB.setDisplayName("§eLobby§7-§e");
     serverDB.setColor("§e");
-    serverDB.setMemory(512);
+    serverDB.setWeightClass(10);
     serverDB.setMaxOnlineAmount(999);
     serverDB.setMinOnlineAmount(2);
     serverDB.setMaxPlayer(50);

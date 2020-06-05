@@ -11,7 +11,8 @@ import eu.unyfy.master.database.redis.RedisConnector;
 import eu.unyfy.master.handler.bungeecord.BungeeHandler;
 import eu.unyfy.master.handler.core.Core;
 import eu.unyfy.master.handler.group.GroupHandler;
-import eu.unyfy.master.handler.message.MessageSystem;
+import eu.unyfy.master.handler.message.CloudDispatcher;
+import eu.unyfy.master.handler.message.VerifyDispatcher;
 import eu.unyfy.master.handler.packets.handler.PacketHandler;
 import eu.unyfy.master.handler.server.ServerFactory;
 import eu.unyfy.master.handler.service.TimerTaskService;
@@ -34,7 +35,9 @@ public class Master {
   private RedisConnector redisConnector;
   private MongoDBConnector mongoDBConnector;
   private NatsConnector natsConnector;
-  private MessageSystem messageSystem;
+  //dispatcher
+  private CloudDispatcher cloudDispatcher;
+  private VerifyDispatcher verifyDispatcher;
   //
   private DatabaseHandler databaseHandler;
   private MainDatabase mainDatabase;
@@ -67,10 +70,14 @@ public class Master {
   private void registerClasses() {
     instance = this;
     this.configAPI = new ConfigAPI();
+    // connections
     this.natsConnector = new NatsConnector();
     this.redisConnector = new RedisConnector();
     this.mongoDBConnector = new MongoDBConnector();
-    this.messageSystem = new MessageSystem();
+    // dispatcher
+    this.cloudDispatcher = new CloudDispatcher();
+    this.verifyDispatcher = new VerifyDispatcher();
+    //
     this.databaseHandler = new DatabaseHandler();
     this.mainDatabase = new MainDatabase();
     this.packetHandler = new PacketHandler();
@@ -86,7 +93,10 @@ public class Master {
 
   private void init() {
     this.natsConnector.connect();
-    this.messageSystem.listen();
+    // dispatcher
+    this.cloudDispatcher.listen();
+    this.verifyDispatcher.listen();
+    //
     this.redisConnector.connect();
     this.mongoDBConnector.connect();
     this.clearCache();

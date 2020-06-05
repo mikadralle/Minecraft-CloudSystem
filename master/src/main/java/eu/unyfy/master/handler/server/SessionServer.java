@@ -21,12 +21,12 @@ public class SessionServer {
   private final RedisConnector redisConnector = this.master.getRedisConnector();
   //
   private String hostName, serverName, wrapperID;
-  private int port, onlinePlayers, memory, slots;
+  private int port, onlinePlayers, weightClass, slots;
   private GametState gameState;
   private SubGroupDB subGroupDB;
   private GroupDB groupDB;
 
-  public void createSession(GroupDB groupDB, SubGroupDB subGroupDB, String serverName, String hostName, String wrapperID, int memory, int port, int slots) {
+  public void createSession(GroupDB groupDB, SubGroupDB subGroupDB, String serverName, String hostName, String wrapperID, int weightClass, int port, int slots) {
 
     try (Jedis jedis = this.redisConnector.getJedisPool().getResource()) {
 
@@ -38,7 +38,7 @@ public class SessionServer {
       map.put("groupName", groupDB.getGroupName());
       map.put("subGroupName", subGroupDB.getSubGroupName());
       map.put("wrapperID", wrapperID);
-      map.put("memory", String.valueOf(memory));
+      map.put("weightClass", String.valueOf(weightClass));
       map.put("port", String.valueOf(port));
       map.put("onlinePlayers", String.valueOf(0));
       map.put("slots", String.valueOf(slots));
@@ -53,7 +53,7 @@ public class SessionServer {
       this.subGroupDB = subGroupDB;
       this.wrapperID = wrapperID;
       this.port = port;
-      this.memory = memory;
+      this.weightClass = weightClass;
       this.onlinePlayers = 0;
       this.slots = slots;
       this.gameState = GametState.LOBBY;
@@ -77,7 +77,7 @@ public class SessionServer {
       this.subGroupDB = this.core.getSubGroup(map.get("subGroupName"));
       this.wrapperID = map.get("wrapperID");
       this.port = Integer.parseInt(map.get("port"));
-      this.memory = Integer.parseInt(map.get("memory"));
+      this.weightClass = Integer.parseInt(map.get("weightClass"));
       this.onlinePlayers = Integer.parseInt(map.get("onlinePlayers"));
       this.slots = Integer.parseInt(map.get("slots"));
       //this.gameState = GametState.valueOf(map.get("gameState"));

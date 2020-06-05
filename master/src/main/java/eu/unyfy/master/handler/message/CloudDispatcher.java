@@ -7,7 +7,6 @@ import eu.unyfy.master.handler.packets.PlayerConnectNetworkPacket;
 import eu.unyfy.master.handler.packets.PlayerDisconnectServerPacket;
 import eu.unyfy.master.handler.packets.PlayerSwitchServerPacket;
 import eu.unyfy.master.handler.packets.RegisterBungeeCordPacket;
-import eu.unyfy.master.handler.packets.RegisterWrapperPacket;
 import eu.unyfy.master.handler.packets.ServerOfflinePacket;
 import eu.unyfy.master.handler.packets.ServerOnlinePacket;
 import eu.unyfy.master.handler.packets.StartGroupPacket;
@@ -19,7 +18,7 @@ import java.nio.charset.StandardCharsets;
 import lombok.Getter;
 
 @Getter
-public class MessageSystem {
+public class CloudDispatcher {
 
   private final Master master = Master.getInstance();
   private final NatsConnector natsConnector = this.master.getNatsConnector();
@@ -54,9 +53,7 @@ public class MessageSystem {
         case "wrapper_logout":
           this.master.getPacketHandler().callPacket(new UnRegisterWrapperPacket(msg));
           break;
-        case "wrapper_login":
-          this.master.getPacketHandler().callPacket(new RegisterWrapperPacket(msg));
-          break;
+
         case "online":
           this.master.getPacketHandler().callPacket(new ServerOnlinePacket(msg));
           break;
@@ -72,12 +69,12 @@ public class MessageSystem {
         case "quit":
           this.master.getNatsConnector().sendMessage("cloud", "shutdownALL");
           break;
-
       }
     });
     cloudDispatcher.subscribe("cloud");
 
   }
+
 
 }
 

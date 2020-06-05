@@ -11,13 +11,14 @@ public class WrapperHandler {
 
   private final Map<String, WrapperServer> wrapperServerMap = new HashMap<>();
 
-  public void loginWrapper(String wrapperName, int memory, String hostname) {
+  public String verifyWrapper(String hostname, WrapperType wrapperType, int weightClass, int priority) {
+
+    String wrapperID = "wrapper-" + getID();
 
     WrapperServer wrapperServer = new WrapperServer();
-    wrapperServer.fetch(memory, hostname);
-    this.wrapperServerMap.put(wrapperName, wrapperServer);
-
-    Master.getInstance().getConsole().sendMessage("The Wrapper " + wrapperName + " has been connected to master server!");
+    wrapperServer.fetch(wrapperID, hostname, wrapperType, weightClass, priority);
+    this.wrapperServerMap.put(wrapperID, wrapperServer);
+    return wrapperID;
 
   }
 
@@ -44,5 +45,15 @@ public class WrapperHandler {
 
   public boolean isWrapperOnline() {
     return !this.wrapperServerMap.isEmpty();
+  }
+
+  public int getID() {
+
+    for (int i = 1; i < 999; i++) {
+      if (!this.wrapperServerMap.containsKey("wrapper-" + i)) {
+        return i;
+      }
+    }
+    return this.wrapperServerMap.keySet().size() + 1;
   }
 }

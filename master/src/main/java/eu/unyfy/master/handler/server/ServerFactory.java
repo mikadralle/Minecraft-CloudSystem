@@ -29,7 +29,7 @@ public class ServerFactory {
     this.subGroupDB = this.core.getSubGroup(subGroupName);
     this.serverDB = subGroupDB.getServerDB();
     SessionServer sessionServer = new SessionServer();
-    sessionServer.createSession(this.subGroupDB.getGroupDB(), this.subGroupDB, serverName, this.wrapperHandler.getWrapperServer(wrapperName).getHostName(), wrapperName, this.serverDB.getMemory(), port, this.serverDB.getMaxPlayer());
+    sessionServer.createSession(this.subGroupDB.getGroupDB(), this.subGroupDB, serverName, this.wrapperHandler.getWrapperServer(wrapperName).getHostName(), wrapperName, this.serverDB.getWeightClass(), port, this.serverDB.getMaxPlayer());
 
     this.wrapperHandler.getWrapperServer(wrapperName).addServer(sessionServer);
 

@@ -24,7 +24,9 @@ public class WrapperCore {
 
   public void startServer() {
 
+    System.out.println("List: " + sessionServerMap.keySet().toString());
     if (this.sessionServerMap.isEmpty()) {
+      System.out.println("I am empty bro, please feed me!");
       return;
     }
     List<String> list = new ArrayList<>();
@@ -45,18 +47,19 @@ public class WrapperCore {
           .directory(new File("live/" + sessionServer.getGroupName() + "/" + sessionServer.getSubGroupName() + "/" + sessionServer.getServerName() + "/")).inheritIO().start();
       Cache.sendMessage("Server " + sessionServer.getServerName() + " will be started.");
 
-    } catch (IOException e) {
-      e.printStackTrace();
-    } catch (InterruptedException e) {
+    } catch (IOException | InterruptedException e) {
       e.printStackTrace();
     }
   }
 
   public void addWrapperList(String serverName) {
+    System.out.println("I have been added to a list." + serverName);
     SessionServer sessionServer = new SessionServer();
     sessionServer.fetch(serverName);
 
     this.sessionServerMap.put(serverName, sessionServer);
+
+    System.out.println("List add: " + sessionServerMap.keySet().toString());
 
   }
 
