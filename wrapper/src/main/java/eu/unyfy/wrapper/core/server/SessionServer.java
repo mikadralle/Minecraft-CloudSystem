@@ -15,7 +15,7 @@ public class SessionServer {
   private final RedisConnector redisConnector = this.wrapper.getRedisConnector();
   //
   private String hostName, serverName, wrapperID, groupName, subGroupName;
-  private int port, onlinePlayers, memory, slots;
+  private int port, onlinePlayers, weightClass, slots;
 
   public void fetch(String serverName) {
     try (Jedis jedis = this.redisConnector.getJedisPool().getResource()) {
@@ -31,7 +31,7 @@ public class SessionServer {
       this.subGroupName = map.get("subGroupName");
       this.wrapperID = map.get("wrapperID");
       this.port = Integer.parseInt(map.get("port"));
-      this.memory = Integer.parseInt(map.get("memory"));
+      this.weightClass = Integer.parseInt(map.get("weightClass"));
       this.onlinePlayers = Integer.parseInt(map.get("onlinePlayers"));
       this.slots = Integer.parseInt(map.get("slots"));
       //this.gameState = GametState.valueOf(map.get("gameState"));

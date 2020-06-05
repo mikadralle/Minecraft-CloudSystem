@@ -43,7 +43,7 @@ public class WrapperCore {
       this.folderUtils.createTemp(sessionServer);
       Thread.sleep(500);
 
-      this.process = new ProcessBuilder("screen", "-AmdS", sessionServer.getServerName().toLowerCase(), "java", "-Xms" + sessionServer.getMemory() + "M", "-Xmx" + sessionServer.getMemory() + "M", "-jar", "spigot.jar")
+      this.process = new ProcessBuilder("screen", "-AmdS", sessionServer.getServerName().toLowerCase(), "java", "-Xms" + "512" + "M", "-Xmx" + "512" + "M", "-jar", "spigot.jar")
           .directory(new File("live/" + sessionServer.getGroupName() + "/" + sessionServer.getSubGroupName() + "/" + sessionServer.getServerName() + "/")).inheritIO().start();
       Cache.sendMessage("Server " + sessionServer.getServerName() + " will be started.");
 
@@ -53,13 +53,11 @@ public class WrapperCore {
   }
 
   public void addWrapperList(String serverName) {
-    System.out.println("I have been added to a list." + serverName);
     SessionServer sessionServer = new SessionServer();
     sessionServer.fetch(serverName);
 
     this.sessionServerMap.put(serverName, sessionServer);
 
-    System.out.println("List add: " + sessionServerMap.keySet().toString());
 
   }
 
