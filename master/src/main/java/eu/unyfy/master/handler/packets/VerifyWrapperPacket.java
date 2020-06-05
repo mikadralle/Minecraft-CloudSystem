@@ -24,7 +24,6 @@ public class VerifyWrapperPacket extends Packet {
     String replayTo = getStrings()[5];
 
     String wrapperID = this.master.getWrapperHandler().verifyWrapper(hostName, wrapperType, weightClass, priority);
-    System.out.println("return wrapper-id");
     this.master.getNatsConnector().sendMessage(replayTo, wrapperID);
 
     switch (wrapperType) {

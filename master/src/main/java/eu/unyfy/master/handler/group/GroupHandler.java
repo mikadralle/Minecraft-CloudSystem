@@ -26,7 +26,6 @@ public class GroupHandler {
       GroupDB groupDB = new GroupDB();
       groupDB.fetch(document);
       this.groups.put(groupDB.getGroupName(), groupDB);
-      System.out.println("groupName:" + groupDB.getGroupName());
     });
 
     if (!this.groups.isEmpty()) {

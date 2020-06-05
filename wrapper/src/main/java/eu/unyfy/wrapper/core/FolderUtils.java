@@ -43,7 +43,6 @@ public class FolderUtils {
       createFolder(tempPath + groupName + "/" + subGroupName);
     }
     deleteFolder(new File("live/" + groupName + "/" + subGroupName + "/" + serverName));
-    System.out.println("live folder has been deleted");
     if (!existsFolder("live/" + groupName + "/" + subGroupName + "/" + serverName)) {
       createFolder("live/" + groupName + "/" + subGroupName + "/" + serverName);
     }

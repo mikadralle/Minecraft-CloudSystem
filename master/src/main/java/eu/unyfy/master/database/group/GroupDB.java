@@ -42,7 +42,6 @@ public class GroupDB extends DBDocument {
       list.forEach(subGroupDocument -> {
         SubGroupDB subGroupDB = new SubGroupDB(this);
         subGroupDB.fetch(subGroupDocument);
-        System.out.println(subGroupDB.getSubGroupName());
         this.subGroupDBList.add(subGroupDB);
 
 

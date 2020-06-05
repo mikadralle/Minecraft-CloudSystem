@@ -104,7 +104,6 @@ public class Wrapper {
       e.printStackTrace();
     }
     this.wrapperSettings.setWrapperID(answer);
-    System.out.println("Wrapper-ID: " + wrapperSettings.getWrapperID());
   }
 
   private void loadConfig() {

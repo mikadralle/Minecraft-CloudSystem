@@ -24,9 +24,7 @@ public class WrapperCore {
 
   public void startServer() {
 
-    System.out.println("List: " + sessionServerMap.keySet().toString());
     if (this.sessionServerMap.isEmpty()) {
-      System.out.println("I am empty bro, please feed me!");
       return;
     }
     List<String> list = new ArrayList<>();

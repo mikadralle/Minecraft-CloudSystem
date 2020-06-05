@@ -23,11 +23,18 @@ public class ServerFactory {
   public void createServer(String subGroupName) {
 
     String serverName = subGroupName + "-" + getID(subGroupName);
-    String wrapperName = this.wrapperHandler.getRandomWrapper();
-    int port = this.wrapperHandler.getWrapperServer(wrapperName).getPort();
-
     this.subGroupDB = this.core.getSubGroup(subGroupName);
     this.serverDB = subGroupDB.getServerDB();
+
+    String wrapperName = this.wrapperHandler.getRandomWrapper(subGroupName, serverDB.getWeightClass());
+    System.out.println("ServerName: " + serverName);
+    System.out.println("Wrapper-Name: " + wrapperName);
+    if (wrapperName == null) {
+      System.out.println("Wrapper is null!");
+      return;
+    }
+    int port = this.wrapperHandler.getWrapperServer(wrapperName).getPort();
+
     SessionServer sessionServer = new SessionServer();
     sessionServer.createSession(this.subGroupDB.getGroupDB(), this.subGroupDB, serverName, this.wrapperHandler.getWrapperServer(wrapperName).getHostName(), wrapperName, this.serverDB.getWeightClass(), port, this.serverDB.getMaxPlayer());
 

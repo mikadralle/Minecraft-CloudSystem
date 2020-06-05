@@ -29,7 +29,6 @@ public class CloudDispatcher {
 
       final String msg = new String(message.getData(), StandardCharsets.UTF_8);
       final String[] split = msg.split("#");
-      System.out.println("receive: " + msg);
       switch (split[0]) {
 
         case "groupCreate":

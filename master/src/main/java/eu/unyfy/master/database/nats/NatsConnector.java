@@ -49,7 +49,6 @@ public class NatsConnector {
   }
 
   public void sendMessage(String channel, String message) {
-    System.out.println("publish: " + channel + "=" + message);
     this.natsConnection.publish(channel, message.getBytes(StandardCharsets.UTF_8));
   }
 

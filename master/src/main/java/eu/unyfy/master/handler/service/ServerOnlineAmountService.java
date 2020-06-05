@@ -18,7 +18,6 @@ public class ServerOnlineAmountService implements Runnable {
       int onlineSize = subGroupDB.getSessionServerList().size();
       int missServer = subGroupDB.getMissServerAmount();
 
-      //  System.out.println("Debug: OnlineSize: " + onlineSize + " MissServer: " + missServer);
       for (int i = 0; i < missServer; i++) {
         //  System.out.println("start server  " + subGroupDB.getSubGroupName() + i);
         Master.getInstance().getServerFactory().createServer(subGroupDB.getSubGroupName());

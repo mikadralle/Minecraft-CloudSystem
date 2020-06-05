@@ -35,7 +35,6 @@ public class WrapperServer {
 
   public void addServer(SessionServer sessionServer) {
     this.serverSessionList.add(sessionServer);
-    System.out.println("port: " + sessionServer.getPort());
     this.portList.remove((Integer) sessionServer.getPort());
     this.weightClass = this.weightClass - sessionServer.getWeightClass();
   }
@@ -44,6 +43,13 @@ public class WrapperServer {
     this.serverSessionList.remove(sessionServer);
     this.portList.add(sessionServer.getPort());
     this.weightClass = weightClass + sessionServer.getWeightClass();
+  }
+
+  public boolean isFreeSlot(String subGroupName) {
+    long count = this.serverSessionList.stream().filter(sessionServer -> sessionServer.getSubGroupDB().getSubGroupName().equalsIgnoreCase(subGroupName)).count();
+
+    System.out.println("Wrapper-Count: " + count);
+    return count <= 1;
   }
 
   public Integer getPort() {

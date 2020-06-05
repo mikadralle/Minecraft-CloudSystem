@@ -18,11 +18,9 @@ public class VerifyDispatcher {
 
       String msg = new String(message.getData(), StandardCharsets.UTF_8);
       String[] split = msg.split("#");
-      System.out.println("Channel: Verify -> Message: " + msg);
       switch (split[0]) {
 
         case "wrapper_register":
-          System.out.println("Channel: Verify -> d: " + msg);
           this.master.getPacketHandler().callPacket(new VerifyWrapperPacket(msg + "#" + message.getReplyTo()));
           break;
       }

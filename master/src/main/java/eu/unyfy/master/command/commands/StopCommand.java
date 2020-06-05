@@ -24,7 +24,7 @@ public class StopCommand extends Command {
 
     Master.getInstance().getConsole().sendMessage("Cloud is stopped", true);
 
-    this.instance.getNatsConnector().sendMessage("cloud", "quit");
+    this.instance.getNatsConnector().sendMessage("cloud", "quit#");
     sleep(1000);
     getRedisConnector().disconnect();
     Master.getInstance().getConsole().sendMessage("Redis connection has been disconnected");
