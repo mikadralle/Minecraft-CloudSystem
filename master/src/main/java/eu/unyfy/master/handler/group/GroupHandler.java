@@ -1,7 +1,6 @@
 package eu.unyfy.master.handler.group;
 
-import eu.unyfy.master.Master;
-import eu.unyfy.master.database.MainDatabase;
+import eu.unyfy.master.MasterBootstrap;
 import eu.unyfy.master.database.group.GroupDB;
 import eu.unyfy.master.database.group.ServerDB;
 import eu.unyfy.master.database.group.SubGroupDB;
@@ -16,24 +15,22 @@ import org.bson.Document;
 public class GroupHandler {
 
   private Map<String, GroupDB> groups = new HashMap<>();
-
-  private Master master = Master.getInstance();
-  private MainDatabase mainDatabase = this.master.getMainDatabase();
+  private MasterBootstrap master = MasterBootstrap.getInstance();
 
   public void fetch() {
 
-    this.mainDatabase.getDatabaseHandler().getCollection("groups").find().iterator().forEachRemaining(document -> {
+    this.master.getMainDatabase().getDatabaseHandler().getCollection("groups").find().iterator().forEachRemaining(document -> {
       GroupDB groupDB = new GroupDB();
       groupDB.fetch(document);
       this.groups.put(groupDB.getGroupName(), groupDB);
     });
 
     if (!this.groups.isEmpty()) {
-      Master.getInstance().getConsole().sendMessage("Groups is loaded susses.");
+      this.master.sendMessage("Groups is loaded susses.");
       return;
     }
 
-    Master.getInstance().getConsole().sendMessage("couldn't find group! create a new group");
+    this.master.sendMessage("couldn't find group! create a new group");
     createDefault("lobby", "lobby");
 
   }
@@ -46,7 +43,7 @@ public class GroupHandler {
     }
 
     this.groups.get(groupName).getSubGroupDBList().add(createSubGroup(subGroupName));
-    this.mainDatabase.getDatabaseHandler().getCollection("groups").updateOne(new Document("groupName", groupName), new Document("$set", groups.get(groupName).create()));
+    this.master.getMainDatabase().getDatabaseHandler().getCollection("groups").updateOne(new Document("groupName", groupName), new Document("$set", groups.get(groupName).create()));
     this.groups.put(groups.get(groupName).getGroupName(), groups.get(groupName));
 
   }
@@ -58,9 +55,9 @@ public class GroupHandler {
 
     groupDB.getSubGroupDBList().add(createSubGroup(subGroupName));
 
-    this.mainDatabase.getDatabaseHandler().getCollection("groups").insertOne(groupDB.create());
+    this.master.getMainDatabase().getDatabaseHandler().getCollection("groups").insertOne(groupDB.create());
     this.groups.put(groupDB.getGroupName(), groupDB);
-    Master.getInstance().getConsole().sendMessage("create default 'lobby'");
+    this.master.sendMessage("create default 'lobby'");
   }
 
   private SubGroupDB createSubGroup(String name) {

@@ -1,8 +1,8 @@
 package eu.unyfy.master;
 
-import eu.unyfy.master.api.config.ConfigAPI;
-import eu.unyfy.master.api.console.Console;
-import eu.unyfy.master.command.handler.CommandHandler;
+import eu.unyfy.cloudsystem.Bootstrap;
+import eu.unyfy.master.api.config.IniFile;
+import eu.unyfy.master.command.StopCommand;
 import eu.unyfy.master.database.MainDatabase;
 import eu.unyfy.master.database.mongo.DatabaseHandler;
 import eu.unyfy.master.database.mongo.MongoDBConnector;
@@ -17,20 +17,19 @@ import eu.unyfy.master.handler.packets.handler.PacketHandler;
 import eu.unyfy.master.handler.server.ServerFactory;
 import eu.unyfy.master.handler.service.TimerTaskService;
 import eu.unyfy.master.handler.wrapper.WrapperHandler;
-import java.util.Set;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import lombok.Getter;
-import redis.clients.jedis.Jedis;
-import redis.clients.jedis.Pipeline;
 
 @Getter
-public class Master {
+public class MasterBootstrap extends Bootstrap {
 
-  private static Master instance;
+  @Getter
+  private static MasterBootstrap instance;
+
   private final ExecutorService executorService = Executors.newCachedThreadPool();
   //config
-  private ConfigAPI configAPI;
+  private IniFile configAPI;
   //database & messaging
   private RedisConnector redisConnector;
   private MongoDBConnector mongoDBConnector;
@@ -51,25 +50,39 @@ public class Master {
   //
   private Core core;
   private PacketHandler packetHandler;
-
-  private CommandHandler commandHandler;
-  private Console console;
+  //
 
 
-  public static Master getInstance() {
-    return instance;
-  }
-
-  public void load() {
-
-    registerClasses();
-    init();
-
-  }
-
-  private void registerClasses() {
+  public MasterBootstrap() {
+    super("> ");
     instance = this;
-    this.configAPI = new ConfigAPI();
+
+    initClass();
+    init();
+  }
+
+
+  @Override
+  public void onBootstrap() {
+
+    getCommandMap().registerCommand("stop", new StopCommand());
+    getCommandMap().registerCommand("help", new StopCommand());
+
+  }
+
+  @Override
+  public void onShutdown() {
+
+    this.natsConnector.sendMessage("cloud", "stop#" + "master");
+    this.redisConnector.disconnect();
+    this.mongoDBConnector.disconnect();
+
+  }
+
+
+  private void initClass() {
+    this.configAPI = new IniFile("config.yml");
+    this.loadConfig();
     // connections
     this.natsConnector = new NatsConnector();
     this.redisConnector = new RedisConnector();
@@ -79,16 +92,13 @@ public class Master {
     this.verifyDispatcher = new VerifyDispatcher();
     //
     this.databaseHandler = new DatabaseHandler();
-    this.mainDatabase = new MainDatabase();
+    this.mainDatabase = new MainDatabase(redisConnector, mongoDBConnector, databaseHandler);
     this.packetHandler = new PacketHandler();
     this.groupHandler = new GroupHandler();
     this.wrapperHandler = new WrapperHandler();
     this.core = new Core();
     this.serverFactory = new ServerFactory();
     this.bungeeHandler = new BungeeHandler();
-    commandHandler = new CommandHandler();
-    console = new Console();
-
   }
 
   private void init() {
@@ -99,19 +109,39 @@ public class Master {
     //
     this.redisConnector.connect();
     this.mongoDBConnector.connect();
-    this.clearCache();
     this.groupHandler.fetch();
     this.executorService.execute(new TimerTaskService(this.core));
-    this.commandHandler.registerCommands();
-
   }
 
-  private void clearCache() {
-    try (Jedis jedis = this.redisConnector.getJedisPool().getResource()) {
-      final Set<String> list = jedis.keys("cloud:*");
-      final Pipeline pipeline = jedis.pipelined();
-      list.forEach(pipeline::del);
-      pipeline.sync();
+
+  public void sendMessage(String message) {
+    this.getBootstrapConsole().info(message);
+  }
+
+  private void loadConfig() {
+
+    if (this.configAPI.isEmpty()) {
+
+      //redis connector configuration //
+      this.configAPI.setProperty("redis.host", "127.0.0.1");
+      this.configAPI.setProperty("redis.port", "6379");
+      this.configAPI.setProperty("redis.password", "password");
+      this.configAPI.setProperty("redis.databaseID", "7");
+
+      //mongdb connector configuration //
+      this.configAPI.setProperty("mongoDB.host", "127.0.0.1");
+      this.configAPI.setProperty("mongoDB.user", "admin");
+      this.configAPI.setProperty("mongoDB.password", "password");
+      this.configAPI.setProperty("mongoDB.authDB", "admin");
+      this.configAPI.setProperty("mongoDB.defaultDB", "cloud");
+
+      // nats.io connector configuration
+      this.configAPI.setProperty("nats.hostname", "127.0.0.0.1");
+      this.configAPI.setProperty("nats.port", "4222");
+      this.configAPI.setProperty("nats.token", "token");
+
+      this.configAPI.saveToFile();
     }
+
   }
 }

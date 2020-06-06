@@ -1,13 +1,17 @@
 package eu.unyfy.master.handler.wrapper;
 
-import eu.unyfy.master.Master;
+import eu.unyfy.master.MasterBootstrap;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import lombok.Getter;
 
+@Getter
 public class WrapperHandler {
+
+  private final MasterBootstrap masterBootstrap = MasterBootstrap.getInstance();
 
   private final Map<String, WrapperServer> wrapperServerMap = new HashMap<>();
 
@@ -29,7 +33,7 @@ public class WrapperHandler {
 
   public void logoutWrapper(String wrapperName) {
     this.wrapperServerMap.remove(wrapperName);
-    Master.getInstance().getConsole().sendMessage("The Wrapper " + wrapperName + " has been disconnected from master server!");
+    this.masterBootstrap.sendMessage("The Wrapper " + wrapperName + " has been disconnected from master server!");
 
   }
 

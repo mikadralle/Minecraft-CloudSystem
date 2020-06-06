@@ -1,6 +1,6 @@
 package eu.unyfy.master.handler.message;
 
-import eu.unyfy.master.Master;
+import eu.unyfy.master.MasterBootstrap;
 import eu.unyfy.master.handler.packets.VerifyWrapperPacket;
 import io.nats.client.Dispatcher;
 import java.nio.charset.StandardCharsets;
@@ -9,7 +9,7 @@ import lombok.Getter;
 @Getter
 public class VerifyDispatcher {
 
-  private final Master master = Master.getInstance();
+  private final MasterBootstrap master = MasterBootstrap.getInstance();
 
 
   public void listen() {

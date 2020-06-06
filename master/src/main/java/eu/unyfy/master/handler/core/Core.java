@@ -1,13 +1,10 @@
 package eu.unyfy.master.handler.core;
 
-import eu.unyfy.master.Master;
+import eu.unyfy.master.MasterBootstrap;
 import eu.unyfy.master.database.group.GroupDB;
 import eu.unyfy.master.database.group.SubGroupDB;
-import eu.unyfy.master.handler.group.GroupHandler;
-import eu.unyfy.master.handler.server.ServerFactory;
 import eu.unyfy.master.handler.server.SessionServer;
 import eu.unyfy.master.handler.service.ServerOnlineAmountService;
-import eu.unyfy.master.handler.wrapper.WrapperHandler;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
@@ -22,10 +19,7 @@ public class Core {
   @Getter
   private final ExecutorService executorService = Executors.newCachedThreadPool();
   //
-  private final Master master = Master.getInstance();
-  private final WrapperHandler wrapperHandler = master.getWrapperHandler();
-  private final GroupHandler groupHandler = master.getGroupHandler();
-  private final ServerFactory serverFactory = this.master.getServerFactory();
+  private final MasterBootstrap master = MasterBootstrap.getInstance();
   // map's
 
   private final ConcurrentHashMap<String, SessionServer> currentSessionServer = new ConcurrentHashMap<>();//serverName,SessionServer
@@ -44,7 +38,7 @@ public class Core {
   }
 
   public GroupDB getGroupDBByName(String groupDBName) {
-    return this.groupHandler.getGroups().get(groupDBName);
+    return this.master.getGroupHandler().getGroups().get(groupDBName);
   }
 
   public Integer getCurrentSubGroupServerOnlineSize(String subGroupName) {

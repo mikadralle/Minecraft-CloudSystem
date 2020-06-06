@@ -1,25 +1,25 @@
 package eu.unyfy.master.handler.packets;
 
-import eu.unyfy.master.Master;
+import eu.unyfy.master.MasterBootstrap;
 import eu.unyfy.master.handler.packets.handler.Packet;
 import lombok.Getter;
 
 @Getter
 public class UnRegisterWrapperPacket extends Packet {
 
-    private final Master master = Master.getInstance();
+  private final MasterBootstrap master = MasterBootstrap.getInstance();
 
-    public UnRegisterWrapperPacket(String message) {
-        super(message);
-    }
+  public UnRegisterWrapperPacket(String message) {
+    super(message);
+  }
 
-    @Override
-    public void execute() {
+  @Override
+  public void execute() {
 
-        //wrapper
-        String wrapperID = getStrings()[1];
+    //wrapper
+    String wrapperID = getStrings()[1];
 
-        Master.getInstance().getWrapperHandler().logoutWrapper(wrapperID);
+    this.master.getWrapperHandler().logoutWrapper(wrapperID);
 
-    }
+  }
 }

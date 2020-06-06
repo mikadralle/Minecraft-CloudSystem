@@ -11,6 +11,8 @@
   <modules>
     <module>master</module>
     <module>wrapper</module>
+    <module>console</module>
+    <module>common</module>
   </modules>
 
 

@@ -1,6 +1,6 @@
 package eu.unyfy.master.handler.packets;
 
-import eu.unyfy.master.Master;
+import eu.unyfy.master.MasterBootstrap;
 import eu.unyfy.master.handler.group.GroupHandler;
 import eu.unyfy.master.handler.packets.handler.Packet;
 import lombok.Getter;
@@ -8,7 +8,7 @@ import lombok.Getter;
 @Getter
 public class CreateGroupPacket extends Packet {
 
-  private final Master master = Master.getInstance();
+  private final MasterBootstrap master = MasterBootstrap.getInstance();
   private final GroupHandler groupHandler = this.master.getGroupHandler();
   //private Player player;
 
@@ -24,7 +24,7 @@ public class CreateGroupPacket extends Packet {
 
     // group#subgrouop
     this.groupHandler.createGroup(group, subGroupName);
-    Master.getInstance().getConsole().sendMessage("the group " + group + " and " + subGroupName + " has been created.");
+    this.master.sendMessage("the group " + group + " and " + subGroupName + " has been created.");
 
   }
 

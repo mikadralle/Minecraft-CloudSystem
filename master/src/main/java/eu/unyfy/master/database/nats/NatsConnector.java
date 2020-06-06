@@ -1,7 +1,6 @@
 package eu.unyfy.master.database.nats;
 
-import eu.unyfy.master.Master;
-import eu.unyfy.master.api.config.IniFile;
+import eu.unyfy.master.MasterBootstrap;
 import io.nats.client.Connection;
 import io.nats.client.Message;
 import io.nats.client.Nats;
@@ -16,17 +15,16 @@ import lombok.Getter;
 
 public class NatsConnector {
 
-  private final Master master = Master.getInstance();
-  private final IniFile configAPI = this.master.getConfigAPI().getConfigAPI();
+  private final MasterBootstrap master = MasterBootstrap.getInstance();
 
   @Getter
   private Connection natsConnection;
 
   public void connect() {
 
-    final String hostName = configAPI.getProperty("nats.hostname");
-    final String port = configAPI.getProperty("nats.port");
-    final String token = configAPI.getProperty("nats.token");
+    final String hostName = MasterBootstrap.getInstance().getConfigAPI().getProperty("nats.hostname");
+    final String port = MasterBootstrap.getInstance().getConfigAPI().getProperty("nats.port");
+    final String token = MasterBootstrap.getInstance().getConfigAPI().getProperty("nats.token");
 
     final FutureTask<Connection> task = new FutureTask<>(() -> {
       String url = "nats://" + hostName + ":" + port;
@@ -42,7 +40,7 @@ public class NatsConnector {
 
     try {
       this.natsConnection = task.get();
-      Master.getInstance().getConsole().sendMessage("nats has been connected.");
+      master.sendMessage("nats has been connected successful.");
     } catch (InterruptedException | ExecutionException e) {
       e.printStackTrace();
     }
