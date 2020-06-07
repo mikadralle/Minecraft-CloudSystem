@@ -43,7 +43,7 @@ public class RedisConnector {
     } catch (InterruptedException | ExecutionException e) {
     }
 
-    this.master.getBootstrapConsole().info("Redis has been connected successful");
+    //his.master.getBootstrapConsole().info("Redis has been connected successful");
   }
 
   public void disconnect() {

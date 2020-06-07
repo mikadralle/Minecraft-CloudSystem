@@ -1,19 +1,31 @@
 package eu.unyfy.master.command;
 
-import eu.unyfy.cloudsystem.command.util.ICommand;
+
 import eu.unyfy.master.MasterBootstrap;
+import eu.unyfy.service.command.CommandImplementation;
 
-
-public class HelpCommand implements ICommand {
-
-  private final MasterBootstrap masterBootstrap = MasterBootstrap.getInstance();
+/**
+ * Class created by qlow | Jan
+ */
+public class HelpCommand implements CommandImplementation {
 
   @Override
-  public void onCommand(String[] strings) {
+  public void execute(String[] args) {
+    MasterBootstrap.getInstance().getCommandHandler().getCommands().forEach(commandImplementation -> MasterBootstrap.getInstance().sendMessage(commandImplementation.getUsage()));
+  }
 
-    if (strings.length == 0) {
-      masterBootstrap.sendMessage("/stop could you stop the cloud system! ");
-    }
+  @Override
+  public String getName() {
+    return "help";
+  }
 
+  @Override
+  public boolean isUsageRight(String[] args) {
+    return true;
+  }
+
+  @Override
+  public String getUsage() {
+    return "help - Shows the help menu";
   }
 }

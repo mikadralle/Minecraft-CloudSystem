@@ -60,13 +60,13 @@ public class ServerFactory {
   }
 
   public void addOnlineList(String serverName) {
-    try (Jedis jedis = this.master.getMainDatabase().getRedisConnector().getJedisPool().getResource()) {
+    try (Jedis jedis = this.master.getRedisConnector().getJedisPool().getResource()) {
       jedis.set("cloud:sessions:serverlist:" + serverName, serverName);
     }
   }
 
   public void removeOnlineList(String serverName) {
-    try (Jedis jedis = this.master.getMainDatabase().getRedisConnector().getJedisPool().getResource()) {
+    try (Jedis jedis = this.master.getRedisConnector().getJedisPool().getResource()) {
       jedis.del("cloud:sessions:serverlist:" + serverName, serverName);
     }
   }

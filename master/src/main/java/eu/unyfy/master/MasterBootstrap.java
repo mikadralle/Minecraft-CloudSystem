@@ -1,9 +1,8 @@
 package eu.unyfy.master;
 
-import eu.unyfy.cloudsystem.Bootstrap;
 import eu.unyfy.master.api.config.IniFile;
+import eu.unyfy.master.command.HelpCommand;
 import eu.unyfy.master.command.StopCommand;
-import eu.unyfy.master.database.MainDatabase;
 import eu.unyfy.master.database.mongo.DatabaseHandler;
 import eu.unyfy.master.database.mongo.MongoDBConnector;
 import eu.unyfy.master.database.nats.NatsConnector;
@@ -17,12 +16,13 @@ import eu.unyfy.master.handler.packets.handler.PacketHandler;
 import eu.unyfy.master.handler.server.ServerFactory;
 import eu.unyfy.master.handler.service.TimerTaskService;
 import eu.unyfy.master.handler.wrapper.WrapperHandler;
+import eu.unyfy.service.Service;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import lombok.Getter;
 
 @Getter
-public class MasterBootstrap extends Bootstrap {
+public class MasterBootstrap extends Service {
 
   @Getter
   private static MasterBootstrap instance;
@@ -39,7 +39,6 @@ public class MasterBootstrap extends Bootstrap {
   private VerifyDispatcher verifyDispatcher;
   //
   private DatabaseHandler databaseHandler;
-  private MainDatabase mainDatabase;
 
   //handler's
   private GroupHandler groupHandler;
@@ -50,35 +49,42 @@ public class MasterBootstrap extends Bootstrap {
   //
   private Core core;
   private PacketHandler packetHandler;
-  //
 
-
-  public MasterBootstrap() {
-    super("> ");
-    instance = this;
-
-    initClass();
-    init();
+  public static void main(String[] strings) {
+    instance = new MasterBootstrap();
+    instance.onEnable();
   }
 
+  public void onEnable() {
+    initClass();
+    init();
+
+  }
 
   @Override
   public void onBootstrap() {
 
-    getCommandMap().registerCommand("stop", new StopCommand());
-    getCommandMap().registerCommand("help", new StopCommand());
+  }
 
+  @Override
+  public void registerCommands() {
+    getCommandHandler().registerCommand(new StopCommand());
+    getCommandHandler().registerCommand(new HelpCommand());
   }
 
   @Override
   public void onShutdown() {
-
+    sleep(100);
     this.natsConnector.sendMessage("cloud", "stop#" + "master");
     this.redisConnector.disconnect();
     this.mongoDBConnector.disconnect();
-
+    sleep(100);
+    sendMessage("§acloud is stopping.");
   }
 
+  public void sendMessage(String message) {
+    getLogger().info(message);
+  }
 
   private void initClass() {
     this.configAPI = new IniFile("config.yml");
@@ -92,7 +98,6 @@ public class MasterBootstrap extends Bootstrap {
     this.verifyDispatcher = new VerifyDispatcher();
     //
     this.databaseHandler = new DatabaseHandler();
-    this.mainDatabase = new MainDatabase(redisConnector, mongoDBConnector, databaseHandler);
     this.packetHandler = new PacketHandler();
     this.groupHandler = new GroupHandler();
     this.wrapperHandler = new WrapperHandler();
@@ -111,11 +116,8 @@ public class MasterBootstrap extends Bootstrap {
     this.mongoDBConnector.connect();
     this.groupHandler.fetch();
     this.executorService.execute(new TimerTaskService(this.core));
-  }
 
 
-  public void sendMessage(String message) {
-    this.getBootstrapConsole().info(message);
   }
 
   private void loadConfig() {
@@ -142,6 +144,14 @@ public class MasterBootstrap extends Bootstrap {
 
       this.configAPI.saveToFile();
     }
-
   }
+
+  private void sleep(long time) {
+    try {
+      Thread.sleep(time);
+    } catch (InterruptedException e) {
+      e.printStackTrace();
+    }
+  }
+
 }

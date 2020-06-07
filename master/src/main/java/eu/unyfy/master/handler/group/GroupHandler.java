@@ -19,7 +19,7 @@ public class GroupHandler {
 
   public void fetch() {
 
-    this.master.getMainDatabase().getDatabaseHandler().getCollection("groups").find().iterator().forEachRemaining(document -> {
+    this.master.getMongoDBConnector().getMongoDatabase().getCollection("groups").find().iterator().forEachRemaining(document -> {
       GroupDB groupDB = new GroupDB();
       groupDB.fetch(document);
       this.groups.put(groupDB.getGroupName(), groupDB);
@@ -43,7 +43,7 @@ public class GroupHandler {
     }
 
     this.groups.get(groupName).getSubGroupDBList().add(createSubGroup(subGroupName));
-    this.master.getMainDatabase().getDatabaseHandler().getCollection("groups").updateOne(new Document("groupName", groupName), new Document("$set", groups.get(groupName).create()));
+    this.master.getMongoDBConnector().getMongoDatabase().getCollection("groups").updateOne(new Document("groupName", groupName), new Document("$set", groups.get(groupName).create()));
     this.groups.put(groups.get(groupName).getGroupName(), groups.get(groupName));
 
   }
@@ -55,7 +55,7 @@ public class GroupHandler {
 
     groupDB.getSubGroupDBList().add(createSubGroup(subGroupName));
 
-    this.master.getMainDatabase().getDatabaseHandler().getCollection("groups").insertOne(groupDB.create());
+    this.master.getMongoDBConnector().getMongoDatabase().getCollection("groups").insertOne(groupDB.create());
     this.groups.put(groupDB.getGroupName(), groupDB);
     this.master.sendMessage("create default 'lobby'");
   }
