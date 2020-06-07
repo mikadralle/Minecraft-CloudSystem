@@ -1,8 +1,8 @@
 package eu.unyfy.wrapper.core;
 
-import eu.unyfy.wrapper.api.config.ConfigAPI;
-import eu.unyfy.wrapper.api.config.IniFile;
 import eu.unyfy.wrapper.core.server.SessionServer;
+import eu.unyfy.wrapper.utils.config.ConfigAPI;
+import eu.unyfy.wrapper.utils.config.IniFile;
 import java.io.File;
 import java.io.IOException;
 import org.apache.commons.io.FileUtils;

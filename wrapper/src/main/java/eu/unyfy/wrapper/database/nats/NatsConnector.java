@@ -1,8 +1,8 @@
 package eu.unyfy.wrapper.database.nats;
 
-import eu.unyfy.wrapper.Wrapper;
-import eu.unyfy.wrapper.api.config.IniFile;
+import eu.unyfy.wrapper.WrapperBootstrap;
 import eu.unyfy.wrapper.utils.Cache;
+import eu.unyfy.wrapper.utils.config.IniFile;
 import io.nats.client.Connection;
 import io.nats.client.Message;
 import io.nats.client.Nats;
@@ -18,7 +18,7 @@ import lombok.Getter;
 
 public class NatsConnector {
 
-  private final Wrapper wrapper = Wrapper.getInstance();
+  private final WrapperBootstrap wrapper = WrapperBootstrap.getInstance();
   @Getter
   private Connection natsConnection;
 

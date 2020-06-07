@@ -52,13 +52,6 @@
       <version>1.18.12</version>
       <scope>provided</scope>
     </dependency>
-    <!-- spigot -->
-    <dependency>
-      <groupId>eu.unyfy</groupId>
-      <artifactId>paperspigot</artifactId>
-      <version>1.8.8</version>
-      <scope>provided</scope>
-    </dependency>
   </dependencies>
 
   <build>

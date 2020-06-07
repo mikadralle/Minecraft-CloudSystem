@@ -1,13 +1,13 @@
 package eu.unyfy.wrapper.database.message;
 
-import eu.unyfy.wrapper.Wrapper;
+import eu.unyfy.wrapper.WrapperBootstrap;
 import eu.unyfy.wrapper.database.nats.NatsConnector;
 import io.nats.client.Dispatcher;
 import java.nio.charset.StandardCharsets;
 
-public class MessageSystem {
+public class CloudDispatcher {
 
-  private final Wrapper wrapper = Wrapper.getInstance();
+  private final WrapperBootstrap wrapper = WrapperBootstrap.getInstance();
   private final NatsConnector natsConnector = this.wrapper.getNatsConnector();
 
   public void listen() {
@@ -28,10 +28,15 @@ public class MessageSystem {
           this.wrapper.getWrapperCore().addWrapperList(serverName);
           break;
 
-        case "quit":
-          this.wrapper.onDisable();
-          System.exit(0);
+        case "stop":
+          //stop all
+          if (split[1].equalsIgnoreCase("all") || split[1].equalsIgnoreCase("wrapper")) {
+            this.wrapper.onShutdown();
+            break;
+          }
+          WrapperBootstrap.getInstance().setMasterOnline(false);
           break;
+
       }
 
     });

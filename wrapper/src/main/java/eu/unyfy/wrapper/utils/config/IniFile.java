@@ -1,4 +1,4 @@
-package eu.unyfy.wrapper.api.config;
+package eu.unyfy.wrapper.utils.config;
 
 import java.io.File;
 import java.io.FileInputStream;

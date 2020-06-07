@@ -1,6 +1,6 @@
 package eu.unyfy.wrapper.database.redis;
 
-import eu.unyfy.wrapper.Wrapper;
+import eu.unyfy.wrapper.WrapperBootstrap;
 import eu.unyfy.wrapper.utils.Cache;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
@@ -12,7 +12,7 @@ import redis.clients.jedis.JedisPoolConfig;
 @Getter
 public class RedisConnector {
 
-  private final Wrapper wrapper = Wrapper.getInstance();
+  private final WrapperBootstrap wrapper = WrapperBootstrap.getInstance();
   private JedisPool jedisPool;
 
   public void connect() {
@@ -38,8 +38,10 @@ public class RedisConnector {
   }
 
   public void disconnect() {
-    this.wrapper.getNatsConnector().sendMessage("cloud", "shutdownALL");
+
     this.jedisPool.destroy();
+
+
   }
 
 }

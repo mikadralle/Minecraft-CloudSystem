@@ -11,6 +11,7 @@ import eu.unyfy.master.handler.bungeecord.BungeeHandler;
 import eu.unyfy.master.handler.core.Core;
 import eu.unyfy.master.handler.group.GroupHandler;
 import eu.unyfy.master.handler.message.CloudDispatcher;
+import eu.unyfy.master.handler.message.PingDispatcher;
 import eu.unyfy.master.handler.message.VerifyDispatcher;
 import eu.unyfy.master.handler.packets.handler.PacketHandler;
 import eu.unyfy.master.handler.server.ServerFactory;
@@ -37,6 +38,7 @@ public class MasterBootstrap extends Service {
   //dispatcher
   private CloudDispatcher cloudDispatcher;
   private VerifyDispatcher verifyDispatcher;
+  private PingDispatcher pingDispatcher;
   //
   private DatabaseHandler databaseHandler;
 
@@ -96,6 +98,7 @@ public class MasterBootstrap extends Service {
     // dispatcher
     this.cloudDispatcher = new CloudDispatcher();
     this.verifyDispatcher = new VerifyDispatcher();
+    this.pingDispatcher = new PingDispatcher();
     //
     this.databaseHandler = new DatabaseHandler();
     this.packetHandler = new PacketHandler();
@@ -111,13 +114,13 @@ public class MasterBootstrap extends Service {
     // dispatcher
     this.cloudDispatcher.listen();
     this.verifyDispatcher.listen();
+    this.pingDispatcher.listen();
     //
     this.redisConnector.connect();
     this.mongoDBConnector.connect();
     this.groupHandler.fetch();
     this.executorService.execute(new TimerTaskService(this.core));
-
-
+    this.natsConnector.sendMessage("info", "master_connected");
   }
 
   private void loadConfig() {

@@ -13,5 +13,4 @@ public class WrapperSettings {
   private WrapperType type;
   private boolean master;
 
-
 }

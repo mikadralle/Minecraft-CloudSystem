@@ -1,6 +1,6 @@
 package eu.unyfy.wrapper.core.server;
 
-import eu.unyfy.wrapper.Wrapper;
+import eu.unyfy.wrapper.WrapperBootstrap;
 import eu.unyfy.wrapper.database.redis.RedisConnector;
 import java.util.Map;
 import lombok.Getter;
@@ -11,7 +11,7 @@ import redis.clients.jedis.Response;
 @Getter
 public class SessionServer {
 
-  private final Wrapper wrapper = Wrapper.getInstance();
+  private final WrapperBootstrap wrapper = WrapperBootstrap.getInstance();
   private final RedisConnector redisConnector = this.wrapper.getRedisConnector();
   //
   private String hostName, serverName, wrapperID, groupName, subGroupName;
