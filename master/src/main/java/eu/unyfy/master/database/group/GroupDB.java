@@ -1,6 +1,6 @@
 package eu.unyfy.master.database.group;
 
-import eu.unyfy.master.Master;
+import eu.unyfy.master.MasterBootstrap;
 import eu.unyfy.master.database.mongo.DBDocument;
 import java.util.ArrayList;
 import java.util.List;
@@ -17,7 +17,7 @@ public class GroupDB extends DBDocument {
   private List<SubGroupDB> subGroupDBList = new ArrayList<>();
 
   public GroupDB() {
-    Master.getInstance().getCore().getGroupsDBList().add(this);
+    MasterBootstrap.getInstance().getCore().getGroupsDBList().add(this);
   }
 
   @Override

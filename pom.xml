@@ -11,6 +11,7 @@
   <modules>
     <module>master</module>
     <module>wrapper</module>
+    <module>service</module>
   </modules>
 
 

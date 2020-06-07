@@ -1,6 +1,6 @@
 package eu.unyfy.master.handler.packets;
 
-import eu.unyfy.master.Master;
+import eu.unyfy.master.MasterBootstrap;
 import eu.unyfy.master.handler.core.Core;
 import eu.unyfy.master.handler.packets.handler.Packet;
 import eu.unyfy.master.handler.server.SessionServer;
@@ -9,7 +9,7 @@ import lombok.Getter;
 @Getter
 public class ServerOnlinePacket extends Packet {
 
-  private final Master master = Master.getInstance();
+  private final MasterBootstrap master = MasterBootstrap.getInstance();
   private final Core core = this.master.getCore();
 
   public ServerOnlinePacket(String message) {
@@ -30,7 +30,7 @@ public class ServerOnlinePacket extends Packet {
     // add this server in a redis online server list
     this.master.getServerFactory().addOnlineList(serverName);
 
-    Master.getInstance().getConsole().sendMessage("The Server " + serverName + " is now online!");
+    this.master.sendMessage("The Server " + serverName + " is now online!");
   }
 
 }

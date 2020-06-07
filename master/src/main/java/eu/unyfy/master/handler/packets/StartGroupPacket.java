@@ -1,6 +1,6 @@
 package eu.unyfy.master.handler.packets;
 
-import eu.unyfy.master.Master;
+import eu.unyfy.master.MasterBootstrap;
 import eu.unyfy.master.handler.core.Core;
 import eu.unyfy.master.handler.packets.handler.Packet;
 import lombok.Getter;
@@ -8,7 +8,7 @@ import lombok.Getter;
 @Getter
 public class StartGroupPacket extends Packet {
 
-  private final Master master = Master.getInstance();
+  private final MasterBootstrap master = MasterBootstrap.getInstance();
 
   private final Core core = this.master.getCore();
 

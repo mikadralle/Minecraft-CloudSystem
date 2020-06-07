@@ -1,6 +1,6 @@
 package eu.unyfy.master.handler.packets;
 
-import eu.unyfy.master.Master;
+import eu.unyfy.master.MasterBootstrap;
 import eu.unyfy.master.handler.packets.handler.Packet;
 import eu.unyfy.master.handler.wrapper.WrapperType;
 import lombok.Getter;
@@ -8,7 +8,7 @@ import lombok.Getter;
 @Getter
 public class VerifyWrapperPacket extends Packet {
 
-  private final Master master = Master.getInstance();
+  private final MasterBootstrap master = MasterBootstrap.getInstance();
 
   public VerifyWrapperPacket(String message) {
     super(message);
@@ -28,10 +28,10 @@ public class VerifyWrapperPacket extends Packet {
 
     switch (wrapperType) {
       case PRIVATE:
-        Master.getInstance().getConsole().sendMessage("The private wrapper " + wrapperID + " has been verified.");
+        this.master.sendMessage("The private wrapper " + wrapperID + " has been verified.");
         break;
       case PUBLIC:
-        Master.getInstance().getConsole().sendMessage("The public wrapper " + wrapperID + " has been verified.");
+        this.master.sendMessage("The public wrapper " + wrapperID + " has been verified.");
         break;
     }
 

@@ -1,6 +1,6 @@
 package eu.unyfy.master.handler.server;
 
-import eu.unyfy.master.Master;
+import eu.unyfy.master.MasterBootstrap;
 import eu.unyfy.master.database.group.GroupDB;
 import eu.unyfy.master.database.group.SubGroupDB;
 import eu.unyfy.master.database.redis.RedisConnector;
@@ -16,7 +16,7 @@ import redis.clients.jedis.Response;
 @Getter
 public class SessionServer {
 
-  private final Master master = Master.getInstance();
+  private final MasterBootstrap master = MasterBootstrap.getInstance();
   private final Core core = this.master.getCore();
   private final RedisConnector redisConnector = this.master.getRedisConnector();
   //

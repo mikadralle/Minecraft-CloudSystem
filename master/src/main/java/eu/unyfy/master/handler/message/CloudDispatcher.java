@@ -1,7 +1,6 @@
 package eu.unyfy.master.handler.message;
 
-import eu.unyfy.master.Master;
-import eu.unyfy.master.database.nats.NatsConnector;
+import eu.unyfy.master.MasterBootstrap;
 import eu.unyfy.master.handler.packets.CreateGroupPacket;
 import eu.unyfy.master.handler.packets.PlayerConnectNetworkPacket;
 import eu.unyfy.master.handler.packets.PlayerDisconnectServerPacket;
@@ -20,12 +19,11 @@ import lombok.Getter;
 @Getter
 public class CloudDispatcher {
 
-  private final Master master = Master.getInstance();
-  private final NatsConnector natsConnector = this.master.getNatsConnector();
+  private final MasterBootstrap master = MasterBootstrap.getInstance();
 
   public void listen() {
 
-    final Dispatcher cloudDispatcher = natsConnector.getNatsConnection().createDispatcher(message -> {
+    final Dispatcher cloudDispatcher = master.getNatsConnector().getNatsConnection().createDispatcher(message -> {
 
       final String msg = new String(message.getData(), StandardCharsets.UTF_8);
       final String[] split = msg.split("#");

@@ -4,7 +4,7 @@ import com.mongodb.Block;
 import com.mongodb.client.FindIterable;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
-import eu.unyfy.master.Master;
+import eu.unyfy.master.MasterBootstrap;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -14,11 +14,9 @@ import org.bson.Document;
 @Getter
 public class DatabaseHandler {
 
-  private final Master master = Master.getInstance();
-  private final MongoDBConnector mongoDBConnector = this.master.getMongoDBConnector();
 
   public MongoDatabase getMongoDatabase() {
-    return getMongoDBConnector().getMongoDatabase();
+    return MasterBootstrap.getInstance().getMongoDBConnector().getMongoDatabase();
   }
 
   public MongoCollection<Document> getCollection(String name) {
@@ -110,7 +108,7 @@ public class DatabaseHandler {
   }
 
   public void update(String database, Document query, Document update, String collection) {
-    getMongoDBConnector().getMongoClient().getDatabase(database).getCollection(collection).updateOne(query, update);
+    MasterBootstrap.getInstance().getMongoDBConnector().getMongoClient().getDatabase(database).getCollection(collection).updateOne(query, update);
   }
 
   public void update(String key, Object value, String operator, String field, Object into, String collection) {
@@ -123,7 +121,7 @@ public class DatabaseHandler {
   }
 
   public boolean collectionExists(final String database, final String collectionName) {
-    return getMongoDBConnector().getMongoClient().getDatabase(database).listCollectionNames()
+    return MasterBootstrap.getInstance().getMongoDBConnector().getMongoClient().getDatabase(database).listCollectionNames()
         .into(new ArrayList<>()).contains(collectionName);
   }
 

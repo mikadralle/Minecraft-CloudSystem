@@ -1,6 +1,6 @@
 package eu.unyfy.master.database.group;
 
-import eu.unyfy.master.Master;
+import eu.unyfy.master.MasterBootstrap;
 import eu.unyfy.master.database.mongo.DBDocument;
 import eu.unyfy.master.handler.server.SessionServer;
 import java.util.ArrayList;
@@ -37,7 +37,7 @@ public class SubGroupDB extends DBDocument {
     }
 
     //Master.getInstance().getCore().getGroupDBStringMap().put(this.groupDB, this.subGroupName);
-    Master.getInstance().getCore().getSubGroupDBString().put(this.subGroupName, this);
+    MasterBootstrap.getInstance().getCore().getSubGroupDBString().put(this.subGroupName, this);
   }
 
   public Integer getMissServerAmount() {
