@@ -26,8 +26,7 @@ public class WrapperCore {
     if (this.sessionServerMap.isEmpty()) {
       return;
     }
-    List<String> list = new ArrayList<>();
-    list.addAll(this.sessionServerMap.keySet());
+    List<String> list = new ArrayList<>(this.sessionServerMap.keySet());
     start(this.sessionServerMap.get(list.get(0)));
     this.sessionServerMap.remove(list.get(0));
 

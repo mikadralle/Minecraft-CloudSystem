@@ -2,6 +2,7 @@ package eu.unyfy.master;
 
 import eu.unyfy.master.api.config.IniFile;
 import eu.unyfy.master.command.HelpCommand;
+import eu.unyfy.master.command.StartCommand;
 import eu.unyfy.master.command.StopCommand;
 import eu.unyfy.master.database.mongo.DatabaseHandler;
 import eu.unyfy.master.database.mongo.MongoDBConnector;
@@ -10,6 +11,7 @@ import eu.unyfy.master.database.redis.RedisConnector;
 import eu.unyfy.master.handler.bungeecord.BungeeHandler;
 import eu.unyfy.master.handler.core.Core;
 import eu.unyfy.master.handler.group.GroupHandler;
+import eu.unyfy.master.handler.hoster.HosterCloud;
 import eu.unyfy.master.handler.message.CloudDispatcher;
 import eu.unyfy.master.handler.message.PingDispatcher;
 import eu.unyfy.master.handler.message.VerifyDispatcher;
@@ -21,6 +23,7 @@ import eu.unyfy.service.Service;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import lombok.Getter;
+import me.tomsdevsn.hetznercloud.HetznerCloudAPI;
 
 @Getter
 public class MasterBootstrap extends Service {
@@ -51,6 +54,9 @@ public class MasterBootstrap extends Service {
   //
   private Core core;
   private PacketHandler packetHandler;
+  //
+  private HetznerCloudAPI hetznerCloudAPI;
+  private HosterCloud hosterCloud;
 
   public static void main(String[] strings) {
     instance = new MasterBootstrap();
@@ -72,6 +78,7 @@ public class MasterBootstrap extends Service {
   public void registerCommands() {
     getCommandHandler().registerCommand(new StopCommand());
     getCommandHandler().registerCommand(new HelpCommand());
+    getCommandHandler().registerCommand(new StartCommand());
   }
 
   @Override
@@ -107,6 +114,7 @@ public class MasterBootstrap extends Service {
     this.core = new Core();
     this.serverFactory = new ServerFactory();
     this.bungeeHandler = new BungeeHandler();
+    this.hosterCloud = new HosterCloud();
   }
 
   private void init() {
@@ -121,6 +129,11 @@ public class MasterBootstrap extends Service {
     this.groupHandler.fetch();
     this.executorService.execute(new TimerTaskService(this.core));
     this.natsConnector.sendMessage("info", "master_connected");
+
+    this.hetznerCloudAPI = new HetznerCloudAPI("heztner.token");
+
+    MasterBootstrap.getInstance().sendMessage("All Datacenter: " + this.hetznerCloudAPI.getDatacenters().getDatacenters().toString());
+
   }
 
   private void loadConfig() {
@@ -144,6 +157,8 @@ public class MasterBootstrap extends Service {
       this.configAPI.setProperty("nats.hostname", "127.0.0.0.1");
       this.configAPI.setProperty("nats.port", "4222");
       this.configAPI.setProperty("nats.token", "token");
+
+      this.configAPI.setProperty("heztner.token", "token");
 
       this.configAPI.saveToFile();
     }
