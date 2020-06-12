@@ -50,7 +50,6 @@ public class CloudDispatcher {
         case "wrapper_logout":
           this.master.getPacketHandler().callPacket(new UnRegisterWrapperPacket(msg));
           break;
-
         case "online":
           this.master.getPacketHandler().callPacket(new ServerOnlinePacket(msg));
           break;

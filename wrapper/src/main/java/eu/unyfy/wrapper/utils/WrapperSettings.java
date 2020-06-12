@@ -12,5 +12,6 @@ public class WrapperSettings {
   private int priority;
   private WrapperType type;
   private boolean master;
+  private String address;
 
 }

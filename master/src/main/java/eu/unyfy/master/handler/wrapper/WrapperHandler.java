@@ -1,40 +1,39 @@
 package eu.unyfy.master.handler.wrapper;
 
 import eu.unyfy.master.MasterBootstrap;
+import eu.unyfy.master.handler.hoster.HetnerType;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Random;
 import lombok.Getter;
+import me.tomsdevsn.hetznercloud.objects.request.ServerRequest;
+import me.tomsdevsn.hetznercloud.objects.response.ServerResponse;
 
 @Getter
 public class WrapperHandler {
 
   private final MasterBootstrap masterBootstrap = MasterBootstrap.getInstance();
-
+  private final Map<String, String> publicIP = new HashMap<>();
   private final Map<String, WrapperServer> wrapperServerMap = new HashMap<>();
+  private final List<String> wrapperList = new ArrayList<>();
 
-  public String verifyWrapper(String hostname, WrapperType wrapperType, int weightClass, int priority) {
-
-    String wrapperID = null;
-    if (priority == 100) {
-      wrapperID = "wrapper-1";
-    } else {
-      wrapperID = "wrapper-" + getID();
-    }
+  public String verifyWrapper(String wrapperID, WrapperType wrapperType, int weightClass, int priority) {
 
     WrapperServer wrapperServer = new WrapperServer();
-    wrapperServer.fetch(wrapperID, hostname, wrapperType, weightClass, priority);
+    wrapperServer.fetch(wrapperID, publicIP.get(wrapperID), wrapperType, weightClass, priority);
     this.wrapperServerMap.put(wrapperID, wrapperServer);
-    return wrapperID;
+    this.removePublicIP(wrapperID);
+    return wrapperServer.getHostName();
 
   }
 
   public void logoutWrapper(String wrapperName) {
     this.wrapperServerMap.remove(wrapperName);
     this.masterBootstrap.sendMessage("The Wrapper " + wrapperName + " has been disconnected from master server!");
-
+    this.wrapperList.remove(wrapperName);
   }
 
 
@@ -45,7 +44,6 @@ public class WrapperHandler {
       return "wrapper-1";
     }
 
-    System.out.println("false");
     List<WrapperServer> wrapperServerList = new ArrayList<>();
     wrapperServerList.addAll(this.wrapperServerMap.values());
     wrapperServerList.remove(this.getWrapperServer("wrapper-1"));
@@ -57,17 +55,19 @@ public class WrapperHandler {
 
     startNewWrapper();
     return null;
+  }
 
-    /*
-    List<Integer> list = new ArrayList<>();
-    this.wrapperServerMap.values().forEach(wrapperServer -> list.add(wrapperServer.getServerSessionList().size()));
-    Collections.sort(list);
-    return this.wrapperServerMap.keySet().stream().filter(wrapperName -> this.wrapperServerMap.get(wrapperName).getServerSessionList().size() == list.get(0)).findFirst().get();
-     */
+  public void addPublicIP(String wrapperID, String hostName) {
+    this.wrapperList.add(wrapperID);
+    this.publicIP.put(wrapperID, hostName);
+  }
+
+  public void removePublicIP(String wrapperID) {
+    this.publicIP.remove(wrapperID);
   }
 
   private void startNewWrapper() {
-    System.out.println("Start new Wrapper!");
+    createServer(HetnerType.CPX21);
   }
 
   public boolean isWrapperOnline() {
@@ -77,15 +77,49 @@ public class WrapperHandler {
   public int getID() {
 
     for (int i = 2; i < 999; i++) {
-      if (!this.wrapperServerMap.containsKey("wrapper-" + i)) {
+      if (!this.wrapperList.contains("wrapper-" + i)) {
         return i;
       }
     }
-    return this.wrapperServerMap.keySet().size() + 1;
+    return this.wrapperList.size() + 1;
+  }
+
+
+  public void createServer(HetnerType hetnerType) {
+
+    String wrapperID = "wrapper-" + MasterBootstrap.getInstance().getWrapperHandler().getID();
+    ServerRequest serverRequest = ServerRequest.builder()
+        .name(wrapperID)
+        .serverType(hetnerType.getName())
+        .location(getDataCenter())
+        .startAfterCreate(true)
+        .image("17774648")
+        .network(101222L)
+        // .sshKey(MasterBootstrap.getInstance().getHetznerCloudAPI().getSSHKeys().getSshKeys())
+        .build();
+
+    MasterBootstrap.getInstance().getLogger().info("Master will be started new wrapper called " + wrapperID);
+    ServerResponse serverResponse = MasterBootstrap.getInstance().getHetznerCloudAPI().createServer(serverRequest);
+
+    addPublicIP(wrapperID, serverResponse.getServer().getPublicNet().getIpv4().toString());
+
+    MasterBootstrap.getInstance().sendMessage("§eStatus: " + serverResponse.getServer().getStatus());
+    MasterBootstrap.getInstance().sendMessage("§eIP: " + serverResponse.getServer().getPublicNet().getIpv4().getIp());
+    MasterBootstrap.getInstance().sendMessage("§eStart: " + serverResponse.getAction().getStarted());
+    MasterBootstrap.getInstance().sendMessage("§ePassword: " + serverResponse.getRootPassword());
   }
 
   public WrapperServer getWrapperServer(String wrapperName) {
     return this.wrapperServerMap.get(wrapperName);
+  }
+
+
+  public String getDataCenter() {
+
+    List<String> list = new ArrayList<>();
+    list.add("fsn1");
+    list.add("nbg1");
+    return list.get(new Random().nextInt(list.size()));
   }
 
 }

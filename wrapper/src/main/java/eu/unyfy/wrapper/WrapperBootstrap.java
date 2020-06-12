@@ -84,6 +84,7 @@ public class WrapperBootstrap extends Service {
   }
 
   private void init() {
+
     this.loadConfig();
     this.redisConnector.connect();
     this.natsConnector.connect();
@@ -127,10 +128,11 @@ public class WrapperBootstrap extends Service {
 
   }
 
+
   private String getHostname() {
 
     try {
-      return InetAddress.getLocalHost().toString().split("/")[1];
+      return InetAddress.getLocalHost().getHostName();
     } catch (UnknownHostException e) {
       e.printStackTrace();
     }
@@ -139,10 +141,22 @@ public class WrapperBootstrap extends Service {
 
 
   private void verifyWrapper() {
+
+    String id = null;
+
     this.loadConfig();
     this.wrapperSettings.setMaster(Boolean.parseBoolean(this.configAPI.getProperty("wrapper.master")));
     this.wrapperSettings.setPriority(this.wrapperSettings.isMaster() ? 100 : 50);
     this.wrapperSettings.setWeightClass(Integer.parseInt(this.configAPI.getProperty("wrapper.weight-class")));
+    if (this.wrapperSettings.isMaster()) {
+      this.wrapperSettings.setWrapperID("wrapper-1");
+      id = "wrapper-1";
+    } else {
+      this.wrapperSettings.setWrapperID(getHostname());
+      getLogger().info("set wrapper ID: " + getHostname());
+      id = getHostname();
+
+    }
 
     String type = this.configAPI.getProperty("wrapper.type");
 
@@ -152,13 +166,13 @@ public class WrapperBootstrap extends Service {
       this.wrapperSettings.setType(WrapperType.PRIVATE);
     }
 
-    String answer = null;
     try {
-      answer = this.natsConnector.request("verify", "wrapper_register#" + getHostname() + "#" + this.wrapperSettings.getType().name() + "#" + this.wrapperSettings.getWeightClass() + "#" + this.wrapperSettings.getPriority());
+      String answer = this.natsConnector.request("verify", "wrapper_register#" + id + "#" + this.wrapperSettings.getType().name() + "#" + this.wrapperSettings.getWeightClass() + "#" + this.wrapperSettings.getPriority());
+      this.wrapperSettings.setAddress(answer);
     } catch (InterruptedException | ExecutionException | TimeoutException e) {
       e.printStackTrace();
     }
-    this.wrapperSettings.setWrapperID(answer);
+
   }
 
   private void loadConfig() {

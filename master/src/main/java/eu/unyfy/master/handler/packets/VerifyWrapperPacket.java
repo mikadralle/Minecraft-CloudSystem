@@ -17,14 +17,15 @@ public class VerifyWrapperPacket extends Packet {
   @Override
   public void execute() {
     //hostName#type#weightClass#priority
-    String hostName = getStrings()[1];
+
+    String wrapperID = getStrings()[1];
     WrapperType wrapperType = WrapperType.valueOf(getStrings()[2]);
     int weightClass = Integer.parseInt(getStrings()[3]);
     int priority = Integer.parseInt(getStrings()[4]);
     String replayTo = getStrings()[5];
 
-    String wrapperID = this.master.getWrapperHandler().verifyWrapper(hostName, wrapperType, weightClass, priority);
-    this.master.getNatsConnector().sendMessage(replayTo, wrapperID);
+    String hostName = this.master.getWrapperHandler().verifyWrapper(wrapperID, wrapperType, weightClass, priority);
+    this.master.getNatsConnector().sendMessage(replayTo, hostName);
 
     switch (wrapperType) {
       case PRIVATE:

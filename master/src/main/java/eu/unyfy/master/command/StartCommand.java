@@ -13,11 +13,8 @@ public class StartCommand implements CommandImplementation {
 
     if (strings.length == 1) {
 
-      String type = null;
-
-      MasterBootstrap.getInstance().getHosterCloud().createServer(HetnerType.CX11, "wrapper-" + MasterBootstrap.getInstance().getWrapperHandler().getID());
-
-      MasterBootstrap.getInstance().sendMessage("Cloud start new wrapper server!");
+      String type = strings[0];
+      MasterBootstrap.getInstance().getWrapperHandler().createServer(HetnerType.CX11);
 
     }
 

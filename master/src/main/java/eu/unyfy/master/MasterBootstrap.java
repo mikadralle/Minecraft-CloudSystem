@@ -83,7 +83,7 @@ public class MasterBootstrap extends Service {
 
   @Override
   public void onShutdown() {
-    sleep(100);
+    this.sleep(100);
     this.natsConnector.sendMessage("cloud", "stop#" + "master");
     this.redisConnector.disconnect();
     this.mongoDBConnector.disconnect();
@@ -129,10 +129,11 @@ public class MasterBootstrap extends Service {
     this.groupHandler.fetch();
     this.executorService.execute(new TimerTaskService(this.core));
     this.natsConnector.sendMessage("info", "master_connected");
+    this.wrapperHandler.addPublicIP("wrapper-1", this.configAPI.getProperty("wrapper.master.address"));
 
-    this.hetznerCloudAPI = new HetznerCloudAPI("heztner.token");
+    this.hetznerCloudAPI = new HetznerCloudAPI(this.configAPI.getProperty("heztner.token"));
 
-    MasterBootstrap.getInstance().sendMessage("All Datacenter: " + this.hetznerCloudAPI.getDatacenters().getDatacenters().toString());
+    // MasterBootstrap.getInstance().sendMessage("All Datacenter: " + this.hetznerCloudAPI.getDatacenters().getDatacenters().toString());
 
   }
 
@@ -159,6 +160,7 @@ public class MasterBootstrap extends Service {
       this.configAPI.setProperty("nats.token", "token");
 
       this.configAPI.setProperty("heztner.token", "token");
+      this.configAPI.setProperty("wrapper.master.address", "5.9.13.253");
 
       this.configAPI.saveToFile();
     }
