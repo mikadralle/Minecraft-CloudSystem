@@ -2,6 +2,7 @@ package eu.unyfy.master.handler.wrapper;
 
 import eu.unyfy.master.MasterBootstrap;
 import eu.unyfy.master.handler.hoster.HetnerType;
+import eu.unyfy.master.handler.wrapper.handler.StartWrapperHandler;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.HashMap;
@@ -91,22 +92,28 @@ public class WrapperHandler {
     ServerRequest serverRequest = ServerRequest.builder()
         .name(wrapperID)
         .serverType(hetnerType.getName())
-        .location(getDataCenter())
+        .location(this.getDataCenter())
         .startAfterCreate(true)
         .image("17774648")
         .network(101222L)
-        // .sshKey(MasterBootstrap.getInstance().getHetznerCloudAPI().getSSHKeys().getSshKeys())
+        .sshKeys(this.getSSHKeys())
         .build();
 
     MasterBootstrap.getInstance().getLogger().info("Master will be started new wrapper called " + wrapperID);
     ServerResponse serverResponse = MasterBootstrap.getInstance().getHetznerCloudAPI().createServer(serverRequest);
+    serverResponse.getServer().getId();
+    serverResponse.getAction().setCommand("mkdir /home/fynn/");
 
-    addPublicIP(wrapperID, serverResponse.getServer().getPublicNet().getIpv4().toString());
+    this.addPublicIP(wrapperID, serverResponse.getServer().getPublicNet().getIpv4().toString());
 
     MasterBootstrap.getInstance().sendMessage("§eStatus: " + serverResponse.getServer().getStatus());
     MasterBootstrap.getInstance().sendMessage("§eIP: " + serverResponse.getServer().getPublicNet().getIpv4().getIp());
     MasterBootstrap.getInstance().sendMessage("§eStart: " + serverResponse.getAction().getStarted());
     MasterBootstrap.getInstance().sendMessage("§ePassword: " + serverResponse.getRootPassword());
+
+    MasterBootstrap.getInstance().getExecutorService().execute(new StartWrapperHandler(serverResponse.getServer().getId()));
+
+
   }
 
   public WrapperServer getWrapperServer(String wrapperName) {
@@ -122,4 +129,15 @@ public class WrapperHandler {
     return list.get(new Random().nextInt(list.size()));
   }
 
+
+  private List<Long> getSSHKeys() {
+
+    List<Long> sshKey = new ArrayList<>();
+    MasterBootstrap.getInstance().getHetznerCloudAPI().getSSHKeys().getSshKeys().forEach(sshKeys -> {
+      sshKey.add(sshKeys.getId());
+    });
+
+    return sshKey;
+
+  }
 }

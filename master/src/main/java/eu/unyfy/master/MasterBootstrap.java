@@ -83,6 +83,12 @@ public class MasterBootstrap extends Service {
 
   @Override
   public void onShutdown() {
+
+    this.getHetznerCloudAPI().getServers().getServers().forEach(server -> {
+      this.getLogger().info("Hetzner-cloud server " + server.getName() + " will be deleted.");
+      this.hetznerCloudAPI.deleteServer(server.getId());
+    });
+
     this.sleep(100);
     this.natsConnector.sendMessage("cloud", "stop#" + "master");
     this.redisConnector.disconnect();
