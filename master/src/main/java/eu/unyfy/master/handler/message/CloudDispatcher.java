@@ -5,7 +5,6 @@ import eu.unyfy.master.handler.packets.CreateGroupPacket;
 import eu.unyfy.master.handler.packets.PlayerConnectNetworkPacket;
 import eu.unyfy.master.handler.packets.PlayerDisconnectServerPacket;
 import eu.unyfy.master.handler.packets.PlayerSwitchServerPacket;
-import eu.unyfy.master.handler.packets.RegisterBungeeCordPacket;
 import eu.unyfy.master.handler.packets.ServerOfflinePacket;
 import eu.unyfy.master.handler.packets.ServerOnlinePacket;
 import eu.unyfy.master.handler.packets.StartGroupPacket;
@@ -57,7 +56,7 @@ public class CloudDispatcher {
           this.master.getPacketHandler().callPacket(new ServerOfflinePacket(msg));
           break;
         case "login_bungeecord":
-          this.master.getPacketHandler().callPacket(new RegisterBungeeCordPacket(msg));
+          //  this.master.getPacketHandler().callPacket(new RegisterBungeeCordPacket(msg));
           break;
         case "logout_bungeecord":
           this.master.getPacketHandler().callPacket(new UnRegisterBungeeCordPacket(msg));

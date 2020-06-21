@@ -30,7 +30,7 @@ public class CloudDispatcher {
 
         case "stop":
           //stop all
-          if (split[1].equalsIgnoreCase("all") || split[1].equalsIgnoreCase("wrapper")) {
+          if (split[1].equalsIgnoreCase("all") || split[1].equalsIgnoreCase("wrapper") || split[1].equalsIgnoreCase("master")) {
             this.wrapper.onShutdown();
             break;
           }

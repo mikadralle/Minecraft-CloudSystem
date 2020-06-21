@@ -1,6 +1,7 @@
 package eu.unyfy.master.handler.message;
 
 import eu.unyfy.master.MasterBootstrap;
+import eu.unyfy.master.handler.packets.VerifyBungeeCordPacket;
 import eu.unyfy.master.handler.packets.VerifyWrapperPacket;
 import io.nats.client.Dispatcher;
 import java.nio.charset.StandardCharsets;
@@ -22,6 +23,9 @@ public class VerifyDispatcher {
 
         case "wrapper_register":
           this.master.getPacketHandler().callPacket(new VerifyWrapperPacket(msg + "#" + message.getReplyTo()));
+          break;
+        case "bungeecord_register":
+          this.master.getPacketHandler().callPacket(new VerifyBungeeCordPacket("bungeecord_register#" + message.getReplyTo()));
           break;
       }
     });

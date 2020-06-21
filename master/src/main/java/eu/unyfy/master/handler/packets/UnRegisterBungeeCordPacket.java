@@ -16,7 +16,7 @@ public class UnRegisterBungeeCordPacket extends Packet {
   @Override
   public void execute() {
     String bungeeName = getStrings()[1];
-    this.master.getBungeeHandler().getBungeeList().remove(bungeeName);
+    this.master.getBungeeHandler().removeBungeeCord(bungeeName);
     this.master.sendMessage("the bungeecord server '" + bungeeName + "' has been unregistered.");
   }
 }
