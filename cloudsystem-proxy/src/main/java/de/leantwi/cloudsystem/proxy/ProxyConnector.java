@@ -4,8 +4,6 @@ import de.leantwi.cloudsystem.proxy.config.IniFile;
 import de.leantwi.cloudsystem.proxy.database.NatsConnector;
 import de.leantwi.cloudsystem.proxy.database.RedisConnector;
 import de.leantwi.cloudsystem.proxy.database.mongodb.MongoDBConnector;
-import de.leantwi.cloudsystem.proxy.listener.KickListener;
-import de.leantwi.cloudsystem.proxy.listener.ServerConnectHandler;
 import de.leantwi.cloudsystem.proxy.listener.ServerConnectListener;
 import de.leantwi.cloudsystem.proxy.messager.BackendDispatcher;
 import de.leantwi.cloudsystem.proxy.messager.CloudDispatcher;
@@ -69,7 +67,7 @@ public class ProxyConnector extends Plugin {
         this.cloudDispatcher.listen();
         this.proxyHandler.loginProxyServer();
 
-        ProxyServer.getInstance().getPluginManager().registerListener(this, new ServerConnectHandler());
+        ProxyServer.getInstance().getPluginManager().registerListener(this, new ServerConnectListener());
         //ProxyServer.getInstance().getPluginManager().registerListener(this, new KickListener());
 
     }
