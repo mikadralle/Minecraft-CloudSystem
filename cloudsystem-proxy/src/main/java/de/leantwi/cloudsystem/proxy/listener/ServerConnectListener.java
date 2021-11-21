@@ -17,7 +17,6 @@ public class ServerConnectListener implements Listener {
     private BungeeConnector bungeeConnector = this.proxyConnector.getBungeeConnector();
 
 
-
     @EventHandler(priority = EventPriority.LOWEST)
     public void onServerConnect(ServerConnectEvent event) {
         if (event.getTarget().getName().equalsIgnoreCase("fallbackServer")) {

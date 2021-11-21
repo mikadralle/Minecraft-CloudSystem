@@ -17,7 +17,7 @@
       <artifactId>jedis</artifactId>
       <groupId>redis.clients</groupId>
       <type>jar</type>
-      <version>3.2.0</version>
+      <version>3.6.3</version>
     </dependency>
     <!-- slf4j -->
     <dependency>
