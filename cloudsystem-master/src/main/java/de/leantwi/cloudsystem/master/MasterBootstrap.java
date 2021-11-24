@@ -1,5 +1,6 @@
 package de.leantwi.cloudsystem.master;
 
+import de.leantwi.cloudsystem.CloudSystem;
 import de.leantwi.cloudsystem.master.api.config.IniFile;
 import de.leantwi.cloudsystem.master.command.HelpCommand;
 import de.leantwi.cloudsystem.master.command.StartCommand;
@@ -8,6 +9,7 @@ import de.leantwi.cloudsystem.master.database.mongo.DatabaseHandler;
 import de.leantwi.cloudsystem.master.database.mongo.MongoDBConnector;
 import de.leantwi.cloudsystem.master.database.nats.NatsConnector;
 import de.leantwi.cloudsystem.master.database.redis.RedisConnector;
+import de.leantwi.cloudsystem.master.events.MessageListener;
 import de.leantwi.cloudsystem.master.handler.bungeecord.BungeeHandler;
 import de.leantwi.cloudsystem.master.handler.core.Core;
 import de.leantwi.cloudsystem.master.handler.group.GroupHandler;
@@ -83,12 +85,14 @@ public class MasterBootstrap extends Service {
 
   @Override
   public void onShutdown() {
-
+/*
     this.getHetznerCloudAPI().getServers().getServers().forEach(server -> {
       this.getLogger().info("Hetzner-cloud server " + server.getName() + " will be deleted.");
       this.hetznerCloudAPI.deleteServer(server.getId());
     });
 
+
+ */
     this.sleep(100);
     this.natsConnector.sendMessage("cloud", "stop#" + "master");
     this.redisConnector.disconnect();
@@ -138,6 +142,8 @@ public class MasterBootstrap extends Service {
     this.wrapperHandler.addPublicIP("wrapper-1", this.configAPI.getProperty("wrapper.master.address"));
 
     this.hetznerCloudAPI = new HetznerCloudAPI(this.configAPI.getProperty("heztner.token"));
+
+    CloudSystem.getEventAPI().registerListener(new MessageListener());
 
     // MasterBootstrap.getInstance().sendMessage("All Datacenter: " + this.hetznerCloudAPI.getDatacenters().getDatacenters().toString());
 

@@ -1,5 +1,6 @@
 package de.leantwi.service;
 
+import de.leantwi.cloudsystem.CloudSystemInit;
 import de.leantwi.service.command.CommandHandler;
 import de.leantwi.service.logger.LoggingOutputStream;
 import de.leantwi.service.logger.ServiceLogger;
@@ -18,13 +19,15 @@ public abstract class Service {
 
   private final ExecutorService executorService = Executors.newCachedThreadPool();
   private Logger logger;
-
+  private CloudSystemInit cloudSystemInit;
   private final CommandHandler commandHandler;
 
   public Service() {
     final long timeStamp = System.currentTimeMillis();
     commandHandler = new CommandHandler(this);
     registerCommands();
+
+    this.cloudSystemInit = new CloudSystemInit();
     ConsoleReader consoleReader = null;
     try {
 

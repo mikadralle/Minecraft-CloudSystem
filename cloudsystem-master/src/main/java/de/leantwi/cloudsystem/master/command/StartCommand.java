@@ -1,5 +1,7 @@
 package de.leantwi.cloudsystem.master.command;
 
+import de.leantwi.cloudsystem.CloudSystem;
+import de.leantwi.cloudsystem.api.events.SendCloudMessageEvent;
 import de.leantwi.cloudsystem.master.handler.hoster.HetnerType;
 import de.leantwi.cloudsystem.master.MasterBootstrap;
 import de.leantwi.service.command.CommandImplementation;
@@ -16,6 +18,7 @@ public class StartCommand implements CommandImplementation {
       String type = strings[0];
       //MasterBootstrap.getInstance().getWrapperHandler().createServer(HetnerType.CX11);
     MasterBootstrap.getInstance().sendMessage("Disabled due system error");
+      CloudSystem.getEventAPI().callEvent(new SendCloudMessageEvent("Hetzter cloud could not start!"));
     }
 
   }
