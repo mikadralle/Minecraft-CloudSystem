@@ -10,87 +10,87 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
+
 import lombok.Getter;
-import me.tomsdevsn.hetznercloud.objects.request.ServerRequest;
-import me.tomsdevsn.hetznercloud.objects.response.ServerResponse;
 
 @Getter
 public class WrapperHandler {
 
-  private final MasterBootstrap masterBootstrap = MasterBootstrap.getInstance();
-  private final Map<String, String> publicIP = new HashMap<>();
-  private final Map<String, WrapperServer> wrapperServerMap = new HashMap<>();
-  private final List<String> wrapperList = new ArrayList<>();
+    private final MasterBootstrap masterBootstrap = MasterBootstrap.getInstance();
+    private final Map<String, String> publicIP = new HashMap<>();
+    private final Map<String, WrapperServer> wrapperServerMap = new HashMap<>();
+    private final List<String> wrapperList = new ArrayList<>();
 
-  public String verifyWrapper(String wrapperID, WrapperType wrapperType, int weightClass, int priority) {
+    public String verifyWrapper(String wrapperID, WrapperType wrapperType, int weightClass, int priority) {
 
-    WrapperServer wrapperServer = new WrapperServer();
-    wrapperServer.fetch(wrapperID, publicIP.get(wrapperID), wrapperType, weightClass, priority);
-    this.wrapperServerMap.put(wrapperID, wrapperServer);
-    this.removePublicIP(wrapperID);
-    return wrapperServer.getHostName();
+        WrapperServer wrapperServer = new WrapperServer();
+        wrapperServer.fetch(wrapperID, publicIP.get(wrapperID), wrapperType, weightClass, priority);
+        this.wrapperServerMap.put(wrapperID, wrapperServer);
+        this.removePublicIP(wrapperID);
+        return wrapperServer.getHostName();
 
-  }
-
-  public void logoutWrapper(String wrapperName) {
-    this.wrapperServerMap.remove(wrapperName);
-    this.masterBootstrap.sendMessage("The Wrapper " + wrapperName + " has been disconnected from master server!");
-    this.wrapperList.remove(wrapperName);
-  }
-
-
-  public String getRandomWrapper(String subGroupName, int weightClass) {
-
-    if (getWrapperServer("wrapper-1").isFreeSlot(subGroupName)) {
-      System.out.println("true");
-      return "wrapper-1";
     }
 
-    List<WrapperServer> wrapperServerList = new ArrayList<>();
-    wrapperServerList.addAll(this.wrapperServerMap.values());
-    wrapperServerList.remove(this.getWrapperServer("wrapper-1"));
-    wrapperServerList.sort(Comparator.comparingInt(WrapperServer::getPriority));
-
-    if (wrapperServerList.stream().anyMatch(wrapper -> wrapper.getWeightClass() > weightClass)) {
-      return wrapperServerList.stream().filter(wrapper -> wrapper.getWeightClass() > weightClass).findAny().get().getWrapperID();
+    public void logoutWrapper(String wrapperName) {
+        this.wrapperServerMap.remove(wrapperName);
+        this.masterBootstrap.sendMessage("The Wrapper " + wrapperName + " has been disconnected from master server!");
+        this.wrapperList.remove(wrapperName);
     }
 
-    startNewWrapper();
-    return null;
-  }
 
-  public void addPublicIP(String wrapperID, String hostName) {
-    this.wrapperList.add(wrapperID);
-    this.publicIP.put(wrapperID, hostName);
-  }
+    public String getRandomWrapper(String subGroupName, int weightClass) {
 
-  public void removePublicIP(String wrapperID) {
-    this.publicIP.remove(wrapperID);
-  }
+        if (getWrapperServer("wrapper-1").isFreeSlot(subGroupName)) {
+            System.out.println("true");
+            return "wrapper-1";
+        }
 
-  private void startNewWrapper() {
-    createServer(HetnerType.CPX21);
-  }
+        List<WrapperServer> wrapperServerList = new ArrayList<>();
+        wrapperServerList.addAll(this.wrapperServerMap.values());
+        wrapperServerList.remove(this.getWrapperServer("wrapper-1"));
+        wrapperServerList.sort(Comparator.comparingInt(WrapperServer::getPriority));
 
-  public boolean isWrapperOnline() {
-    return !this.wrapperServerMap.isEmpty();
-  }
+        if (wrapperServerList.stream().anyMatch(wrapper -> wrapper.getWeightClass() > weightClass)) {
+            return wrapperServerList.stream().filter(wrapper -> wrapper.getWeightClass() > weightClass).findAny().get().getWrapperID();
+        }
 
-  public int getID() {
-
-    for (int i = 2; i < 999; i++) {
-      if (!this.wrapperList.contains("wrapper-" + i)) {
-        return i;
-      }
+        startNewWrapper();
+        return null;
     }
-    return this.wrapperList.size() + 1;
-  }
+
+    public void addPublicIP(String wrapperID, String hostName) {
+        this.wrapperList.add(wrapperID);
+        this.publicIP.put(wrapperID, hostName);
+    }
+
+    public void removePublicIP(String wrapperID) {
+        this.publicIP.remove(wrapperID);
+    }
+
+    private void startNewWrapper() {
+        createServer(HetnerType.CPX21);
+    }
+
+    public boolean isWrapperOnline() {
+        return !this.wrapperServerMap.isEmpty();
+    }
+
+    public int getID() {
+
+        for (int i = 2; i < 999; i++) {
+            if (!this.wrapperList.contains("wrapper-" + i)) {
+                return i;
+            }
+        }
+        return this.wrapperList.size() + 1;
+    }
 
 
-  public void createServer(HetnerType hetnerType) {
+    public void createServer(HetnerType hetnerType) {
 
-    String wrapperID = "wrapper-" + MasterBootstrap.getInstance().getWrapperHandler().getID();
-    ServerRequest serverRequest = ServerRequest.builder()
+        String wrapperID = "wrapper-" + MasterBootstrap.getInstance().getWrapperHandler().getID();
+
+ /*   ServerRequest serverRequest = ServerRequest.builder()
         .name(wrapperID)
         .serverType(hetnerType.getName())
         .location(this.getDataCenter())
@@ -114,31 +114,33 @@ public class WrapperHandler {
 
     MasterBootstrap.getInstance().getExecutorService().execute(new StartWrapperHandler(serverResponse.getServer().getId()));
 
+*/
+    }
 
-  }
-
-  public WrapperServer getWrapperServer(String wrapperName) {
-    return this.wrapperServerMap.get(wrapperName);
-  }
-
-
-  public String getDataCenter() {
-
-    List<String> list = new ArrayList<>();
-    list.add("fsn1");
-    list.add("nbg1");
-    return list.get(new Random().nextInt(list.size()));
-  }
+    public WrapperServer getWrapperServer(String wrapperName) {
+        return this.wrapperServerMap.get(wrapperName);
+    }
 
 
-  private List<Long> getSSHKeys() {
+    public String getDataCenter() {
 
+        List<String> list = new ArrayList<>();
+        list.add("fsn1");
+        list.add("nbg1");
+        return list.get(new Random().nextInt(list.size()));
+    }
+
+
+    private List<Long> getSSHKeys() {
+    /*
     List<Long> sshKey = new ArrayList<>();
     MasterBootstrap.getInstance().getHetznerCloudAPI().getSSHKeys().getSshKeys().forEach(sshKeys -> {
       sshKey.add(sshKeys.getId());
     });
 
-    return sshKey;
 
-  }
+    return sshKey;
+ */
+        return null;
+    }
 }

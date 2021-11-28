@@ -25,12 +25,12 @@ public class EventBus {
             System.out.println("Debug-Method: 92");
 
             for (EventHandlerMethod method : handlerMethods) {
-                System.out.println("Debug-Method: 92");
+                System.out.println("Debug-Method: 93");
                 System.out.println("Debug-Method: 1");
                 try {
-                    System.out.println("Debug-Method: 92");
+                    System.out.println("Debug-Method: 94");
                     method.invoke(event);
-                    System.out.println("Debug-Method: 93");
+                    System.out.println("Debug-Method: 95");
                 } catch (IllegalAccessException | InvocationTargetException e) {
                     e.printStackTrace();
                 }
@@ -46,6 +46,7 @@ public class EventBus {
             if (annotation != null) {
                 System.out.println("Debug-Method: 82");
                 Class<?>[] parameters = method.getParameterTypes();
+                System.out.println("Debug-ClassName: " + parameters[0].getName());
                 System.out.println("Debug-Method: 83");
                 if (parameters.length != 1) {
                     System.out.println("Debug-Method: 83.5");
