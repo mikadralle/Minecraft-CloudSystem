@@ -1,36 +1,30 @@
 package de.leantwi.cloudsystem.event;
 
+import de.leantwi.cloudsystem.api.event.Listener;
 import de.leantwi.cloudsystem.api.event.PacketListener;
 import lombok.AllArgsConstructor;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class EventBus {
 
-    private final Map<Class<?>, EventHandlerMethod[]> eventClasses = new ConcurrentHashMap<>();
+    private final Map<Class<?>, List<EventHandlerMethod>> eventClasses = new HashMap<>();
 
 
     public void post(Object event) {
-        System.out.println("Debug-Method: 90");
-        this.eventClasses.entrySet().forEach(s -> System.out.println(s.getClass().getName()));
-        EventHandlerMethod[] handlerMethods = this.eventClasses.get(event);
-        System.out.println("Debug-Method: 91");
 
+        List<EventHandlerMethod> handlerMethods = this.eventClasses.get(event.getClass());
         if (handlerMethods != null) {
-            System.out.println("Debug-Method: 92");
-
             for (EventHandlerMethod method : handlerMethods) {
-                System.out.println("Debug-Method: 93");
-                System.out.println("Debug-Method: 1");
                 try {
-                    System.out.println("Debug-Method: 94");
+                    System.out.println("ListenerInClass: " + method.listenerClass.getClass().getName());
                     method.invoke(event);
-                    System.out.println("Debug-Method: 95");
                 } catch (IllegalAccessException | InvocationTargetException e) {
                     e.printStackTrace();
                 }
@@ -38,29 +32,55 @@ public class EventBus {
         }
     }
 
-    public void register(Object listener) {
-        System.out.println("Debug-Method: 80");
+    public Map<Class<?>, List<Method>> findHandlers(Object listener) {
+
+        Map<Class<?>, List<Method>> handlerList = new HashMap<>();
+
         for (Method method : listener.getClass().getDeclaredMethods()) {
-            System.out.println("Debug-Method: 81");
+
             PacketListener annotation = method.getAnnotation(PacketListener.class);
+
             if (annotation != null) {
-                System.out.println("Debug-Method: 82");
+
                 Class<?>[] parameters = method.getParameterTypes();
-                System.out.println("Debug-ClassName: " + parameters[0].getName());
-                System.out.println("Debug-Method: 83");
                 if (parameters.length != 1) {
-                    System.out.println("Debug-Method: 83.5");
-                    return;
+                    System.out.println("The parameters count is wrong");
                 }
-                System.out.println("Debug-Method: 84");
-                List<EventHandlerMethod> list = new ArrayList<>();
-                EventHandlerMethod eventHandlerMethod = new EventHandlerMethod(listener, method);
-                list.add(eventHandlerMethod);
-                this.eventClasses.put(parameters[0], list.toArray(new EventHandlerMethod[list.size()]));
-                System.out.println("Debug-Method: 85");
+
+                List<Method> methodList = handlerList.get(parameters[0]);
+                if (methodList == null) {
+                    methodList = new ArrayList<>();
+                }
+                methodList.add(method);
+                handlerList.put(parameters[0], methodList);
+
+            }
+        }
+
+        return handlerList;
+
+    }
+
+    public void register(Listener listener) {
+
+
+        Map<Class<?>, List<Method>> handlerList = findHandlers(listener);
+
+        handlerList.keySet().forEach(eventName -> {
+            List<EventHandlerMethod> list = this.eventClasses.get(eventName);
+            if(list == null){
+                list = new ArrayList<>();
             }
 
-        }
+            for(Method method : handlerList.get(eventName)){
+                System.out.println("ClassName: " + listener.getClass().getName());
+                EventHandlerMethod eventHandlerMethod = new EventHandlerMethod(listener, method);
+                list.add(eventHandlerMethod);
+            }
+
+            this.eventClasses.put(eventName, list);
+
+        });
 
     }
 

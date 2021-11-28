@@ -11,7 +11,6 @@
 
     <artifactId>cloudsystem-master</artifactId>
 
-
     <dependencies>
         <!-- Redis -->
         <dependency>

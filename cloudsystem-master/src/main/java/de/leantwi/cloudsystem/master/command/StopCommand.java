@@ -17,9 +17,25 @@ public class StopCommand implements CommandImplementation {
     public void execute(String[] strings) {
 
         final MasterBootstrap masterBootstrap = MasterBootstrap.getInstance();
-        masterBootstrap.onShutdown();
-        sleep(1000);
-        System.exit(0);
+        if (strings.length == 0) {
+
+            masterBootstrap.onShutdown();
+            return;
+        }
+        if (strings.length == 1) {
+
+            if (strings[0].equalsIgnoreCase("all")) {
+                masterBootstrap.getNatsConnector().sendMessage("cloud", "quit");
+                masterBootstrap.sendMessage("All gameservers and wrappers will be stopped now.");
+                sleep(1000);
+                masterBootstrap.sendMessage("The Master will be stopped now.");
+                masterBootstrap.onShutdown();
+                sleep(1000);
+                System.exit(0);
+            }
+
+        }
+
     }
 
 

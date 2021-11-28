@@ -10,6 +10,7 @@ import de.leantwi.cloudsystem.master.database.mongo.MongoDBConnector;
 import de.leantwi.cloudsystem.master.database.nats.NatsConnector;
 import de.leantwi.cloudsystem.master.database.redis.RedisConnector;
 import de.leantwi.cloudsystem.master.events.MessageListener;
+import de.leantwi.cloudsystem.master.events.PlayerMessageListener;
 import de.leantwi.cloudsystem.master.handler.bungeecord.BungeeHandler;
 import de.leantwi.cloudsystem.master.handler.core.Core;
 import de.leantwi.cloudsystem.master.handler.group.GroupHandler;
@@ -97,6 +98,7 @@ public class MasterBootstrap extends Service {
         this.mongoDBConnector.disconnect();
         sleep(100);
         sendMessage("§acloud is stopping.");
+
     }
 
     public void sendMessage(String message) {
@@ -142,6 +144,7 @@ public class MasterBootstrap extends Service {
         //this.hetznerCloudAPI = new HetznerCloudAPI(this.configAPI.getProperty("heztner.token"));
 
         CloudSystem.getEventAPI().registerListener(new MessageListener());
+        CloudSystem.getEventAPI().registerListener(new PlayerMessageListener());
 
         // MasterBootstrap.getInstance().sendMessage("All Datacenter: " + this.hetznerCloudAPI.getDatacenters().getDatacenters().toString());
 
