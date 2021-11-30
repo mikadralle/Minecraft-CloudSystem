@@ -65,11 +65,12 @@ public class WrapperBootstrap extends Service {
   @Override
   public void onShutdown() {
 
-    this.redisConnector.disconnect();
-    getLogger().info("§aRedis connection has been disconnected!");
+
     this.natsConnector.sendMessage("cloud", "stop_wrapper#" + this.wrapperSettings.getWrapperID());
     getLogger().info("§aStopping wrapper server...");
-    getLogger().info("§aSWrapper is stopping!");
+    this.redisConnector.disconnect();
+    getLogger().info("§aRedis connection has been disconnected!");
+    getLogger().info("§aWrapper is stopping!");
   }
 
   @Override
