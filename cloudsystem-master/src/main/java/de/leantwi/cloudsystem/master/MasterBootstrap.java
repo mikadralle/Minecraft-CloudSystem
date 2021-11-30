@@ -10,6 +10,7 @@ import de.leantwi.cloudsystem.master.database.mongo.MongoDBConnector;
 import de.leantwi.cloudsystem.master.database.nats.NatsConnector;
 import de.leantwi.cloudsystem.master.database.redis.RedisConnector;
 import de.leantwi.cloudsystem.master.events.MessageListener;
+import de.leantwi.cloudsystem.master.events.PlayerChangeServerListener;
 import de.leantwi.cloudsystem.master.events.PlayerMessageListener;
 import de.leantwi.cloudsystem.master.handler.bungeecord.BungeeHandler;
 import de.leantwi.cloudsystem.master.handler.core.Core;
@@ -145,6 +146,8 @@ public class MasterBootstrap extends Service {
 
         CloudSystem.getEventAPI().registerListener(new MessageListener());
         CloudSystem.getEventAPI().registerListener(new PlayerMessageListener());
+        CloudSystem.getEventAPI().registerListener(new PlayerChangeServerListener());
+
 
         // MasterBootstrap.getInstance().sendMessage("All Datacenter: " + this.hetznerCloudAPI.getDatacenters().getDatacenters().toString());
 

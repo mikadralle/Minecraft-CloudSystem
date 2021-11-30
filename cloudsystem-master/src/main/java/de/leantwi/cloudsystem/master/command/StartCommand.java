@@ -1,6 +1,7 @@
 package de.leantwi.cloudsystem.master.command;
 
 import de.leantwi.cloudsystem.CloudSystem;
+import de.leantwi.cloudsystem.api.events.PlayerChangeGameServerEvent;
 import de.leantwi.cloudsystem.api.events.SendCloudMessageEvent;
 import de.leantwi.cloudsystem.master.handler.hoster.HetnerType;
 import de.leantwi.cloudsystem.master.MasterBootstrap;
@@ -12,6 +13,8 @@ public class StartCommand implements CommandImplementation {
   public void execute(String[] strings) {
 
     //start <cx11>
+
+    CloudSystem.getEventAPI().callEvent(new PlayerChangeGameServerEvent("Nachricht","lobby-01","buildffa-01"));
 
     if (strings.length == 1) {
 

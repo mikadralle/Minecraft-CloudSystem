@@ -8,8 +8,12 @@ import lombok.Setter;
 @AllArgsConstructor
 @Getter
 @Setter
-public class SendCloudMessageEvent extends Event {
+public class PlayerChangeGameServerEvent extends Event {
+
 
     private String message;
+    private String targetServer;
+    private String previousServer;
+
 
 }
