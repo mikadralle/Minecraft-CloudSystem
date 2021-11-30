@@ -44,8 +44,10 @@ public class CloudDispatcher {
                 case "quit":
                     WrapperBootstrap.getInstance().sendMessage("Wrapper will be stopped...");
                     WrapperBootstrap.getInstance().onShutdown();
-                    sleep(1000);
+                    sleep(100);
                     System.exit(0);
+
+
                     break;
             }
 
@@ -62,4 +64,7 @@ public class CloudDispatcher {
             e.printStackTrace();
         }
     }
+
+
+
 }

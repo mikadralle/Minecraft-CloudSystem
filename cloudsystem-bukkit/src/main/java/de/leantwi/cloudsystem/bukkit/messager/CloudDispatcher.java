@@ -21,12 +21,6 @@ public class CloudDispatcher {
 
             final String serverName = split[1].toLowerCase();
             final SpigotConnector spigotConnector = BukkitConnector.getInstance().getSpigotConnector();
-            if (msg.equalsIgnoreCase("quit")) {
-                Bukkit.getConsoleSender().sendMessage("Its touch me");
-                Bukkit.getScheduler().runTask(BukkitConnector.getInstance(), Bukkit::shutdown);
-                return;
-            }
-
             switch (split[0]) {
 
                 case "updateGameState":
@@ -39,13 +33,14 @@ public class CloudDispatcher {
                     spigotConnector.unRegisterServer(serverName);
                     break;
                 case "quit":
-                    Bukkit.getConsoleSender().sendMessage("I will stop myself lol");
                     Bukkit.getScheduler().runTask(BukkitConnector.getInstance(), Bukkit::shutdown);
                     break;
                 case "stop":
                     if (spigotConnector.getServerName().equalsIgnoreCase(serverName)) {
                         Bukkit.shutdown();
                     }
+                    break;
+                default:
                     break;
             }
 
