@@ -41,7 +41,6 @@ public class LibraryLoader {
                 addURL.setAccessible(true);
                 addURL.invoke(loader, libraryFile.toURI().toURL());
 
-
                 this.logger.info("Loaded library " + libraryFile.getName());
             } catch (Exception ex) {
                 this.logger.log(Level.WARNING, "Couldn't load library " + libraryFile.getName(), ex);

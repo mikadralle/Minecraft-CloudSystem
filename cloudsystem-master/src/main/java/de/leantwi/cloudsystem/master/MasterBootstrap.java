@@ -1,13 +1,14 @@
 package de.leantwi.cloudsystem.master;
 
 import de.leantwi.cloudsystem.CloudSystem;
+import de.leantwi.cloudsystem.api.ICloudSystem;
+import de.leantwi.cloudsystem.api.database.INats;
 import de.leantwi.cloudsystem.master.api.config.IniFile;
 import de.leantwi.cloudsystem.master.command.HelpCommand;
 import de.leantwi.cloudsystem.master.command.StartCommand;
 import de.leantwi.cloudsystem.master.command.StopCommand;
 import de.leantwi.cloudsystem.master.database.mongo.DatabaseHandler;
 import de.leantwi.cloudsystem.master.database.mongo.MongoDBConnector;
-import de.leantwi.cloudsystem.master.database.nats.NatsConnector;
 import de.leantwi.cloudsystem.master.database.redis.RedisConnector;
 import de.leantwi.cloudsystem.master.events.MessageListener;
 import de.leantwi.cloudsystem.master.events.PlayerChangeServerListener;
@@ -42,7 +43,7 @@ public class MasterBootstrap extends Service {
     //database & messaging
     private RedisConnector redisConnector;
     private MongoDBConnector mongoDBConnector;
-    private NatsConnector natsConnector;
+       private INats natsConnector;
     //dispatcher
     private CloudDispatcher cloudDispatcher;
     private VerifyDispatcher verifyDispatcher;
@@ -59,18 +60,22 @@ public class MasterBootstrap extends Service {
     //
     private Core core;
     private PacketHandler packetHandler;
+
+    private ICloudSystem cloudAPI = CloudSystem.getAPI();
     //
     //private HetznerCloudAPI hetznerCloudAPI;
     private HosterCloud hosterCloud;
 
     public static void main(String[] strings) {
         instance = new MasterBootstrap();
-    instance.onEnable();
+        instance.onEnable();
     }
-    public void onEnable(){
+
+    public void onEnable() {
         initClass();
         init();
     }
+
     @Override
     public void onBootstrap() {
 
@@ -94,7 +99,7 @@ public class MasterBootstrap extends Service {
 
  */
         this.sleep(100);
-        this.natsConnector.sendMessage("cloud", "stop#" + "master");
+        this.cloudAPI.getNatsConnector().publish("cloud", "stop#" + "master");
         this.redisConnector.disconnect();
         this.mongoDBConnector.disconnect();
         sleep(100);
@@ -110,7 +115,7 @@ public class MasterBootstrap extends Service {
         this.configAPI = new IniFile("config.yml");
         this.loadConfig();
         // connections
-        this.natsConnector = new NatsConnector();
+        this.natsConnector = this.cloudAPI.getNatsConnector();
         this.redisConnector = new RedisConnector();
         this.mongoDBConnector = new MongoDBConnector();
         // dispatcher
@@ -129,18 +134,27 @@ public class MasterBootstrap extends Service {
     }
 
     private void init() {
-        this.natsConnector.connect();
+        this.sendMessage("DDDDD");
+        //this.natsConnector.connect();
         // dispatcher
         this.cloudDispatcher.listen();
         this.verifyDispatcher.listen();
         this.pingDispatcher.listen();
         //
+        this.sendMessage("LOL");
         this.redisConnector.connect();
+        this.sendMessage("LOL-2");
         this.mongoDBConnector.connect();
+        this.sendMessage("LOL-3");
         this.groupHandler.fetch();
+        this.sendMessage("LOL-4");
         this.executorService.execute(new TimerTaskService(this.core));
-        this.natsConnector.sendMessage("info", "master_connected");
+        this.sendMessage("LOL-5");
+        this.sendMessage("A");
+        this.cloudAPI.getNatsConnector().publish("info", "master_connected");
+        this.sendMessage("B");
         this.wrapperHandler.addPublicIP("wrapper-1", this.configAPI.getProperty("wrapper.master.address"));
+        this.sendMessage("C");
 
         //this.hetznerCloudAPI = new HetznerCloudAPI(this.configAPI.getProperty("heztner.token"));
 

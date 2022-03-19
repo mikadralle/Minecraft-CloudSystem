@@ -144,21 +144,25 @@ public class WrapperBootstrap extends Service {
 
   private void verifyWrapper() {
 
-    String id = null;
 
+    getLogger().info("Load Config");
     this.loadConfig();
+    getLogger().info("Config was loaded");
     this.wrapperSettings.setMaster(Boolean.parseBoolean(this.configAPI.getProperty("wrapper.master")));
+    getLogger().info("A");
     this.wrapperSettings.setPriority(this.wrapperSettings.isMaster() ? 100 : 50);
+    getLogger().info("B");
     this.wrapperSettings.setWeightClass(Integer.parseInt(this.configAPI.getProperty("wrapper.weight-class")));
+    getLogger().info("C");
+
+
+    //TODO Update Wrapper id's
     if (this.wrapperSettings.isMaster()) {
       this.wrapperSettings.setWrapperID("wrapper-1");
-      id = "wrapper-1";
     } else {
       this.wrapperSettings.setWrapperID(getHostname());
-      getLogger().info("set wrapper ID: " + getHostname());
-      id = getHostname();
-
     }
+      this.getLogger().info("The wrapper was assigned the " + this.wrapperSettings.getWrapperID());
 
     String type = this.configAPI.getProperty("wrapper.type");
 
@@ -167,13 +171,15 @@ public class WrapperBootstrap extends Service {
     } else {
       this.wrapperSettings.setType(WrapperType.PRIVATE);
     }
-
+    getLogger().info("D");
     try {
-      String answer = this.natsConnector.request("verify", "wrapper_register#" + id + "#" + this.wrapperSettings.getType().name() + "#" + this.wrapperSettings.getWeightClass() + "#" + this.wrapperSettings.getPriority());
+      String answer = this.natsConnector.request("verify", "wrapper_register#" + wrapperSettings.getWrapperID() + "#" + this.wrapperSettings.getType().name() + "#" + this.wrapperSettings.getWeightClass() + "#" + this.wrapperSettings.getPriority());
       this.wrapperSettings.setAddress(answer);
     } catch (InterruptedException | ExecutionException | TimeoutException e) {
+      getLogger().warning(e.getMessage());
       e.printStackTrace();
     }
+    getLogger().info("E");
 
   }
 

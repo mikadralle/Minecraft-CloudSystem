@@ -35,7 +35,7 @@ public class ServerFactory {
     this.master.getWrapperHandler().getWrapperServer(wrapperName).addServer(sessionServer);
 
     //send packet to wrapper, that create sessionServer
-    this.master.getNatsConnector().sendMessage("cloud", "sessionServer#create#" + wrapperName + "#" + serverName);
+    this.master.getNatsConnector().publish("cloud", "sessionServer#create#" + wrapperName + "#" + serverName);
     // put information in a core
     this.master.getCore().getCurrentSessionServer().put(serverName, sessionServer);
     this.subGroupDB.getStartSessionServerList().add(sessionServer);

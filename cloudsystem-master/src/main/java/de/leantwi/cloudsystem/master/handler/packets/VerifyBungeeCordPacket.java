@@ -21,7 +21,7 @@ public class VerifyBungeeCordPacket extends Packet {
     String replayTo = getStrings()[1];
     String bungeeName = this.master.getBungeeHandler().verifyBungeeCord();
 
-    this.master.getNatsConnector().sendMessage(replayTo, bungeeName);
+    this.master.getNatsConnector().publish(replayTo, bungeeName);
     this.master.sendMessage("the bungeecord server '" + bungeeName + "' has been registered.");
 
   }

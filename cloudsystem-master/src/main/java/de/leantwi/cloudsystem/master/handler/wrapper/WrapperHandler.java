@@ -27,6 +27,7 @@ public class WrapperHandler {
         wrapperServer.fetch(wrapperID, publicIP.get(wrapperID), wrapperType, weightClass, priority);
         this.wrapperServerMap.put(wrapperID, wrapperServer);
         this.removePublicIP(wrapperID);
+        masterBootstrap.sendMessage("Hostname: " + wrapperServer.getHostName());
         return wrapperServer.getHostName();
 
     }
@@ -59,6 +60,7 @@ public class WrapperHandler {
     }
 
     public void addPublicIP(String wrapperID, String hostName) {
+        masterBootstrap.sendMessage("ADD ADDRESS: " + hostName);
         this.wrapperList.add(wrapperID);
         this.publicIP.put(wrapperID, hostName);
     }

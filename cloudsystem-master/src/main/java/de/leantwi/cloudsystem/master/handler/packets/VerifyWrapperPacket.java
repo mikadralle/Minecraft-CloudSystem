@@ -5,6 +5,8 @@ import de.leantwi.cloudsystem.master.handler.packets.handler.Packet;
 import de.leantwi.cloudsystem.master.handler.wrapper.WrapperType;
 import lombok.Getter;
 
+import java.util.Arrays;
+
 @Getter
 public class VerifyWrapperPacket extends Packet {
 
@@ -23,9 +25,11 @@ public class VerifyWrapperPacket extends Packet {
     int weightClass = Integer.parseInt(getStrings()[3]);
     int priority = Integer.parseInt(getStrings()[4]);
     String replayTo = getStrings()[5];
+    this.master.sendMessage("String: " + Arrays.toString(getStrings()));
+    this.master.sendMessage("ReplayTO: " + replayTo);
 
     String hostName = this.master.getWrapperHandler().verifyWrapper(wrapperID, wrapperType, weightClass, priority);
-    this.master.getNatsConnector().sendMessage(replayTo, hostName);
+    this.master.getNatsConnector().publish(replayTo, hostName);
 
     switch (wrapperType) {
       case PRIVATE:

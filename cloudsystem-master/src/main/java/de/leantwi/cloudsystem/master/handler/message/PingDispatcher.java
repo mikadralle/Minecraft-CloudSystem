@@ -9,13 +9,14 @@ public class PingDispatcher {
 
   public void listen() {
 
-    Dispatcher pingDispatcher = MasterBootstrap.getInstance().getNatsConnector().getNatsConnection().createDispatcher(message -> {
+    Dispatcher pingDispatcher = MasterBootstrap.getInstance().getNatsConnector().getConnection().createDispatcher(message -> {
       String msg = new String(message.getData(), StandardCharsets.UTF_8);
       String[] split = msg.split("#");
       switch (split[0]) {
 
         case "ping":
-          MasterBootstrap.getInstance().getNatsConnector().sendMessage(message.getReplyTo(), "pong");
+          MasterBootstrap.getInstance().getNatsConnector().publish(message.getReplyTo(), "pong");
+          System.out.println("PONG");
           break;
       }
     });

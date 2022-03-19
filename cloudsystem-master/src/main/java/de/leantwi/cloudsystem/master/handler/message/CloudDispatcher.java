@@ -22,7 +22,7 @@ public class CloudDispatcher {
 
   public void listen() {
 
-    final Dispatcher cloudDispatcher = master.getNatsConnector().getNatsConnection().createDispatcher(message -> {
+    final Dispatcher cloudDispatcher = master.getNatsConnector().getConnection().createDispatcher(message -> {
 
       final String msg = new String(message.getData(), StandardCharsets.UTF_8);
       final String[] split = msg.split("#");
@@ -62,7 +62,7 @@ public class CloudDispatcher {
           this.master.getPacketHandler().callPacket(new UnRegisterBungeeCordPacket(msg));
           break;
         case "quit":
-          this.master.getNatsConnector().sendMessage("cloud", "shutdownALL");
+          this.master.getNatsConnector().publish("cloud", "shutdownALL");
           break;
       }
     });

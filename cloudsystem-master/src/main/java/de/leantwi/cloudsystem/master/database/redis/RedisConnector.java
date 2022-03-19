@@ -21,19 +21,16 @@ public class RedisConnector {
   public void connect() {
 
     master.sendMessage("redis will be connected");
-    FutureTask<JedisPool> task = new FutureTask<>(new Callable<JedisPool>() {
-      @Override
-      public JedisPool call() throws Exception {
+    FutureTask<JedisPool> task = new FutureTask<>(() -> {
 
-        JedisPoolConfig jedisPoolConfig = new JedisPoolConfig();
-        jedisPoolConfig.setMaxTotal(80);
-        return new JedisPool(jedisPoolConfig,
-            master.getConfigAPI().getProperty("redis.host"),
-            Integer.parseInt(master.getConfigAPI().getProperty("redis.port")),
-            2000,
-            master.getConfigAPI().getProperty("redis.password"),
-            Integer.parseInt(master.getConfigAPI().getProperty("redis.databaseID")));
-      }
+      JedisPoolConfig jedisPoolConfig = new JedisPoolConfig();
+      jedisPoolConfig.setMaxTotal(80);
+      return new JedisPool(jedisPoolConfig,
+          master.getConfigAPI().getProperty("redis.host"),
+          Integer.parseInt(master.getConfigAPI().getProperty("redis.port")),
+          2000,
+          master.getConfigAPI().getProperty("redis.password"),
+          Integer.parseInt(master.getConfigAPI().getProperty("redis.databaseID")));
     });
 
     this.master.getExecutorService().execute(task);
@@ -41,6 +38,7 @@ public class RedisConnector {
     try {
       this.jedisPool = task.get();
     } catch (InterruptedException | ExecutionException e) {
+      e.printStackTrace();
     }
 
     //his.master.getBootstrapConsole().info("Redis has been connected successful");

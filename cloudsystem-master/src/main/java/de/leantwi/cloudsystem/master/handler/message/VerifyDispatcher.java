@@ -15,7 +15,7 @@ public class VerifyDispatcher {
 
   public void listen() {
 
-    Dispatcher verifyDispatcher = this.master.getNatsConnector().getNatsConnection().createDispatcher(message -> {
+    Dispatcher verifyDispatcher = this.master.getNatsConnector().getConnection().createDispatcher(message -> {
 
       String msg = new String(message.getData(), StandardCharsets.UTF_8);
       String[] split = msg.split("#");
