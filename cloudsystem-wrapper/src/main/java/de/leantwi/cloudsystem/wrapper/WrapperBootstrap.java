@@ -100,7 +100,7 @@ public class WrapperBootstrap extends Service {
       return;
     }
     if (answer.equalsIgnoreCase("pong")) {
-      loadWrapper();
+      this.loadWrapper();
       return;
     }
     System.out.println("Master is doesn't available!");
@@ -149,11 +149,8 @@ public class WrapperBootstrap extends Service {
     this.loadConfig();
     getLogger().info("Config was loaded");
     this.wrapperSettings.setMaster(Boolean.parseBoolean(this.configAPI.getProperty("wrapper.master")));
-    getLogger().info("A");
     this.wrapperSettings.setPriority(this.wrapperSettings.isMaster() ? 100 : 50);
-    getLogger().info("B");
     this.wrapperSettings.setWeightClass(Integer.parseInt(this.configAPI.getProperty("wrapper.weight-class")));
-    getLogger().info("C");
 
 
     //TODO Update Wrapper id's

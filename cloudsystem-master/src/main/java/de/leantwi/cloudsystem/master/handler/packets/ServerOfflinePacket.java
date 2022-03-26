@@ -1,9 +1,9 @@
 package de.leantwi.cloudsystem.master.handler.packets;
 
+import de.leantwi.cloudsystem.api.gameserver.GameServerData;
 import de.leantwi.cloudsystem.master.MasterBootstrap;
 import de.leantwi.cloudsystem.master.handler.core.Core;
 import de.leantwi.cloudsystem.master.handler.packets.handler.Packet;
-import de.leantwi.cloudsystem.master.handler.server.SessionServer;
 import lombok.Getter;
 
 @Getter
@@ -24,7 +24,7 @@ public class ServerOfflinePacket extends Packet {
     this.master.getServerFactory().removeOnlineList(serverName);
 
     this.master.sendMessage("The server " + serverName + " will be stopped");
-    SessionServer sessionServer = this.core.getSessionServer(serverName);
+    GameServerData sessionServer = this.core.getSessionServer(serverName);
     this.master.getServerFactory().deleteServer(sessionServer);
 
   }

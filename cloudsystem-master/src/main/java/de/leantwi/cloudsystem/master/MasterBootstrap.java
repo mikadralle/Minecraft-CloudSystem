@@ -43,7 +43,7 @@ public class MasterBootstrap extends Service {
     //database & messaging
     private RedisConnector redisConnector;
     private MongoDBConnector mongoDBConnector;
-       private INats natsConnector;
+    private INats natsConnector;
     //dispatcher
     private CloudDispatcher cloudDispatcher;
     private VerifyDispatcher verifyDispatcher;
@@ -134,27 +134,19 @@ public class MasterBootstrap extends Service {
     }
 
     private void init() {
-        this.sendMessage("DDDDD");
-        //this.natsConnector.connect();
         // dispatcher
-        this.cloudDispatcher.listen();
-        this.verifyDispatcher.listen();
-        this.pingDispatcher.listen();
-        //
-        this.sendMessage("LOL");
+        this.cloudDispatcher.listen(); // Wird überarbeitet.
+        this.verifyDispatcher.listen(); // wird überarbeitet.
+        this.pingDispatcher.listen(); // Wird überarbeitet.
+        // connection to redis & mongoDB
         this.redisConnector.connect();
-        this.sendMessage("LOL-2");
         this.mongoDBConnector.connect();
-        this.sendMessage("LOL-3");
+        // fetch the group data from the database
         this.groupHandler.fetch();
-        this.sendMessage("LOL-4");
         this.executorService.execute(new TimerTaskService(this.core));
-        this.sendMessage("LOL-5");
-        this.sendMessage("A");
-        this.cloudAPI.getNatsConnector().publish("info", "master_connected");
-        this.sendMessage("B");
+        this.cloudAPI.getNatsConnector().publish("info", "master_connected"); // Broadcast that the master is now online
+        //TODO: Unnötog, aber leider noch wichtig.
         this.wrapperHandler.addPublicIP("wrapper-1", this.configAPI.getProperty("wrapper.master.address"));
-        this.sendMessage("C");
 
         //this.hetznerCloudAPI = new HetznerCloudAPI(this.configAPI.getProperty("heztner.token"));
 

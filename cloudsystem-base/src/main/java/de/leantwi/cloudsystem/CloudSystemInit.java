@@ -3,6 +3,7 @@ package de.leantwi.cloudsystem;
 import de.leantwi.cloudsystem.api.CloudSystemAPI;
 import de.leantwi.cloudsystem.api.database.INats;
 import de.leantwi.cloudsystem.database.NatsConnector;
+import de.leantwi.cloudsystem.database.RedisConnector;
 import de.leantwi.cloudsystem.event.EventHandler;
 
 import java.util.Properties;
@@ -14,22 +15,26 @@ public class CloudSystemInit {
 
         //SET PROPERTIES
         Properties properties = System.getProperties();
+        //Nats
         properties.setProperty("nats.hostname", "nats.leantwi.de");
         properties.setProperty("nats.token", "C1adWuKDBMR8WXwgTTyLeyKebmVJcmwY");
         properties.setProperty("nats.port", "4222");
+        //Redis
+        properties.setProperty("redis.hostname","redis.leantwi.de");
+        properties.setProperty("redis.password","n2A0c8O707dLErT2BhySfyY59C8dhb");
+        properties.setProperty("redis.port","6379");
+        properties.setProperty("redis.databaseID","7");
 
         //Init EventHandler
         EventHandler eventHandler = new EventHandler();
         CloudSystem.setIEventAPI(eventHandler);
 
-        System.out.println("Host:" + System.getProperty("nats.hostname"));
-        System.out.println("token:" + System.getProperty("nats.token"));
-        System.out.println("port:" + System.getProperty("nats.port"));
-        System.out.println("name:" + System.getProperty("name"));
-
         CloudSystemAPI cloudSystemAPI = new CloudSystemAPI(new NatsConnector(
                 System.getProperty("nats.hostname"),
-                System.getProperty("nats.token"), 4222)
+                System.getProperty("nats.token"), 4222),
+                new RedisConnector(System.getProperty("redis.hostname"),System.getProperty("redis.password"),
+                        Integer.parseInt(System.getProperty("redis.port")),
+                        Integer.parseInt(System.getProperty("redis.databaseID")))
         );
         CloudSystem.setAPI(cloudSystemAPI);
 

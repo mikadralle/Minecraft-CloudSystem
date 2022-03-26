@@ -1,7 +1,7 @@
 package de.leantwi.cloudsystem.master.database.group;
 
+import de.leantwi.cloudsystem.api.gameserver.GameServerData;
 import de.leantwi.cloudsystem.master.database.mongo.DBDocument;
-import de.leantwi.cloudsystem.master.handler.server.SessionServer;
 import de.leantwi.cloudsystem.master.MasterBootstrap;
 
 import java.util.ArrayList;
@@ -19,8 +19,8 @@ public class SubGroupDB extends DBDocument {
   private final GroupDB groupDB;
   private String subGroupName;
   private ServerDB serverDB = new ServerDB();
-  private List<SessionServer> startSessionServerList = new ArrayList<>();
-  private List<SessionServer> sessionServerList = new ArrayList<>();
+  private List<GameServerData> startSessionServerList = new ArrayList<>();
+  private List<GameServerData> sessionServerList = new ArrayList<>();
 
 
   @Override
@@ -40,17 +40,19 @@ public class SubGroupDB extends DBDocument {
     //Master.getInstance().getCore().getGroupDBStringMap().put(this.groupDB, this.subGroupName);
     MasterBootstrap.getInstance().getCore().getSubGroupDBString().put(this.subGroupName, this);
   }
-
+/*
   public Integer getMissServerAmount() {
     return this.serverDB.getMinOnlineAmount() - (this.startSessionServerList.size() + this.sessionServerList.size());
   }
 
-  public List<SessionServer> getAllServerList() {
-    List<SessionServer> list = new ArrayList<>();
+  public List<GameServerData> getAllServerList() {
+    List<GameServerData> list = new ArrayList<>();
     list.addAll(this.startSessionServerList);
     list.addAll(this.sessionServerList);
     return list;
   }
 
 
+
+ */
 }

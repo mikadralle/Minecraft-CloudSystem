@@ -17,9 +17,7 @@ public class EventHandler implements IEventHandler {
 
     @Override
     public void registerListener(Listener listener) {
-        System.out.println("Jo");
         this.eventBus.register(listener);
-        System.out.println("Jo-b");
 
     }
 

@@ -20,6 +20,8 @@ public class InformationDispatcher {
       switch (split[0]) {
         case "master_connected":
           WrapperBootstrap.getInstance().loadWrapper();
+          WrapperBootstrap.getInstance().getLogger().info("§cload Wrapper data. This function was triggered in class InformationDispatcher");
+
           break;
       }
 

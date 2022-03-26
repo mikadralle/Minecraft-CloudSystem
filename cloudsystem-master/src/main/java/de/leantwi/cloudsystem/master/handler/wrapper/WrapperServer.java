@@ -1,6 +1,6 @@
 package de.leantwi.cloudsystem.master.handler.wrapper;
 
-import de.leantwi.cloudsystem.master.handler.server.SessionServer;
+import de.leantwi.cloudsystem.api.gameserver.GameServerData;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -13,7 +13,7 @@ import lombok.Setter;
 public class WrapperServer {
 
   private final List<Integer> portList = new ArrayList<>();
-  private final List<SessionServer> serverSessionList = new ArrayList<>();
+  private final List<GameServerData> serverSessionList = new ArrayList<>();
   //
   private String hostName;
   private int weightClass;
@@ -34,20 +34,20 @@ public class WrapperServer {
     }
   }
 
-  public void addServer(SessionServer sessionServer) {
-    this.serverSessionList.add(sessionServer);
-    this.portList.remove((Integer) sessionServer.getPort());
-    this.weightClass = this.weightClass - sessionServer.getWeightClass();
+  public void addServer(GameServerData gameServerData) {
+    this.serverSessionList.add(gameServerData);
+    this.portList.remove((Integer) gameServerData.getPort());
+    this.weightClass = this.weightClass - gameServerData.getWeightClass();
   }
 
-  public void removeServer(SessionServer sessionServer) {
+  public void removeServer(GameServerData sessionServer) {
     this.serverSessionList.remove(sessionServer);
     this.portList.add(sessionServer.getPort());
     this.weightClass = weightClass + sessionServer.getWeightClass();
   }
 
   public boolean isFreeSlot(String subGroupName) {
-    long count = this.serverSessionList.stream().filter(sessionServer -> sessionServer.getSubGroupDB().getSubGroupName().equalsIgnoreCase(subGroupName)).count();
+    long count = this.serverSessionList.stream().filter(sessionServer -> sessionServer.getSubGroupDB().equalsIgnoreCase(subGroupName)).count();
 
     System.out.println("Wrapper-Count: " + count);
     return count <= 1;
