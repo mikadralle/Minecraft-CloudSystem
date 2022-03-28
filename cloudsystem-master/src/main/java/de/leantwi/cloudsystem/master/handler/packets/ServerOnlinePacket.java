@@ -24,8 +24,6 @@ public class ServerOnlinePacket extends Packet {
 
     GameServerData sessionServer = this.core.getSessionServer(serverName);
     System.out.println("name: " + sessionServer.getSubGroupDB());
-    this.getCore().getGameServerStartQueue().remove(sessionServer);
-    this.getCore().getGameServerList().add(sessionServer);
 
     // add this server in a redis online server list
     this.master.getServerFactory().addOnlineList(serverName);
