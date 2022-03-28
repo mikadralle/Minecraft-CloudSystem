@@ -1,9 +1,10 @@
 package de.leantwi.cloudsystem.api;
 
 import com.mongodb.MongoClient;
-import de.leantwi.cloudsystem.api.database.INats;
-import de.leantwi.cloudsystem.api.database.IRedis;
-import de.leantwi.cloudsystem.api.event.IEventHandler;
+import de.leantwi.cloudsystem.api.database.NatsConnectorAPI;
+import de.leantwi.cloudsystem.api.database.RedisConnectorAPI;
+import de.leantwi.cloudsystem.api.database.mongodb.MongoDBConnectorAPI;
+import de.leantwi.cloudsystem.api.event.EventHandlerAPI;
 import de.leantwi.cloudsystem.api.gameserver.GameServerData;
 import de.leantwi.cloudsystem.api.gameserver.groups.GroupDB;
 import de.leantwi.cloudsystem.api.gameserver.groups.SubGroupDB;
@@ -13,11 +14,13 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 
-public interface ICloudSystem {
+public interface  CloudSystemAPI {
 
-    IEventHandler getEventHandler();
+    EventHandlerAPI getEventHandler();
 
-    INats getNatsConnector();
+    NatsConnectorAPI getNatsConnector();
+    RedisConnectorAPI getRedisConnectorAPI();
+    MongoDBConnectorAPI getMongoDBConnectorAPI();
     JedisPool getRedisPool();
     MongoClient getMongoDBClient();
 
@@ -40,6 +43,7 @@ public interface ICloudSystem {
     GroupDB getGroupByName(String groupName);
     Optional<SubGroupDB> getSubGroupByName(String subGroupName);
 
+    void createGroup(String groupName, String subGroupName);
 
 
 

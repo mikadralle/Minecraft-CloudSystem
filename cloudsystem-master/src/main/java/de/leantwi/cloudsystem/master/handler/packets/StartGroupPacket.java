@@ -1,7 +1,6 @@
 package de.leantwi.cloudsystem.master.handler.packets;
 
 import de.leantwi.cloudsystem.master.MasterBootstrap;
-import de.leantwi.cloudsystem.master.handler.core.Core;
 import de.leantwi.cloudsystem.master.handler.packets.handler.Packet;
 import lombok.Getter;
 
@@ -10,7 +9,6 @@ public class StartGroupPacket extends Packet {
 
   private final MasterBootstrap master = MasterBootstrap.getInstance();
 
-  private final Core core = this.master.getCore();
 
   public StartGroupPacket(String message) {
     super(message);

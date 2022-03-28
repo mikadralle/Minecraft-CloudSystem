@@ -1,6 +1,6 @@
 package de.leantwi.cloudsystem.api.event;
 
-public interface IEventHandler {
+public interface EventHandlerAPI {
 
     void registerListener(Listener listener);
 

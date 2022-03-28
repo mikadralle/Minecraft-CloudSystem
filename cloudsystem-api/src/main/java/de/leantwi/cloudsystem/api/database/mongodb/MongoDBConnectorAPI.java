@@ -3,7 +3,7 @@ package de.leantwi.cloudsystem.api.database.mongodb;
 import com.mongodb.MongoClient;
 import com.mongodb.client.MongoDatabase;
 
-public interface IMongoDB {
+public interface MongoDBConnectorAPI {
 
 
     void connect();

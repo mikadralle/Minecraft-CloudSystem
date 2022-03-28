@@ -9,7 +9,8 @@ public enum GameState {
     LOBBY("lobby"),
     GAME("game"),
     RESTART("restart"),
-    STATIC("static");
+    STATIC("static"),
+    SHUTDOWN("shutdown");
 
     private final String name;
 }

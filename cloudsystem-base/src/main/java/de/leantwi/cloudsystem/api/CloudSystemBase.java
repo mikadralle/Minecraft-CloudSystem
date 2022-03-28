@@ -3,59 +3,70 @@ package de.leantwi.cloudsystem.api;
 import com.google.gson.Gson;
 import com.mongodb.MongoClient;
 import de.leantwi.cloudsystem.CloudSystem;
-import de.leantwi.cloudsystem.api.database.INats;
-import de.leantwi.cloudsystem.api.database.IRedis;
-import de.leantwi.cloudsystem.api.database.mongodb.IMongoDB;
-import de.leantwi.cloudsystem.api.event.IEventHandler;
+import de.leantwi.cloudsystem.api.database.NatsConnectorAPI;
+import de.leantwi.cloudsystem.api.database.RedisConnectorAPI;
+import de.leantwi.cloudsystem.api.database.mongodb.MongoDBConnectorAPI;
+import de.leantwi.cloudsystem.api.event.EventHandlerAPI;
 import de.leantwi.cloudsystem.api.gameserver.GameServerData;
 import de.leantwi.cloudsystem.api.gameserver.groups.GroupDB;
 import de.leantwi.cloudsystem.api.gameserver.groups.SubGroupDB;
 import de.leantwi.cloudsystem.group.GroupHandler;
+import lombok.Getter;
 import redis.clients.jedis.Jedis;
 import redis.clients.jedis.JedisPool;
 
 import java.util.*;
 import java.util.stream.Collectors;
 
-public class CloudSystemAPI implements ICloudSystem {
+public class CloudSystemBase implements CloudSystemAPI {
 
-    private IMongoDB iMongoDB;
-    private INats iNats;
-    private IRedis iRedis;
+    private MongoDBConnectorAPI mongoDBConnectorAPI;
+    private NatsConnectorAPI natsConnectorAPI;
+    private RedisConnectorAPI redisConnectorAPI;
     private final static int DATABASE_ID = 7;
     private final Gson gson = new Gson();
     private final static String REDIS_CLOUD_SERVER_PATH = "cloud:server";
 
     private GroupHandler groupHandler;
 
-    public CloudSystemAPI(INats iNats, IRedis iRedis, IMongoDB iMongoDB) {
-        this.iNats = iNats;
-        this.iRedis = iRedis;
-        this.iMongoDB = iMongoDB;
+    public CloudSystemBase(NatsConnectorAPI natsConnectorAPI, RedisConnectorAPI redisConnectorAPI, MongoDBConnectorAPI mongoDBConnectorAPI) {
+        this.natsConnectorAPI = natsConnectorAPI;
+        this.redisConnectorAPI = redisConnectorAPI;
+        this.mongoDBConnectorAPI = mongoDBConnectorAPI;
 
-        this.iNats.connect();
-        this.iRedis.connect();
-        this.iMongoDB.connect();
+        this.natsConnectorAPI.connect();
+        this.redisConnectorAPI.connect();
+        this.mongoDBConnectorAPI.connect();
 
-        this.groupHandler = new GroupHandler(this.iMongoDB);
+        this.groupHandler = new GroupHandler(this.mongoDBConnectorAPI);
         this.groupHandler.fetch();
 
 
     }
 
     @Override
-    public IEventHandler getEventHandler() {
+    public EventHandlerAPI getEventHandler() {
         return CloudSystem.getEventAPI();
     }
 
     @Override
-    public INats getNatsConnector() {
-        return this.iNats;
+    public NatsConnectorAPI getNatsConnector() {
+        return this.natsConnectorAPI;
+    }
+
+    @Override
+    public RedisConnectorAPI getRedisConnectorAPI() {
+        return this.redisConnectorAPI;
+    }
+
+    @Override
+    public MongoDBConnectorAPI getMongoDBConnectorAPI() {
+        return this.mongoDBConnectorAPI;
     }
 
     @Override
     public JedisPool getRedisPool() {
-        return iRedis.getJedisPool();
+        return redisConnectorAPI.getJedisPool();
     }
 
     @Override
@@ -126,12 +137,20 @@ public class CloudSystemAPI implements ICloudSystem {
 
     @Override
     public List<SubGroupDB> getAllSubGroups() {
-        return null;
+
+        List<SubGroupDB> allList = new ArrayList<>();
+
+        for (GroupDB groupDB : this.groupHandler.getGroups().values()) {
+            allList.addAll(groupDB.getSubGroupDBList());
+        }
+
+        return allList;
     }
 
     @Override
     public List<SubGroupDB> getAllSubGroupByGroupName(String groupName) {
-        return null;
+        return this.groupHandler.getGroups().get(groupName.toLowerCase()).getSubGroupDBList();
+
     }
 
     @Override
@@ -156,6 +175,11 @@ public class CloudSystemAPI implements ICloudSystem {
             }
         }
         return null;
+    }
+
+    @Override
+    public void createGroup(String groupName, String subGroupName) {
+        this.groupHandler.createGroup(groupName, subGroupName);
     }
 
 }

@@ -16,7 +16,7 @@ public class DatabaseHandler {
 
 
   public MongoDatabase getMongoDatabase() {
-    return MasterBootstrap.getInstance().getMongoDBConnector().getMongoDatabase();
+    return MasterBootstrap.getInstance().getCloudSystemAPI().getMongoDBConnectorAPI().getMongoDatabase();
   }
 
   public MongoCollection<Document> getCollection(String name) {
@@ -108,7 +108,7 @@ public class DatabaseHandler {
   }
 
   public void update(String database, Document query, Document update, String collection) {
-    MasterBootstrap.getInstance().getMongoDBConnector().getMongoClient().getDatabase(database).getCollection(collection).updateOne(query, update);
+    MasterBootstrap.getInstance().getCloudSystemAPI().getMongoDBClient().getDatabase(database).getCollection(collection).updateOne(query, update);
   }
 
   public void update(String key, Object value, String operator, String field, Object into, String collection) {
@@ -121,7 +121,7 @@ public class DatabaseHandler {
   }
 
   public boolean collectionExists(final String database, final String collectionName) {
-    return MasterBootstrap.getInstance().getMongoDBConnector().getMongoClient().getDatabase(database).listCollectionNames()
+    return MasterBootstrap.getInstance().getCloudSystemAPI().getMongoDBClient().getDatabase(database).listCollectionNames()
         .into(new ArrayList<>()).contains(collectionName);
   }
 

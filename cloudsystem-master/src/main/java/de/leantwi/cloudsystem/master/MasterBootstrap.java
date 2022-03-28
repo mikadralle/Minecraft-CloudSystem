@@ -1,27 +1,24 @@
 package de.leantwi.cloudsystem.master;
 
 import de.leantwi.cloudsystem.CloudSystem;
-import de.leantwi.cloudsystem.api.ICloudSystem;
-import de.leantwi.cloudsystem.api.database.INats;
+import de.leantwi.cloudsystem.api.CloudSystemAPI;
+import de.leantwi.cloudsystem.api.database.NatsConnectorAPI;
 import de.leantwi.cloudsystem.master.api.config.IniFile;
 import de.leantwi.cloudsystem.master.command.HelpCommand;
 import de.leantwi.cloudsystem.master.command.StartCommand;
 import de.leantwi.cloudsystem.master.command.StopCommand;
 import de.leantwi.cloudsystem.master.database.mongo.DatabaseHandler;
-import de.leantwi.cloudsystem.master.database.mongo.MongoDBConnector;
-import de.leantwi.cloudsystem.master.database.redis.RedisConnector;
 import de.leantwi.cloudsystem.master.events.MessageListener;
 import de.leantwi.cloudsystem.master.events.PlayerChangeServerListener;
 import de.leantwi.cloudsystem.master.events.PlayerMessageListener;
 import de.leantwi.cloudsystem.master.handler.bungeecord.BungeeHandler;
-import de.leantwi.cloudsystem.master.handler.core.Core;
-import de.leantwi.cloudsystem.master.handler.group.GroupHandler;
 import de.leantwi.cloudsystem.master.handler.hoster.HosterCloud;
 import de.leantwi.cloudsystem.master.handler.message.CloudDispatcher;
 import de.leantwi.cloudsystem.master.handler.message.PingDispatcher;
 import de.leantwi.cloudsystem.master.handler.message.VerifyDispatcher;
 import de.leantwi.cloudsystem.master.handler.packets.handler.PacketHandler;
 import de.leantwi.cloudsystem.master.handler.server.ServerFactory;
+import de.leantwi.cloudsystem.master.handler.service.ServerOnlineAmountService;
 import de.leantwi.cloudsystem.master.handler.service.TimerTaskService;
 import de.leantwi.cloudsystem.master.handler.wrapper.WrapperHandler;
 import de.leantwi.service.Service;
@@ -41,9 +38,7 @@ public class MasterBootstrap extends Service {
     //config
     private IniFile configAPI;
     //database & messaging
-    private RedisConnector redisConnector;
-    private MongoDBConnector mongoDBConnector;
-    private INats natsConnector;
+    private NatsConnectorAPI natsConnector;
     //dispatcher
     private CloudDispatcher cloudDispatcher;
     private VerifyDispatcher verifyDispatcher;
@@ -52,16 +47,15 @@ public class MasterBootstrap extends Service {
     private DatabaseHandler databaseHandler;
 
     //handler's
-    private GroupHandler groupHandler;
     private WrapperHandler wrapperHandler;
     //factory
     private ServerFactory serverFactory;
     private BungeeHandler bungeeHandler;
     //
-    private Core core;
+   // private Core core;
     private PacketHandler packetHandler;
 
-    private ICloudSystem cloudAPI = CloudSystem.getAPI();
+    private CloudSystemAPI cloudSystemAPI = CloudSystem.getAPI();
     //
     //private HetznerCloudAPI hetznerCloudAPI;
     private HosterCloud hosterCloud;
@@ -99,9 +93,7 @@ public class MasterBootstrap extends Service {
 
  */
         this.sleep(100);
-        this.cloudAPI.getNatsConnector().publish("cloud", "stop#" + "master");
-        this.redisConnector.disconnect();
-        this.mongoDBConnector.disconnect();
+        this.cloudSystemAPI.getNatsConnector().publish("cloud", "stop#" + "master");
         sleep(100);
         sendMessage("§acloud is stopping.");
 
@@ -115,9 +107,7 @@ public class MasterBootstrap extends Service {
         this.configAPI = new IniFile("config.yml");
         this.loadConfig();
         // connections
-        this.natsConnector = this.cloudAPI.getNatsConnector();
-        this.redisConnector = new RedisConnector();
-        this.mongoDBConnector = new MongoDBConnector();
+        this.natsConnector = this.cloudSystemAPI.getNatsConnector();
         // dispatcher
         this.cloudDispatcher = new CloudDispatcher();
         this.verifyDispatcher = new VerifyDispatcher();
@@ -125,9 +115,8 @@ public class MasterBootstrap extends Service {
         //
         this.databaseHandler = new DatabaseHandler();
         this.packetHandler = new PacketHandler();
-        this.groupHandler = new GroupHandler();
         this.wrapperHandler = new WrapperHandler();
-        this.core = new Core();
+       // this.core = new Core();
         this.serverFactory = new ServerFactory();
         this.bungeeHandler = new BungeeHandler();
         this.hosterCloud = new HosterCloud();
@@ -138,13 +127,9 @@ public class MasterBootstrap extends Service {
         this.cloudDispatcher.listen(); // Wird überarbeitet.
         this.verifyDispatcher.listen(); // wird überarbeitet.
         this.pingDispatcher.listen(); // Wird überarbeitet.
-        // connection to redis & mongoDB
-        this.redisConnector.connect();
-        this.mongoDBConnector.connect();
-        // fetch the group data from the database
-        this.groupHandler.fetch();
-        this.executorService.execute(new TimerTaskService(this.core));
-        this.cloudAPI.getNatsConnector().publish("info", "master_connected"); // Broadcast that the master is now online
+
+        this.executorService.execute(new TimerTaskService());
+        this.cloudSystemAPI.getNatsConnector().publish("info", "master_connected"); // Broadcast that the master is now online
         //TODO: Unnötog, aber leider noch wichtig.
         this.wrapperHandler.addPublicIP("wrapper-1", this.configAPI.getProperty("wrapper.master.address"));
 
@@ -194,6 +179,10 @@ public class MasterBootstrap extends Service {
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
+    }
+
+    public void startService() {
+        this.executorService.execute(new ServerOnlineAmountService());
     }
 
 }

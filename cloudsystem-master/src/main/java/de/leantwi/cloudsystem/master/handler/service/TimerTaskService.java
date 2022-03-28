@@ -1,6 +1,5 @@
 package de.leantwi.cloudsystem.master.handler.service;
 
-import de.leantwi.cloudsystem.master.handler.core.Core;
 import de.leantwi.cloudsystem.master.handler.wrapper.WrapperHandler;
 import de.leantwi.cloudsystem.master.MasterBootstrap;
 
@@ -13,7 +12,6 @@ public class TimerTaskService implements Runnable {
 
   private final MasterBootstrap master = MasterBootstrap.getInstance();
   private final WrapperHandler wrapperHandler = this.master.getWrapperHandler();
-  private final Core core;
 
   @Override
   public void run() {
@@ -23,7 +21,7 @@ public class TimerTaskService implements Runnable {
       public void run() {
 
         if (wrapperHandler.isWrapperOnline()) {
-          core.startService();
+          master.startService();
         }
 
       }

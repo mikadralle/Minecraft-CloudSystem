@@ -5,7 +5,7 @@ import io.nats.client.Connection;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeoutException;
 
-public interface INats {
+public interface NatsConnectorAPI {
 
     void connect();
 

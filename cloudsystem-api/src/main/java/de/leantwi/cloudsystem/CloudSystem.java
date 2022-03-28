@@ -1,28 +1,26 @@
 package de.leantwi.cloudsystem;
 
-import de.leantwi.cloudsystem.api.ICloudSystem;
-import de.leantwi.cloudsystem.api.event.IEventHandler;
-import lombok.Getter;
-import lombok.Setter;
+import de.leantwi.cloudsystem.api.CloudSystemAPI;
+import de.leantwi.cloudsystem.api.event.EventHandlerAPI;
 
 public class CloudSystem {
 
-    private static ICloudSystem api;
-    private static IEventHandler iEventHandler;
+    private static CloudSystemAPI api;
+    private static EventHandlerAPI iEventHandler;
 
-    public static ICloudSystem getAPI() {
+    public static CloudSystemAPI getAPI() {
         return api;
     }
 
-    public static IEventHandler getEventAPI() {
+    public static EventHandlerAPI getEventAPI() {
         return iEventHandler;
     }
 
-    public static void setAPI(ICloudSystem cloudSystem) {
+    public static void setAPI(CloudSystemAPI cloudSystem) {
         api = cloudSystem;
     }
 
-    public static void setIEventAPI(IEventHandler eventAPI) {
+    public static void setIEventAPI(EventHandlerAPI eventAPI) {
         iEventHandler = eventAPI;
     }
 

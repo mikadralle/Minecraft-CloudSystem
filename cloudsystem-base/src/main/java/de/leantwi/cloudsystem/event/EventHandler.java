@@ -2,11 +2,11 @@ package de.leantwi.cloudsystem.event;
 
 import com.google.gson.Gson;
 import de.leantwi.cloudsystem.api.event.Event;
-import de.leantwi.cloudsystem.api.event.IEventHandler;
+import de.leantwi.cloudsystem.api.event.EventHandlerAPI;
 import de.leantwi.cloudsystem.api.event.Listener;
 
 
-public class EventHandler implements IEventHandler {
+public class EventHandler implements EventHandlerAPI {
 
     private final EventBus eventBus;
     private final Gson gson = new Gson();

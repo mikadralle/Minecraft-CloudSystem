@@ -1,18 +1,17 @@
 package de.leantwi.cloudsystem.database;
 
-import de.leantwi.cloudsystem.api.database.INats;
+import de.leantwi.cloudsystem.api.database.NatsConnectorAPI;
 import io.nats.client.Connection;
 import io.nats.client.Message;
 import io.nats.client.Nats;
 import io.nats.client.Options;
-import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
 import java.nio.charset.StandardCharsets;
 import java.util.concurrent.*;
 
 @RequiredArgsConstructor
-public class NatsConnector implements INats {
+public class NatsConnector implements NatsConnectorAPI {
 
     private final ExecutorService executorService = Executors.newCachedThreadPool();
     public Connection connection;

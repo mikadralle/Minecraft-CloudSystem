@@ -1,6 +1,6 @@
 package de.leantwi.cloudsystem.group;
 
-import de.leantwi.cloudsystem.api.database.mongodb.IMongoDB;
+import de.leantwi.cloudsystem.api.database.mongodb.MongoDBConnectorAPI;
 import de.leantwi.cloudsystem.api.gameserver.groups.GroupDB;
 import de.leantwi.cloudsystem.api.gameserver.groups.SubGroupDB;
 import de.leantwi.cloudsystem.api.gameserver.server.ServerDB;
@@ -17,7 +17,7 @@ import java.util.Map;
 @RequiredArgsConstructor
 public class GroupHandler {
 
-    final IMongoDB mongoDB;
+    final MongoDBConnectorAPI mongoDB;
     private Map<String, GroupDB> groups = new HashMap<>();
 
     public void fetch() {

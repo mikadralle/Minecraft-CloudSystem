@@ -1,6 +1,7 @@
 package de.leantwi.cloudsystem;
 
 import de.leantwi.cloudsystem.api.CloudSystemAPI;
+import de.leantwi.cloudsystem.api.CloudSystemBase;
 import de.leantwi.cloudsystem.database.MongoDBConnector;
 import de.leantwi.cloudsystem.database.NatsConnector;
 import de.leantwi.cloudsystem.database.RedisConnector;
@@ -35,7 +36,7 @@ public class CloudSystemInit {
         EventHandler eventHandler = new EventHandler();
         CloudSystem.setIEventAPI(eventHandler);
 
-        CloudSystemAPI cloudSystemAPI = new CloudSystemAPI(new NatsConnector(
+        CloudSystemAPI cloudSystemAPI = new CloudSystemBase(new NatsConnector(
                 System.getProperty("nats.hostname"),
                 System.getProperty("nats.token"), 4222),
                 new RedisConnector(System.getProperty("redis.hostname"),System.getProperty("redis.password"),

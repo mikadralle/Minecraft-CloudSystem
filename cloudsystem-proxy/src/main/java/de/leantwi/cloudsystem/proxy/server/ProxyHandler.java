@@ -1,8 +1,8 @@
 package de.leantwi.cloudsystem.proxy.server;
 
+import de.leantwi.cloudsystem.CloudSystem;
+import de.leantwi.cloudsystem.api.CloudSystemAPI;
 import de.leantwi.cloudsystem.proxy.ProxyConnector;
-import de.leantwi.cloudsystem.proxy.database.NatsConnector;
-import de.leantwi.cloudsystem.proxy.database.RedisConnector;
 import lombok.Getter;
 import net.md_5.bungee.api.ProxyServer;
 import net.md_5.bungee.api.config.ServerInfo;
@@ -15,25 +15,24 @@ import java.util.concurrent.TimeoutException;
 
 public class ProxyHandler {
     private final ProxyConnector proxyConnector = ProxyConnector.getInstance();
-    private final RedisConnector redisConnector = this.proxyConnector.getRedisConnector();
-    private final NatsConnector natsConnector =  this.proxyConnector.getNatsConnector();
     private final String prefix = ProxyConnector.getInstance().getCloudPrefix();
+    private final CloudSystemAPI cloudSystemAPI = CloudSystem.getAPI();
     @Getter
     private String bungeeName = "bungeecord-99";
 
     public void loginProxyServer() {
         try {
-            this.bungeeName = this.natsConnector.request("verify", "bungeecord_register#");
+            this.bungeeName = this.cloudSystemAPI.getNatsConnector().request("verify", "bungeecord_register#");
         } catch (InterruptedException | ExecutionException | TimeoutException e) {
             e.printStackTrace();
         }
         this.addBungeeCord(this.bungeeName);
-        this.loadOnlineServer();
+       // this.loadOnlineServer();
     }
 
     public void logoutProxyServer() {
         removeBungeeCord();
-        this.natsConnector.publishMessage("cloud", "logout_bungeecord#" + this.bungeeName);
+        this.cloudSystemAPI.getNatsConnector().publish("cloud", "logout_bungeecord#" + this.bungeeName);
         ProxyServer.getInstance().getPlayers().forEach(players -> players.disconnect(this.prefix + "§cProxy will be restarted!"));
     }
 
@@ -55,23 +54,16 @@ public class ProxyHandler {
         ProxyServer.getInstance().getConsole().sendMessage(this.prefix + "The server " + serverName + " §7is now §coffline§7.");
     }
 
-    private void loadOnlineServer() {
-        try (Jedis jedis = this.redisConnector.getJedisPool().getResource()) {
-            jedis.select(7);
-            final Set<String> list = jedis.keys("cloud:sessions:serverlist:*");
-            list.forEach(key -> ProxyConnector.getInstance().getBungeeConnector().createServer(key.split(":")[3]));
-        }
-    }
 
     private void addBungeeCord(String bungeeName) {
-        try (Jedis jedis = this.redisConnector.getJedisPool().getResource()) {
+        try (Jedis jedis = this.cloudSystemAPI.getRedisPool().getResource()) {
             jedis.select(3);
             jedis.hset("multiproxy.info", bungeeName, String.valueOf(System.currentTimeMillis()));
         }
     }
 
     private void removeBungeeCord() {
-        try (Jedis jedis = this.redisConnector.getJedisPool().getResource()) {
+        try (Jedis jedis = this.cloudSystemAPI.getRedisPool().getResource()) {
             jedis.select(3);
             jedis.hdel("multiproxy.info", getBungeeName());
         }
@@ -79,7 +71,7 @@ public class ProxyHandler {
 
     public Set<String> getBungeeCordList() {
 
-        try (Jedis jedis = this.redisConnector.getJedisPool().getResource()) {
+        try (Jedis jedis = this.cloudSystemAPI.getRedisPool().getResource()) {
             jedis.select(3);
             return jedis.hgetAll("multiproxy.info").keySet();
         }
@@ -87,11 +79,11 @@ public class ProxyHandler {
     }
 
     public void shutdownBungeeCord(String bungeeName) {
-        natsConnector.publishMessage("backend", "stop#" + bungeeName.toLowerCase());
+        this.cloudSystemAPI.getNatsConnector().publish("backend", "stop#" + bungeeName.toLowerCase());
     }
 
     public void shutdownAllBungeeCord() {
-        natsConnector.publishMessage("backend", "stop_all");
+        this.cloudSystemAPI.getNatsConnector().publish("backend", "stop_all");
     }
 
 

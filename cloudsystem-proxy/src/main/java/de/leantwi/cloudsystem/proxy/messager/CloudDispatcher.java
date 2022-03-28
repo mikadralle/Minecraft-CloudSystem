@@ -1,7 +1,8 @@
 package de.leantwi.cloudsystem.proxy.messager;
 
+import de.leantwi.cloudsystem.CloudSystem;
+import de.leantwi.cloudsystem.api.CloudSystemAPI;
 import de.leantwi.cloudsystem.proxy.ProxyConnector;
-import de.leantwi.cloudsystem.proxy.database.NatsConnector;
 import de.leantwi.cloudsystem.proxy.server.BungeeConnector;
 import io.nats.client.Dispatcher;
 import net.md_5.bungee.api.ProxyServer;
@@ -10,13 +11,12 @@ import java.nio.charset.StandardCharsets;
 
 public class CloudDispatcher {
 
+    private final CloudSystemAPI cloudSystemAPI = CloudSystem.getAPI();
 
-
-    private final NatsConnector natsConnector = ProxyConnector.getInstance().getNatsConnector();
 
     public void listen() {
 
-        Dispatcher cloudDispatcher = this.natsConnector.getNats().createDispatcher(message -> {
+        Dispatcher cloudDispatcher = this.cloudSystemAPI.getNatsConnector().getConnection().createDispatcher(message -> {
 
             final String msg = new String(message.getData(), StandardCharsets.UTF_8);
             final String[] split = msg.split("#");
@@ -25,13 +25,6 @@ public class CloudDispatcher {
 
             switch (split[0]) {
 
-                case "online":
-                    bungeeConnector.createServer(serverName);
-                    break;
-
-                case "offline":
-                    bungeeConnector.removeServer(serverName);
-                    break;
                 case "switch_player_server":
                     //      this.multiProxy.playerSwitchServer(UUID.fromString(split[1]), split[2], split[3]);
                     break;

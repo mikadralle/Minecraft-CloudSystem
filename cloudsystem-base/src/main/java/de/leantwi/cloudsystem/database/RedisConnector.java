@@ -1,6 +1,6 @@
 package de.leantwi.cloudsystem.database;
 
-import de.leantwi.cloudsystem.api.database.IRedis;
+import de.leantwi.cloudsystem.api.database.RedisConnectorAPI;
 import lombok.RequiredArgsConstructor;
 import redis.clients.jedis.JedisPool;
 import redis.clients.jedis.JedisPoolConfig;
@@ -11,7 +11,7 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.FutureTask;
 
 @RequiredArgsConstructor
-public class RedisConnector implements IRedis {
+public class RedisConnector implements RedisConnectorAPI {
 
     private final ExecutorService executorService = Executors.newCachedThreadPool();
     private JedisPool jedisPool;

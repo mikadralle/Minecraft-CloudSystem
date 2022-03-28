@@ -5,7 +5,7 @@ import com.mongodb.MongoClientOptions;
 import com.mongodb.MongoCredential;
 import com.mongodb.ServerAddress;
 import com.mongodb.client.MongoDatabase;
-import de.leantwi.cloudsystem.api.database.mongodb.IMongoDB;
+import de.leantwi.cloudsystem.api.database.mongodb.MongoDBConnectorAPI;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
@@ -14,7 +14,7 @@ import java.util.logging.Logger;
 
 @Getter
 @RequiredArgsConstructor
-public class MongoDBConnector implements IMongoDB {
+public class MongoDBConnector implements MongoDBConnectorAPI {
 
     private MongoClient mongoClient;
     private MongoDatabase mongoDatabase;
