@@ -178,6 +178,15 @@ public class CloudSystemBase implements CloudSystemAPI {
     }
 
     @Override
+    public boolean existsGameServerByServerName(String serverName) {
+
+        try(Jedis jedis = this.getRedisPool().getResource()){
+            jedis.select(DATABASE_ID);
+            return jedis.hexists(REDIS_CLOUD_SERVER_PATH,serverName);
+        }
+    }
+
+    @Override
     public void createGroup(String groupName, String subGroupName) {
         this.groupHandler.createGroup(groupName, subGroupName);
     }

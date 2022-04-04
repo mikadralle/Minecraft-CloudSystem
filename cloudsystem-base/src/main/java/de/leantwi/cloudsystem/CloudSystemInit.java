@@ -30,7 +30,7 @@ public class CloudSystemInit {
         properties.setProperty("mongoDB.authDB","admin");
         properties.setProperty("mongoDB.defaultDB","cloud");
         properties.setProperty("mongoDB.user","admin");
-        properties.setProperty("mongoDB.password","nRz7zQLxkjqRhrFBNNNgNEBLHYYEdzgH53eQ847WwbThSYCNQTLm6Ydr6cvWPH6");
+        properties.setProperty("mongoDB.password","YnRz7zQLxkjqRhrFBNNNgNEBLHYYEdzgH53eQ847WwbThSYCNQTLm6Ydr6cvWPH6");
 
         //Init EventHandler
         EventHandler eventHandler = new EventHandler();
@@ -42,7 +42,11 @@ public class CloudSystemInit {
                 new RedisConnector(System.getProperty("redis.hostname"),System.getProperty("redis.password"),
                         Integer.parseInt(System.getProperty("redis.port")),
                         Integer.parseInt(System.getProperty("redis.databaseID"))),
-                new MongoDBConnector(System.getProperty("mongoDB.hostname"),System.getProperty("mongoDB.authDB"),System.getProperty("mongoDB.defaultDB"),System.getProperty("mongoDB.user"),System.getProperty("mongoDB.password"))
+                new MongoDBConnector(System.getProperty("mongoDB.hostname"),
+                        System.getProperty("mongoDB.authDB"),
+                        System.getProperty("mongoDB.defaultDB"),
+                        System.getProperty("mongoDB.user"),
+                        System.getProperty("mongoDB.password"))
         );
         CloudSystem.setAPI(cloudSystemAPI);
 

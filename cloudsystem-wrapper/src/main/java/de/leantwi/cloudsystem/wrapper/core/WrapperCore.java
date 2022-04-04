@@ -1,47 +1,46 @@
 package de.leantwi.cloudsystem.wrapper.core;
 
+import de.leantwi.cloudsystem.CloudSystem;
+import de.leantwi.cloudsystem.api.CloudSystemAPI;
+import de.leantwi.cloudsystem.api.gameserver.GameServerData;
 import de.leantwi.cloudsystem.wrapper.WrapperBootstrap;
-import de.leantwi.cloudsystem.wrapper.core.server.SessionServer;
+
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import lombok.Getter;
 
 public class WrapperCore {
 
+  private final CloudSystemAPI cloudSystemAPI = CloudSystem.getAPI();
   public final WrapperBootstrap wrapper = WrapperBootstrap.getInstance();
-  public final ConcurrentHashMap<String, SessionServer> sessionServerMap = new ConcurrentHashMap<>();
+  public Queue<GameServerData> gameServerDataQueue = new LinkedList<>();
   //
   private final FolderUtils folderUtils = this.wrapper.getFolderUtils();
   @Getter
-  private final Map<String, SessionServer> onlineSession = new HashMap<>();
   private Process process;
 
   public void startServer() {
 
-    if (this.sessionServerMap.isEmpty()) {
+    if(this.gameServerDataQueue.isEmpty()) {
       return;
     }
-    List<String> list = new ArrayList<>(this.sessionServerMap.keySet());
-    start(this.sessionServerMap.get(list.get(0)));
-    this.sessionServerMap.remove(list.get(0));
 
+    this.start(gameServerDataQueue.poll());
   }
 
-  private void start(SessionServer sessionServer) {
+  private void start(GameServerData gameServerData) {
 
     try {
 
-      this.folderUtils.createTemp(sessionServer);
+      this.folderUtils.createTemp(gameServerData);
       Thread.sleep(500);
 
-      this.process = new ProcessBuilder("screen", "-AmdS", sessionServer.getServerName().toLowerCase(), "java", "-Xms" + "512" + "M", "-Xmx" + "512" + "M", "-jar", "spigot.jar")
-          .directory(new File("live/" + sessionServer.getGroupName() + "/" + sessionServer.getSubGroupName() + "/" + sessionServer.getServerName() + "/")).inheritIO().start();
-      WrapperBootstrap.getInstance().getLogger().info("§aServer §e" + sessionServer.getServerName() + "§a will be started.");
+      final String serverName = gameServerData.getServerName();
+      this.process = new ProcessBuilder("screen", "-AmdS", serverName.toLowerCase(), "java", "-Xms" + "512" + "M", "-Xmx" + "512" + "M", "-jar", "spigot.jar")
+          .directory(new File("live/" + gameServerData.getGroupDB() + "/" + gameServerData.getSubGroupDB() + "/" + serverName + "/")).inheritIO().start();
+      WrapperBootstrap.getInstance().getLogger().info("§aServer §e" + serverName + "§a will be started.");
 
 
     } catch (IOException | InterruptedException e) {
@@ -50,16 +49,10 @@ public class WrapperCore {
   }
 
   public void addWrapperList(String serverName) {
-    SessionServer sessionServer = new SessionServer();
-    sessionServer.fetch(serverName);
-    this.sessionServerMap.put(serverName, sessionServer);
-    this.onlineSession.put(serverName, sessionServer);
+    this.gameServerDataQueue.add(this.cloudSystemAPI.getGameServerByServerName(serverName));
   }
 
 
-  public boolean existsServer(String serverName) {
-    return this.onlineSession.containsKey(serverName);
-  }
 
 
 }

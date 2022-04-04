@@ -1,7 +1,8 @@
 package de.leantwi.cloudsystem.wrapper.database.message;
 
+import de.leantwi.cloudsystem.CloudSystem;
+import de.leantwi.cloudsystem.api.CloudSystemAPI;
 import de.leantwi.cloudsystem.wrapper.WrapperBootstrap;
-import de.leantwi.cloudsystem.wrapper.database.nats.NatsConnector;
 import io.nats.client.Dispatcher;
 
 import java.nio.charset.StandardCharsets;
@@ -9,11 +10,10 @@ import java.nio.charset.StandardCharsets;
 public class CloudDispatcher {
 
     private final WrapperBootstrap wrapper = WrapperBootstrap.getInstance();
-    private final NatsConnector natsConnector = this.wrapper.getNatsConnector();
-
+    private final CloudSystemAPI cloudSystemAPI = CloudSystem.getAPI();
     public void listen() {
 
-        Dispatcher cloudDispatcher = natsConnector.getNatsConnection().createDispatcher(message -> {
+        Dispatcher cloudDispatcher = this.cloudSystemAPI.getNatsConnector().getConnection().createDispatcher(message -> {
 
             final String msg = new String(message.getData(), StandardCharsets.UTF_8);
             final String[] split = msg.split("#");

@@ -1,18 +1,19 @@
 package de.leantwi.cloudsystem.wrapper.database.message;
 
+import de.leantwi.cloudsystem.CloudSystem;
+import de.leantwi.cloudsystem.api.CloudSystemAPI;
 import de.leantwi.cloudsystem.wrapper.WrapperBootstrap;
-import de.leantwi.cloudsystem.wrapper.database.nats.NatsConnector;
 import io.nats.client.Dispatcher;
 import java.nio.charset.StandardCharsets;
 
 public class InformationDispatcher {
 
 
-  private final NatsConnector natsConnector = WrapperBootstrap.getInstance().getNatsConnector();
+  private final CloudSystemAPI cloudSystemAPI = CloudSystem.getAPI();
 
   public void listen() {
 
-    Dispatcher infoDispatcher = natsConnector.getNatsConnection().createDispatcher(message -> {
+    Dispatcher infoDispatcher = this.cloudSystemAPI.getNatsConnector().getConnection().createDispatcher(message -> {
 
       String msg = new String(message.getData(), StandardCharsets.UTF_8);
       String[] split = msg.split("#");

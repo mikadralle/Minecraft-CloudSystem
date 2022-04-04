@@ -1,6 +1,6 @@
 package de.leantwi.cloudsystem.wrapper.core;
 
-import de.leantwi.cloudsystem.wrapper.core.server.SessionServer;
+import de.leantwi.cloudsystem.api.gameserver.GameServerData;
 import de.leantwi.cloudsystem.wrapper.utils.config.ConfigAPI;
 import de.leantwi.cloudsystem.wrapper.utils.config.IniFile;
 import java.io.File;
@@ -14,7 +14,7 @@ public class FolderUtils {
   private final File DEFAULT_PLUGINS = new File("default/");
 
   public void load() {
-    deleteFolder(new File("live/"));
+    this.deleteFolder(new File("live/"));
 
     if (!existsFolder(tempPath)) {
       createFolder(tempPath);
@@ -30,11 +30,11 @@ public class FolderUtils {
 
   }
 
-  public void createTemp(SessionServer sessionServer) {
+  public void createTemp(GameServerData gameServerData) {
 
-    final String groupName = sessionServer.getGroupName();
-    final String subGroupName = sessionServer.getSubGroupName();
-    final String serverName = sessionServer.getServerName();
+    final String groupName = gameServerData.getGroupDB();
+    final String subGroupName = gameServerData.getSubGroupDB();
+    final String serverName = gameServerData.getServerName();
 
     if (!existsFolder(tempPath + groupName)) {
       createFolder(tempPath + groupName);
@@ -56,15 +56,15 @@ public class FolderUtils {
       e.printStackTrace();
     }
 
-    setSpigotYML(sessionServer);
-    setBukkitYML(sessionServer);
-    setServerProperties(sessionServer);
-    setCloudConfig(sessionServer);
+    setSpigotYML(gameServerData);
+    setBukkitYML(gameServerData);
+    setServerProperties(gameServerData);
+    setCloudConfig(gameServerData);
   }
 
 
-  public void setSpigotYML(SessionServer sessionServer) {
-    ConfigAPI configAPI = new ConfigAPI("live/" + sessionServer.getGroupName() + "/" + sessionServer.getSubGroupName() + "/" + sessionServer.getServerName(), "spigot.yml", ": ");
+  public void setSpigotYML(GameServerData gameServerData) {
+    ConfigAPI configAPI = new ConfigAPI("live/" + gameServerData.getGroupDB() + "/" + gameServerData.getSubGroupDB() + "/" + gameServerData.getServerName(), "spigot.yml", ": ");
     configAPI.delete();
     configAPI.createFile();
     configAPI.set("settings.bungeecord", true);
@@ -73,21 +73,21 @@ public class FolderUtils {
 
   }
 
-  public void setBukkitYML(SessionServer sessionServer) {
-    ConfigAPI configAPI = new ConfigAPI("live/" + sessionServer.getGroupName() + "/" + sessionServer.getSubGroupName() + "/" + sessionServer.getServerName(), "bukkit.yml", ": ");
+  public void setBukkitYML(GameServerData gameServerData) {
+    ConfigAPI configAPI = new ConfigAPI("live/" + gameServerData.getGroupDB() + "/" + gameServerData.getSubGroupDB() + "/" + gameServerData.getServerName(), "bukkit.yml", ": ");
     configAPI.delete();
     configAPI.createFile();
     configAPI.set("settings.allow-end", false);
     configAPI.set("settings.connection-throttle", -1);
   }
 
-  public void setServerProperties(SessionServer sessionServer) {
-    ConfigAPI configAPI = new ConfigAPI("live/" + sessionServer.getGroupName() + "/" + sessionServer.getSubGroupName() + "/" + sessionServer.getServerName(), "server.properties", "=");
+  public void setServerProperties(GameServerData gameServerData) {
+    ConfigAPI configAPI = new ConfigAPI("live/" + gameServerData.getGroupDB() + "/" + gameServerData.getSubGroupDB() + "/" + gameServerData.getServerName(), "server.properties", "=");
     configAPI.delete();
     configAPI.createFile();
-    configAPI.set("server-port", sessionServer.getPort());
+    configAPI.set("server-port", gameServerData.getPort());
     configAPI.set("announce-player-achievements", false);
-    configAPI.set("max-players", sessionServer.getSlots());
+    configAPI.set("max-players", gameServerData.getMaxOnlinePlayers());
     configAPI.set("spawn-protection", 0);
     configAPI.set("view-distance", 4);
     configAPI.set("online-mode", false);
@@ -100,13 +100,13 @@ public class FolderUtils {
     configAPI.set("spawn-npcs", false);
     configAPI.set("spawn-animals", false);
     configAPI.set("white-list", false);
-    configAPI.set("server-name", sessionServer.getServerName());
+    configAPI.set("server-name", gameServerData.getServerName());
   }
 
-  public void setCloudConfig(SessionServer sessionServer) {
-    IniFile iniFile = new IniFile("live/" + sessionServer.getGroupName() + "/" + sessionServer.getSubGroupName() + "/" + sessionServer.getServerName() + "/cloud.ini");
+  public void setCloudConfig(GameServerData gameServerData) {
+    IniFile iniFile = new IniFile("live/" + gameServerData.getGroupDB() + "/" + gameServerData.getSubGroupDB() + "/" + gameServerData.getServerName() + "/cloud.ini");
     if (iniFile.isEmpty()) {
-      iniFile.setProperty("serverName", sessionServer.getServerName());
+      iniFile.setProperty("serverName", gameServerData.getServerName());
       iniFile.saveToFile();
     }
   }
@@ -138,7 +138,4 @@ public class FolderUtils {
     folder.delete();
   }
 
-  public String getPath(SessionServer sessionServer) {
-    return livePath;
-  }
 }

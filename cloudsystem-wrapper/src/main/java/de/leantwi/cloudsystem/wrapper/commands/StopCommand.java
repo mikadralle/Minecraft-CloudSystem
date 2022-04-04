@@ -1,10 +1,15 @@
 package de.leantwi.cloudsystem.wrapper.commands;
 
+import de.leantwi.cloudsystem.CloudSystem;
+import de.leantwi.cloudsystem.api.CloudSystemAPI;
 import de.leantwi.cloudsystem.wrapper.core.WrapperCore;
 import de.leantwi.service.command.CommandImplementation;
 import de.leantwi.cloudsystem.wrapper.WrapperBootstrap;
 
 public class StopCommand implements CommandImplementation {
+
+  private final CloudSystemAPI cloudSystemAPI = CloudSystem.getAPI();
+
 
   @Override
   public void execute(String[] strings) {
@@ -33,14 +38,14 @@ public class StopCommand implements CommandImplementation {
           //dd
           break;
         case "server":
-          if (!wrapperCore.existsServer(name)) {
+          if (!this.cloudSystemAPI.existsGameServerByServerName(name)) {
             wrapperBootstrap.getLogger().info("§cThis server doesn't exists!");
             StringBuilder stringBuilder = new StringBuilder();
-            wrapperCore.getOnlineSession().keySet().forEach(server -> stringBuilder.append(server).append(", "));
-            wrapperBootstrap.getLogger().info("§aAll available servers: " + stringBuilder.toString());
+            this.cloudSystemAPI.getAllGameServer().forEach(server -> stringBuilder.append(server).append(", "));
+            wrapperBootstrap.getLogger().info("§aAll available servers: " + stringBuilder);
             return;
           }
-          wrapperBootstrap.getNatsConnector().sendMessage("wrapper", "stop_server#" + name);
+          cloudSystemAPI.getNatsConnector().publish("wrapper", "stop_server#" + name);
           wrapperBootstrap.getLogger().info("§aServer §c'" + name + "'§a will be stopped ");
           break;
 

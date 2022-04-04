@@ -12,21 +12,6 @@
     <artifactId>cloudsystem-master</artifactId>
 
     <dependencies>
-        <!-- Redis -->
-        <dependency>
-            <groupId>redis.clients</groupId>
-            <artifactId>jedis</artifactId>
-            <version>4.1.1</version>
-            <scope>provided</scope>
-        </dependency>
-
-        <!-- MongoDB driver -->
-        <dependency>
-            <groupId>org.mongodb</groupId>
-            <artifactId>mongo-java-driver</artifactId>
-            <version>3.12.10</version>
-            <scope>provided</scope>
-        </dependency>
         <!-- slf4j -->
         <dependency>
             <groupId>org.slf4j</groupId>
@@ -39,13 +24,6 @@
             <groupId>commons-io</groupId>
             <artifactId>commons-io</artifactId>
             <version>2.11.0</version>
-            <scope>provided</scope>
-        </dependency>
-        <!-- nats -->
-        <dependency>
-            <groupId>io.nats</groupId>
-            <artifactId>jnats</artifactId>
-            <version>2.13.2</version>
             <scope>provided</scope>
         </dependency>
         <!-- Base -->
