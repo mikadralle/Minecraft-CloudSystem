@@ -40,12 +40,8 @@ public class WrapperHandler {
 
 
     public String getRandomWrapper(String subGroupName, int weightClass) {
-
-        if (getWrapperServer("wrapper-1").isFreeSlot(subGroupName)) {
-            System.out.println("true");
-            return "wrapper-1";
-        }
-
+        return "wrapper-1";
+/*
         List<WrapperServer> wrapperServerList = new ArrayList<>();
         wrapperServerList.addAll(this.wrapperServerMap.values());
         wrapperServerList.remove(this.getWrapperServer("wrapper-1"));
@@ -56,7 +52,7 @@ public class WrapperHandler {
         }
 
         startNewWrapper();
-        return null;
+  */
     }
 
     public void addPublicIP(String wrapperID, String hostName) {

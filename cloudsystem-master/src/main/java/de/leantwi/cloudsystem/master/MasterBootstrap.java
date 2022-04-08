@@ -11,6 +11,7 @@ import de.leantwi.cloudsystem.master.database.mongo.DatabaseHandler;
 import de.leantwi.cloudsystem.master.events.MessageListener;
 import de.leantwi.cloudsystem.master.events.PlayerChangeServerListener;
 import de.leantwi.cloudsystem.master.events.PlayerMessageListener;
+import de.leantwi.cloudsystem.master.events.StartGameServerListener;
 import de.leantwi.cloudsystem.master.handler.bungeecord.BungeeHandler;
 import de.leantwi.cloudsystem.master.handler.hoster.HosterCloud;
 import de.leantwi.cloudsystem.master.handler.message.CloudDispatcher;
@@ -25,8 +26,10 @@ import de.leantwi.service.Service;
 
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.logging.Logger;
 
 import lombok.Getter;
+import redis.clients.jedis.Jedis;
 
 @Getter
 public class MasterBootstrap extends Service {
@@ -52,7 +55,7 @@ public class MasterBootstrap extends Service {
     private ServerFactory serverFactory;
     private BungeeHandler bungeeHandler;
     //
-   // private Core core;
+    // private Core core;
     private PacketHandler packetHandler;
 
     private CloudSystemAPI cloudSystemAPI = CloudSystem.getAPI();
@@ -84,14 +87,7 @@ public class MasterBootstrap extends Service {
 
     @Override
     public void onShutdown() {
-/*
-    this.getHetznerCloudAPI().getServers().getServers().forEach(server -> {
-      this.getLogger().info("Hetzner-cloud server " + server.getName() + " will be deleted.");
-      this.hetznerCloudAPI.deleteServer(server.getId());
-    });
 
-
- */
         this.sleep(100);
         this.cloudSystemAPI.getNatsConnector().publish("cloud", "stop#" + "master");
         sleep(100);
@@ -116,13 +112,20 @@ public class MasterBootstrap extends Service {
         this.databaseHandler = new DatabaseHandler();
         this.packetHandler = new PacketHandler();
         this.wrapperHandler = new WrapperHandler();
-       // this.core = new Core();
+        // this.core = new Core();
         this.serverFactory = new ServerFactory();
         this.bungeeHandler = new BungeeHandler();
         this.hosterCloud = new HosterCloud();
     }
 
     private void init() {
+        //clearing the redis cache pool
+        try (Jedis jedis = this.cloudSystemAPI.getRedisPool().getResource()) {
+            jedis.select(7);
+            jedis.del("cloud:server");
+        }
+        sleep(100);
+
         // dispatcher
         this.cloudDispatcher.listen(); // Wird überarbeitet.
         this.verifyDispatcher.listen(); // wird überarbeitet.
@@ -138,6 +141,7 @@ public class MasterBootstrap extends Service {
         CloudSystem.getEventAPI().registerListener(new MessageListener());
         CloudSystem.getEventAPI().registerListener(new PlayerMessageListener());
         CloudSystem.getEventAPI().registerListener(new PlayerChangeServerListener());
+        CloudSystem.getEventAPI().registerListener(new StartGameServerListener());
 
 
         // MasterBootstrap.getInstance().sendMessage("All Datacenter: " + this.hetznerCloudAPI.getDatacenters().getDatacenters().toString());
@@ -168,7 +172,6 @@ public class MasterBootstrap extends Service {
 
             this.configAPI.setProperty("heztner.token", "token");
             this.configAPI.setProperty("wrapper.master.address", "5.9.13.253");
-
             this.configAPI.saveToFile();
         }
     }
@@ -184,5 +187,4 @@ public class MasterBootstrap extends Service {
     public void startService() {
         this.executorService.execute(new ServerOnlineAmountService());
     }
-
 }

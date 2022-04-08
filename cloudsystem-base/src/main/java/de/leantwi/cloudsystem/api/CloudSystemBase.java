@@ -129,7 +129,7 @@ public class CloudSystemBase implements CloudSystemAPI {
     public void deleteGameServer(GameServerData gameServerData) {
         try (Jedis jedis = this.getRedisPool().getResource()) {
             jedis.select(DATABASE_ID);
-            jedis.hset(REDIS_CLOUD_SERVER_PATH, gameServerData.getServerName(), this.gson.toJson(gameServerData));
+            jedis.hdel(REDIS_CLOUD_SERVER_PATH, gameServerData.getServerName());
         }
 
 

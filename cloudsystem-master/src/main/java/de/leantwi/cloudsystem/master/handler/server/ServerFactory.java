@@ -2,6 +2,7 @@ package de.leantwi.cloudsystem.master.handler.server;
 
 import de.leantwi.cloudsystem.CloudSystem;
 import de.leantwi.cloudsystem.api.CloudSystemAPI;
+import de.leantwi.cloudsystem.api.events.gameserver.StartGameServerEvent;
 import de.leantwi.cloudsystem.api.gameserver.GameServerData;
 import de.leantwi.cloudsystem.api.gameserver.GameState;
 import de.leantwi.cloudsystem.api.gameserver.groups.SubGroupDB;
@@ -10,6 +11,7 @@ import de.leantwi.cloudsystem.master.MasterBootstrap;
 import lombok.Getter;
 import redis.clients.jedis.Jedis;
 
+import java.util.List;
 import java.util.Optional;
 
 
@@ -27,6 +29,7 @@ public class ServerFactory {
         final ServerDB serverDB = subGroupDB.getServerDB();
 
         final String wrapperName = this.master.getWrapperHandler().getRandomWrapper(subGroupName, serverDB.getWeightClass());
+        System.out.println("Wrapper-Name: " + wrapperName);
         final String serverName = subGroupName + "-" + getID(subGroupName);
 
         if (wrapperName == null) {
@@ -42,6 +45,9 @@ public class ServerFactory {
         //sets data into redis.
         this.cloudSystem.updateGameServer(gameServerData);
         this.master.getNatsConnector().publish("cloud", "sessionServer#create#" + wrapperName + "#" + serverName);
+
+        CloudSystem.getEventAPI().callEvent(new StartGameServerEvent(gameServerData.getServerName()));
+
         this.master.getWrapperHandler().getWrapperServer(wrapperName).addServer(gameServerData);
 
         this.master.sendMessage("the server " + serverName + " will be started");
@@ -50,14 +56,17 @@ public class ServerFactory {
 
     public int getID(String subGroupName) {
 
+        if (cloudSystem.getAllGameServerBySubGroupName(subGroupName).isEmpty()) {
+            return 1;
+        }
 
-        for (int i = 1; i < 999; i++) {
-            final int b = i;
-            Optional<GameServerData> gameServerData = cloudSystem.getAllGameServerBySubGroupName(subGroupName).stream().filter(f -> f.getSubGroupDB().toLowerCase().equalsIgnoreCase(subGroupName + "-" + b)).findAny();
-            if (!gameServerData.isPresent()) {
-                return i;
+        for (int i = 1; i < 9999; i++) {
+
+            for (GameServerData gameServerData : cloudSystem.getAllGameServerBySubGroupName(subGroupName)) {
+                if (!gameServerData.getServerName().equalsIgnoreCase(subGroupName + "-" + i)) {
+                    return i;
+                }
             }
-
         }
         return this.cloudSystem.getAllGameServerBySubGroupName(subGroupName).size() + 1;
     }

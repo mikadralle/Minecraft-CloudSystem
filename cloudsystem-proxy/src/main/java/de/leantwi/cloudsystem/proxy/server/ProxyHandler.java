@@ -27,7 +27,9 @@ public class ProxyHandler {
             e.printStackTrace();
         }
         this.addBungeeCord(this.bungeeName);
-       // this.loadOnlineServer();
+        this.cloudSystemAPI.getAllGameServer().forEach(gameServerData -> {
+            addServer(gameServerData.getServerName(),gameServerData.getHostName(),gameServerData.getPort());
+        });
     }
 
     public void logoutProxyServer() {
@@ -36,16 +38,16 @@ public class ProxyHandler {
         ProxyServer.getInstance().getPlayers().forEach(players -> players.disconnect(this.prefix + "§cProxy will be restarted!"));
     }
 
-    protected void addServer(String serverName, String address, int port) {
+    public void addServer(String serverName, String address, int port) {
         if (ProxyServer.getInstance().getServers().containsKey(serverName)) {
-            removeServer(serverName);
+            this.removeServer(serverName);
         }
         ProxyServer.getInstance().getServers().put(serverName, ProxyServer.getInstance().constructServerInfo(serverName, InetSocketAddress.createUnresolved(address, port), "-", false));
         ProxyServer.getInstance().getPlayers().stream().filter(players -> players.hasPermission("cloud.use")).forEach(players -> players.sendMessage(this.prefix + "The server " + serverName + " §7is now §aonline§7."));
         ProxyServer.getInstance().getConsole().sendMessage(this.prefix + "The server " + serverName + " §7is now §aonline§7.");
     }
 
-    protected void removeServer(String serverName) {
+    public void removeServer(String serverName) {
 
         ServerInfo kickTo = ProxyConnector.getInstance().getBungeeConnector().getLobbyServer();
         ProxyServer.getInstance().getServerInfo(serverName).getPlayers().forEach(players -> players.connect(kickTo));

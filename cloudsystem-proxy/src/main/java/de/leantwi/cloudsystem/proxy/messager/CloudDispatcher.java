@@ -2,6 +2,7 @@ package de.leantwi.cloudsystem.proxy.messager;
 
 import de.leantwi.cloudsystem.CloudSystem;
 import de.leantwi.cloudsystem.api.CloudSystemAPI;
+import de.leantwi.cloudsystem.api.gameserver.GameServerData;
 import de.leantwi.cloudsystem.proxy.ProxyConnector;
 import de.leantwi.cloudsystem.proxy.server.BungeeConnector;
 import io.nats.client.Dispatcher;
@@ -12,7 +13,7 @@ import java.nio.charset.StandardCharsets;
 public class CloudDispatcher {
 
     private final CloudSystemAPI cloudSystemAPI = CloudSystem.getAPI();
-
+    private final ProxyConnector proxyConnector = ProxyConnector.getInstance();
 
     public void listen() {
 
@@ -37,6 +38,13 @@ public class CloudDispatcher {
                     break;
                 case "login_bungeecord":
                     notifyOnline(serverName);
+                    break;
+                case "offline":
+                    this.proxyConnector.getProxyHandler().removeServer(serverName);
+                    break;
+                case "online":
+                    GameServerData gameServerData = CloudSystem.getAPI().getGameServerByServerName(serverName);
+                    this.proxyConnector.getProxyHandler().addServer(gameServerData.getServerName(),gameServerData.getHostName(), gameServerData.getPort());
                     break;
                 case "logout_bungeecord":
                     notifyOffline(serverName);
