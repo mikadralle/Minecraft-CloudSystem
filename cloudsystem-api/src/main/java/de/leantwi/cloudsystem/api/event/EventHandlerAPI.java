@@ -8,6 +8,4 @@ public interface EventHandlerAPI {
 
     void postEvent(Event event);
 
-    Event readBuff(String json);
-    String writeBuff(Event event);
 }

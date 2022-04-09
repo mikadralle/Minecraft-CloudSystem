@@ -11,6 +11,7 @@ import java.nio.charset.StandardCharsets;
 
 public class CloudDispatcher {
     private final CloudSystemAPI cloudSystemAPI = CloudSystem.getAPI();
+
     public void listen() {
         final Dispatcher cloudDispatcher = this.cloudSystemAPI.getNatsConnector().getConnection().createDispatcher(message -> {
 
@@ -24,7 +25,7 @@ public class CloudDispatcher {
             switch (split[0]) {
 
                 case "quit":
-                    Bukkit.getScheduler().runTask(BukkitConnector.getInstance(), Bukkit::shutdown);
+                    stopServer();
                     break;
                 case "stop":
                     if (spigotConnector.getServerName().equalsIgnoreCase(serverName)) {
@@ -40,5 +41,9 @@ public class CloudDispatcher {
         cloudDispatcher.subscribe("cloud");
     }
 
+
+    private void stopServer() {
+        Bukkit.getScheduler().runTask(BukkitConnector.getInstance(), Bukkit::shutdown);
+    }
 
 }

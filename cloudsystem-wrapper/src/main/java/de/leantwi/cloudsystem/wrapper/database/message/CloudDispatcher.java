@@ -46,8 +46,6 @@ public class CloudDispatcher {
                     WrapperBootstrap.getInstance().onShutdown();
                     sleep(100);
                     System.exit(0);
-
-
                     break;
             }
 

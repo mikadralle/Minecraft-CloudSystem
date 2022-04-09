@@ -1,7 +1,6 @@
 package de.leantwi.cloudsystem.event;
 
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
+import com.google.gson.*;
 import de.leantwi.cloudsystem.CloudSystem;
 import de.leantwi.cloudsystem.api.event.Event;
 import de.leantwi.cloudsystem.api.event.EventHandlerAPI;
@@ -9,19 +8,30 @@ import de.leantwi.cloudsystem.api.event.Listener;
 import de.leantwi.cloudsystem.event.dispatcher.EventDispatcher;
 import io.nats.client.Connection;
 
+import java.lang.reflect.Type;
+
 
 public class EventHandler implements EventHandlerAPI {
 
     public final EventBus eventBus;
-    public final Gson gson;
+    private final GsonBuilder gsonBuilder = new GsonBuilder().registerTypeAdapter(Event.class, new PacketSerializer<Event>());
+
     public EventHandler(Connection connection) {
-        GsonBuilder gsonBuilder = new GsonBuilder();
-        gsonBuilder.registerTypeAdapter(Event.class,new EventDeserializer());
-        this.gson = gsonBuilder.create();
         this.eventBus = new EventBus();
-        EventDispatcher eventDispatcher = new EventDispatcher(connection,this,eventBus);
+        EventDispatcher eventDispatcher = new EventDispatcher(connection, this);
         eventDispatcher.listen();
 
+    }
+
+    public Event getEventByJsonKey(String jsonKey) {
+        gsonBuilder.setPrettyPrinting();
+        Gson gson = gsonBuilder.create();
+        return gson.fromJson(jsonKey, Event.class);
+    }
+    public String getJsonKeyFromEvent(Event event){
+        gsonBuilder.setPrettyPrinting();
+        Gson gson = gsonBuilder.create();
+        return gson.toJson(event,Event.class);
     }
 
     @Override
@@ -32,24 +42,36 @@ public class EventHandler implements EventHandlerAPI {
 
     @Override
     public void callEvent(Event event) {
-        CloudSystem.getAPI().getNatsConnector().publish("events",writeBuff(event));
+        CloudSystem.getAPI().getNatsConnector().publish("events", getJsonKeyFromEvent(event));
     }
 
     @Override
     public void postEvent(Event event) {
-        System.out.println("psot event: " + event.getClass().getName());
         this.eventBus.post(event);
 
     }
 
-    @Override
-    public Event readBuff(String json) {
-    return gson.fromJson(json,Event.class);
-    }
+    static class PacketSerializer<T> implements JsonSerializer<T>, JsonDeserializer<T> {
 
-    @Override
-    public String writeBuff(Event event) {
-    return gson.toJson(event);
+        private static final String TYPE = "type";
+
+        @Override
+        public T deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException {
+            JsonObject jsonObject = json.getAsJsonObject();
+            String className = jsonObject.get(TYPE).getAsString();
+            try {
+                return context.deserialize(json, Class.forName(className));
+            } catch (ClassNotFoundException e) {
+                throw new JsonParseException(e);
+            }
+        }
+
+        @Override
+        public JsonElement serialize(T src, Type typeOfSrc, JsonSerializationContext context) {
+            JsonElement jsonElement = context.serialize(src, src.getClass());
+            jsonElement.getAsJsonObject().addProperty(TYPE, src.getClass().getCanonicalName());
+            return jsonElement;
+        }
     }
 
 }

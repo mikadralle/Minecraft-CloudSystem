@@ -89,7 +89,8 @@ public class MasterBootstrap extends Service {
     public void onShutdown() {
 
         this.sleep(100);
-        this.cloudSystemAPI.getNatsConnector().publish("cloud", "stop#" + "master");
+        //this.cloudSystemAPI.getNatsConnector().publish("cloud", "stop#" + "master");
+        this.cloudSystemAPI.getNatsConnector().publish("cloud", "quit#");
         sleep(100);
         sendMessage("§acloud is stopping.");
 

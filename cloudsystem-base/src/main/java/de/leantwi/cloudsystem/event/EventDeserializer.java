@@ -23,8 +23,10 @@ public class EventDeserializer implements
         String type = jsonObject.get("type").getAsString();
         JsonElement element = jsonObject.get("properties");
 
+        System.out.println("TYPE IS: " + type);
+
         try {
-            return context.deserialize(element, Class.forName("com.googlecode.whiteboard.model." + type));
+            return context.deserialize(element, Class.forName("de.leantwi.cloudsystem.api.event." + type));
         } catch (ClassNotFoundException cnfe) {
             throw new JsonParseException("Unknown element type: " + type, cnfe);
         }

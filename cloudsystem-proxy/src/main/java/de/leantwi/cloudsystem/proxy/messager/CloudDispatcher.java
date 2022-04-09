@@ -25,7 +25,9 @@ public class CloudDispatcher {
             final String serverName = split[1];
 
             switch (split[0]) {
-
+                case "quit":
+                    stopProxy();
+                    break;
                 case "switch_player_server":
                     //      this.multiProxy.playerSwitchServer(UUID.fromString(split[1]), split[2], split[3]);
                     break;
@@ -44,7 +46,7 @@ public class CloudDispatcher {
                     break;
                 case "online":
                     GameServerData gameServerData = CloudSystem.getAPI().getGameServerByServerName(serverName);
-                    this.proxyConnector.getProxyHandler().addServer(gameServerData.getServerName(),gameServerData.getHostName(), gameServerData.getPort());
+                    this.proxyConnector.getProxyHandler().addServer(gameServerData.getServerName(), gameServerData.getHostName(), gameServerData.getPort());
                     break;
                 case "logout_bungeecord":
                     notifyOffline(serverName);
@@ -62,6 +64,10 @@ public class CloudDispatcher {
 
     private void notifyOffline(String bungeeName) {
         ProxyServer.getInstance().getPlayers().stream().filter(players -> players.hasPermission("cloud.use")).forEach(players -> players.sendMessage(ProxyConnector.getInstance().getCloudPrefix() + "The §b" + bungeeName + " §7server is now §coffline§7!  "));
+    }
+
+    private void stopProxy() {
+        ProxyServer.getInstance().stop();
     }
 
 
