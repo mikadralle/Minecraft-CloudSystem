@@ -48,7 +48,7 @@ public class WrapperCore {
     }
   }
 
-  public void addWrapperList(String serverName) {
+  public void addRequestedGameServer(String serverName) {
     this.gameServerDataQueue.add(this.cloudSystemAPI.getGameServerByServerName(serverName));
   }
 

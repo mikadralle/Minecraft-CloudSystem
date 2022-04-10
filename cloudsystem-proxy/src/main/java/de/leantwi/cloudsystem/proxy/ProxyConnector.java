@@ -3,8 +3,9 @@ package de.leantwi.cloudsystem.proxy;
 import de.leantwi.cloudsystem.CloudSystem;
 import de.leantwi.cloudsystem.CloudSystemInit;
 import de.leantwi.cloudsystem.proxy.config.IniFile;
-import de.leantwi.cloudsystem.proxy.events.StartGameServerListener;
-import de.leantwi.cloudsystem.proxy.listener.ServerConnectListener;
+import de.leantwi.cloudsystem.proxy.listeners.ShutdownSystemListener;
+import de.leantwi.cloudsystem.proxy.listeners.StartGameServerListener;
+import de.leantwi.cloudsystem.proxy.listeners.ServerConnectListener;
 import de.leantwi.cloudsystem.proxy.messager.BackendDispatcher;
 import de.leantwi.cloudsystem.proxy.messager.CloudDispatcher;
 import de.leantwi.cloudsystem.proxy.server.BungeeConnector;
@@ -21,7 +22,7 @@ public class ProxyConnector extends Plugin {
 
     private static ProxyConnector instance;
     private final ExecutorService executorService = Executors.newCachedThreadPool();
-    private final String cloudPrefix = "§cCloud §8┃§7 ";
+    private final String cloudPrefix = "§bCloud §8┃§7 ";
     private IniFile configAPI;
     private ProxyHandler proxyHandler;
     private BungeeConnector bungeeConnector;
@@ -64,6 +65,7 @@ public class ProxyConnector extends Plugin {
 
         ProxyServer.getInstance().getPluginManager().registerListener(this, new ServerConnectListener());
         CloudSystem.getEventAPI().registerListener(new StartGameServerListener());
+        CloudSystem.getEventAPI().registerListener(new ShutdownSystemListener());
         //ProxyServer.getInstance().getPluginManager().registerListener(this, new KickListener());
 
     }

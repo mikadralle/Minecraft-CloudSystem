@@ -1,12 +1,8 @@
-package de.leantwi.cloudsystem.proxy.listener;
+package de.leantwi.cloudsystem.proxy.listeners;
 
 import de.leantwi.cloudsystem.proxy.ProxyConnector;
 import de.leantwi.cloudsystem.proxy.server.BungeeConnector;
-import net.md_5.bungee.api.ProxyServer;
-import net.md_5.bungee.api.event.LoginEvent;
-import net.md_5.bungee.api.event.PostLoginEvent;
 import net.md_5.bungee.api.event.ServerConnectEvent;
-import net.md_5.bungee.api.event.ServerConnectedEvent;
 import net.md_5.bungee.api.plugin.Listener;
 import net.md_5.bungee.event.EventHandler;
 import net.md_5.bungee.event.EventPriority;

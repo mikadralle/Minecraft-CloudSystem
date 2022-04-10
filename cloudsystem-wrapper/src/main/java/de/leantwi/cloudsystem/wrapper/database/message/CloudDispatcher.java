@@ -20,17 +20,6 @@ public class CloudDispatcher {
 
 
             switch (split[0]) {
-                case "sessionServer":
-                    if (!split[1].equalsIgnoreCase("create")) {
-                        return;
-                    }
-                    if (!this.wrapper.getWrapperSettings().getWrapperID().equalsIgnoreCase(split[2])) {
-                        return;
-                    }
-                    String serverName = split[3];
-                    this.wrapper.getWrapperCore().addWrapperList(serverName);
-                    break;
-
                 case "stop":
                     //stop all
                     if (split[1].equalsIgnoreCase("all") || split[1].equalsIgnoreCase("wrapper") || split[1].equalsIgnoreCase("master")) {
@@ -40,12 +29,6 @@ public class CloudDispatcher {
                         break;
                     }
                     WrapperBootstrap.getInstance().setMasterOnline(false);
-                    break;
-                case "quit":
-                    WrapperBootstrap.getInstance().sendMessage("Wrapper will be stopped...");
-                    WrapperBootstrap.getInstance().onShutdown();
-                    sleep(100);
-                    System.exit(0);
                     break;
             }
 

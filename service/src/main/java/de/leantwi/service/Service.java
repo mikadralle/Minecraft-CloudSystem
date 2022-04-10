@@ -31,7 +31,7 @@ public abstract class Service {
         final long timeStamp = System.currentTimeMillis();
         commandHandler = new CommandHandler(this);
         registerCommands();
-        this.cloudSystemInit = new CloudSystemInit();
+
         ConsoleReader consoleReader = null;
         try {
             consoleReader = new ConsoleReader();
@@ -44,6 +44,8 @@ public abstract class Service {
             this.libraryLoader = new LibraryLoader(this.logger);
             // load all libraries in the folder libraries
             this.libraryLoader.loadLibraries();
+
+            this.cloudSystemInit = new CloudSystemInit();
 
             this.executorService.execute(() -> {
 

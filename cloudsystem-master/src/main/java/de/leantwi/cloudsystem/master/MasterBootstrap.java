@@ -3,6 +3,7 @@ package de.leantwi.cloudsystem.master;
 import de.leantwi.cloudsystem.CloudSystem;
 import de.leantwi.cloudsystem.api.CloudSystemAPI;
 import de.leantwi.cloudsystem.api.database.NatsConnectorAPI;
+import de.leantwi.cloudsystem.api.events.global.ShutdownSystemEvent;
 import de.leantwi.cloudsystem.master.api.config.IniFile;
 import de.leantwi.cloudsystem.master.command.HelpCommand;
 import de.leantwi.cloudsystem.master.command.StartCommand;
@@ -89,10 +90,8 @@ public class MasterBootstrap extends Service {
     public void onShutdown() {
 
         this.sleep(100);
-        //this.cloudSystemAPI.getNatsConnector().publish("cloud", "stop#" + "master");
-        this.cloudSystemAPI.getNatsConnector().publish("cloud", "quit#");
-        sleep(100);
-        sendMessage("§acloud is stopping.");
+        CloudSystem.getEventAPI().callEvent(new ShutdownSystemEvent("The cloudsystem will be shutdown."));
+        this.getLogger().info("§cThe master will be stopped.");
 
     }
 

@@ -2,6 +2,7 @@ package de.leantwi.cloudsystem.master.handler.server;
 
 import de.leantwi.cloudsystem.CloudSystem;
 import de.leantwi.cloudsystem.api.CloudSystemAPI;
+import de.leantwi.cloudsystem.api.events.gameserver.RequestGameServerEvent;
 import de.leantwi.cloudsystem.api.events.gameserver.StartGameServerEvent;
 import de.leantwi.cloudsystem.api.gameserver.GameServerData;
 import de.leantwi.cloudsystem.api.gameserver.GameState;
@@ -44,9 +45,8 @@ public class ServerFactory {
                 port, 0, 0, serverDB.getMaxPlayer(), GameState.STARTS);
         //sets data into redis.
         this.cloudSystem.updateGameServer(gameServerData);
-        this.master.getNatsConnector().publish("cloud", "sessionServer#create#" + wrapperName + "#" + serverName);
 
-        CloudSystem.getEventAPI().callEvent(new StartGameServerEvent(gameServerData.getServerName()));
+        CloudSystem.getEventAPI().callEvent(new RequestGameServerEvent(wrapperName,serverName));
 
         this.master.getWrapperHandler().getWrapperServer(wrapperName).addServer(gameServerData);
 

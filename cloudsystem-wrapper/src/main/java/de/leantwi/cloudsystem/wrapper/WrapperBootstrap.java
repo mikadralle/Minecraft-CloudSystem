@@ -9,6 +9,8 @@ import de.leantwi.cloudsystem.wrapper.core.WrapperCore;
 import de.leantwi.cloudsystem.wrapper.core.handler.TimerTaskHandler;
 import de.leantwi.cloudsystem.wrapper.database.message.CloudDispatcher;
 import de.leantwi.cloudsystem.wrapper.database.message.InformationDispatcher;
+import de.leantwi.cloudsystem.wrapper.listeners.RequestGameServerListener;
+import de.leantwi.cloudsystem.wrapper.listeners.ShutdownSystemListener;
 import de.leantwi.cloudsystem.wrapper.utils.config.IniFile;
 import de.leantwi.service.Service;
 import de.leantwi.cloudsystem.wrapper.utils.WrapperSettings;
@@ -65,10 +67,6 @@ public class WrapperBootstrap extends Service {
 
     @Override
     public void onShutdown() {
-
-
-        this.cloudSystemAPI.getNatsConnector().publish("cloud", "stop_wrapper#" + this.wrapperSettings.getWrapperID());
-        getLogger().info("§aStopping wrapper server...");
         getLogger().info("§aWrapper is stopping!");
     }
 
@@ -86,21 +84,29 @@ public class WrapperBootstrap extends Service {
 
     private void init() {
 
+        //Listeners
+
+        CloudSystem.getEventAPI().registerListener(new ShutdownSystemListener());
+        CloudSystem.getEventAPI().registerListener(new RequestGameServerListener());
+
+
         this.loadConfig();
         this.informationDispatcher.listen();
         String answer = null;
         try {
             answer = this.cloudSystemAPI.getNatsConnector().request("ping", "ping");
         } catch (InterruptedException | ExecutionException | TimeoutException e) {
-
-            System.out.println("Master is doesn't available!");
+            getLogger().info("Master is doesn't available:" + e.getMessage());
             return;
         }
         if (answer.equalsIgnoreCase("pong")) {
             this.loadWrapper();
             return;
         }
-        System.out.println("Master is doesn't available!");
+        getLogger().info("Master is doesn't available:");
+
+
+
 
 
     }
@@ -140,9 +146,9 @@ public class WrapperBootstrap extends Service {
     private void verifyWrapper() {
 
 
-        getLogger().info("Load Config");
+        getLogger().info("wrapper config will be loaded...");
         this.loadConfig();
-        getLogger().info("Config was loaded");
+        getLogger().info("wrapper config has been load.");
         this.wrapperSettings.setMaster(Boolean.parseBoolean(this.configAPI.getProperty("wrapper.master")));
         this.wrapperSettings.setPriority(this.wrapperSettings.isMaster() ? 100 : 50);
         this.wrapperSettings.setWeightClass(Integer.parseInt(this.configAPI.getProperty("wrapper.weight-class")));
@@ -163,7 +169,6 @@ public class WrapperBootstrap extends Service {
         } else {
             this.wrapperSettings.setType(WrapperType.PRIVATE);
         }
-        getLogger().info("D");
         try {
             String answer = this.cloudSystemAPI.getNatsConnector().request("verify", "wrapper_register#" + wrapperSettings.getWrapperID() + "#" + this.wrapperSettings.getType().name() + "#" + this.wrapperSettings.getWeightClass() + "#" + this.wrapperSettings.getPriority());
             this.wrapperSettings.setAddress(answer);
@@ -171,7 +176,6 @@ public class WrapperBootstrap extends Service {
             getLogger().warning(e.getMessage());
             e.printStackTrace();
         }
-        getLogger().info("E");
 
     }
 
@@ -195,14 +199,6 @@ public class WrapperBootstrap extends Service {
 
         }
 
-    }
-
-    private void sleep(long time) {
-        try {
-            Thread.sleep(time);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
     }
 
 }
