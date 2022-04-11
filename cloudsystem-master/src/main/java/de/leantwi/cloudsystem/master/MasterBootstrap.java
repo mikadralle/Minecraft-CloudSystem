@@ -9,10 +9,7 @@ import de.leantwi.cloudsystem.master.command.HelpCommand;
 import de.leantwi.cloudsystem.master.command.StartCommand;
 import de.leantwi.cloudsystem.master.command.StopCommand;
 import de.leantwi.cloudsystem.master.database.mongo.DatabaseHandler;
-import de.leantwi.cloudsystem.master.events.MessageListener;
-import de.leantwi.cloudsystem.master.events.PlayerChangeServerListener;
-import de.leantwi.cloudsystem.master.events.PlayerMessageListener;
-import de.leantwi.cloudsystem.master.events.StartGameServerListener;
+import de.leantwi.cloudsystem.master.listeners.*;
 import de.leantwi.cloudsystem.master.handler.bungeecord.BungeeHandler;
 import de.leantwi.cloudsystem.master.handler.hoster.HosterCloud;
 import de.leantwi.cloudsystem.master.handler.message.CloudDispatcher;
@@ -27,7 +24,6 @@ import de.leantwi.service.Service;
 
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import java.util.logging.Logger;
 
 import lombok.Getter;
 import redis.clients.jedis.Jedis;
@@ -142,6 +138,7 @@ public class MasterBootstrap extends Service {
         CloudSystem.getEventAPI().registerListener(new PlayerMessageListener());
         CloudSystem.getEventAPI().registerListener(new PlayerChangeServerListener());
         CloudSystem.getEventAPI().registerListener(new StartGameServerListener());
+        CloudSystem.getEventAPI().registerListener(new GameTypeChangeListener());
 
 
         // MasterBootstrap.getInstance().sendMessage("All Datacenter: " + this.hetznerCloudAPI.getDatacenters().getDatacenters().toString());

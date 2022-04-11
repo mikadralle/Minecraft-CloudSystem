@@ -27,13 +27,6 @@ public class CloudDispatcher {
                 case "login_bungeecord":
                     notifyOnline(serverName);
                     break;
-                case "offline":
-                    this.proxyConnector.getProxyHandler().removeServer(serverName);
-                    break;
-                case "online":
-                    GameServerData gameServerData = CloudSystem.getAPI().getGameServerByServerName(serverName);
-                    this.proxyConnector.getProxyHandler().addServer(gameServerData.getServerName(), gameServerData.getHostName(), gameServerData.getPort());
-                    break;
                 case "logout_bungeecord":
                     notifyOffline(serverName);
                     break;

@@ -1,4 +1,4 @@
-package de.leantwi.cloudsystem.master.events;
+package de.leantwi.cloudsystem.master.listeners;
 
 import de.leantwi.cloudsystem.api.event.Listener;
 import de.leantwi.cloudsystem.api.event.PacketListener;

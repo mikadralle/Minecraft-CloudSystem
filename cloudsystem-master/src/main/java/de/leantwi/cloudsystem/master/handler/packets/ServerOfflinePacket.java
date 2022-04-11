@@ -26,13 +26,7 @@ public class ServerOfflinePacket extends Packet {
     String serverName = getStrings()[1];
 
 
-    this.master.sendMessage("The server " + serverName + " will be stopped");
-    GameServerData gameServerData = this.cloudSystemAPI.getGameServerByServerName(serverName);
-    gameServerData.setGameState(GameState.SHUTDOWN);
-    this.cloudSystemAPI.updateGameServer(gameServerData);
-    System.out.println("Server was part of " + gameServerData.getWrapperID());
-    this.wrapperHandler.getWrapperServer("wrapper-1").removeServer(gameServerData);
-    this.cloudSystemAPI.deleteGameServer(gameServerData);
+
   }
 
 }

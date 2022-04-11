@@ -3,6 +3,7 @@ package de.leantwi.cloudsystem.proxy;
 import de.leantwi.cloudsystem.CloudSystem;
 import de.leantwi.cloudsystem.CloudSystemInit;
 import de.leantwi.cloudsystem.proxy.config.IniFile;
+import de.leantwi.cloudsystem.proxy.listeners.GameTypeChangeListener;
 import de.leantwi.cloudsystem.proxy.listeners.ShutdownSystemListener;
 import de.leantwi.cloudsystem.proxy.listeners.StartGameServerListener;
 import de.leantwi.cloudsystem.proxy.listeners.ServerConnectListener;
@@ -66,6 +67,7 @@ public class ProxyConnector extends Plugin {
         ProxyServer.getInstance().getPluginManager().registerListener(this, new ServerConnectListener());
         CloudSystem.getEventAPI().registerListener(new StartGameServerListener());
         CloudSystem.getEventAPI().registerListener(new ShutdownSystemListener());
+        CloudSystem.getEventAPI().registerListener(new GameTypeChangeListener());
         //ProxyServer.getInstance().getPluginManager().registerListener(this, new KickListener());
 
     }
