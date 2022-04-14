@@ -2,6 +2,7 @@ package de.leantwi.cloudsystem.proxy.server;
 
 import de.leantwi.cloudsystem.CloudSystem;
 import de.leantwi.cloudsystem.api.CloudSystemAPI;
+import de.leantwi.cloudsystem.api.events.bungeecord.UnRegisterBungeeCordEvent;
 import de.leantwi.cloudsystem.proxy.ProxyConnector;
 import lombok.Getter;
 import net.md_5.bungee.api.ProxyServer;
@@ -34,7 +35,7 @@ public class ProxyHandler {
 
     public void logoutProxyServer() {
         removeBungeeCord();
-        this.cloudSystemAPI.getNatsConnector().publish("cloud", "logout_bungeecord#" + this.bungeeName);
+        CloudSystem.getEventAPI().callEvent(new UnRegisterBungeeCordEvent(this.bungeeName));
         ProxyServer.getInstance().getPlayers().forEach(players -> players.disconnect(this.prefix + "§cProxy will be restarted!"));
     }
 

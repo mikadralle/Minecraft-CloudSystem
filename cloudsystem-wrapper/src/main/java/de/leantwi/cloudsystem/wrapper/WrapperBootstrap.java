@@ -2,6 +2,7 @@ package de.leantwi.cloudsystem.wrapper;
 
 import de.leantwi.cloudsystem.CloudSystem;
 import de.leantwi.cloudsystem.api.CloudSystemAPI;
+import de.leantwi.cloudsystem.api.events.wrapper.UnRegisterWrapperEvent;
 import de.leantwi.cloudsystem.wrapper.commands.HelpCommand;
 import de.leantwi.cloudsystem.wrapper.commands.StopCommand;
 import de.leantwi.cloudsystem.wrapper.core.FolderUtils;
@@ -67,6 +68,7 @@ public class WrapperBootstrap extends Service {
 
     @Override
     public void onShutdown() {
+        CloudSystem.getEventAPI().callEvent(new UnRegisterWrapperEvent(wrapperSettings.getWrapperID()));
         getLogger().info("§aWrapper is stopping!");
     }
 

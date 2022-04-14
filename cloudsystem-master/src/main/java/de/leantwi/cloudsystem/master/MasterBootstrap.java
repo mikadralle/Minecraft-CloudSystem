@@ -139,6 +139,9 @@ public class MasterBootstrap extends Service {
         CloudSystem.getEventAPI().registerListener(new PlayerChangeServerListener());
         CloudSystem.getEventAPI().registerListener(new StartGameServerListener());
         CloudSystem.getEventAPI().registerListener(new GameTypeChangeListener());
+        // unregister listeners
+        CloudSystem.getEventAPI().registerListener(new UnRegisterBungeeCordListener());
+        CloudSystem.getEventAPI().registerListener(new UnRegisterWrapperListener());
 
 
         // MasterBootstrap.getInstance().sendMessage("All Datacenter: " + this.hetznerCloudAPI.getDatacenters().getDatacenters().toString());
