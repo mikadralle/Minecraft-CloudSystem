@@ -17,8 +17,18 @@ import java.util.Map;
 @RequiredArgsConstructor
 public class GroupHandler {
 
-    final MongoDBConnectorAPI mongoDB;
+    public MongoDBConnectorAPI mongoDB;
     private Map<String, GroupDB> groups = new HashMap<>();
+
+    @Getter
+    private static GroupHandler instance;
+
+    public GroupHandler(MongoDBConnectorAPI mongoDB){
+        this.mongoDB = mongoDB;
+        instance = this;
+
+    }
+
 
     public void fetch() {
 
@@ -63,6 +73,15 @@ public class GroupHandler {
         System.out.println("create default 'lobby'");
     }
 
+    public void addSubGroupToGroup(String groupName, String subGroupName) {
+
+        GroupDB groupDB = this.groups.get(groupName);
+        groupDB.getSubGroupDBList().add(createSubGroup(subGroupName));
+        this.mongoDB.getMongoDatabase().getCollection("groups").insertOne(groupDB.create());
+        this.groups.put(groupDB.getGroupName(), groupDB);
+
+    }
+
     private SubGroupDB createSubGroup(String name) {
         SubGroupDB subGroupDB = new SubGroupDB(null);
         subGroupDB.setSubGroupName(name);
@@ -71,7 +90,7 @@ public class GroupHandler {
 
         serverDB.setDisplayName("§eLobby§7-§e");
         serverDB.setColor("§e");
-        serverDB.setWeightClass(10);
+        serverDB.setMemory(1024);
         serverDB.setMaxOnlineAmount(999);
         serverDB.setMinOnlineAmount(2);
         serverDB.setMaxPlayer(50);

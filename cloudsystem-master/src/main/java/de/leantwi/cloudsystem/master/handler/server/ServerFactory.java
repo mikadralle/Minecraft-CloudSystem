@@ -29,7 +29,7 @@ public class ServerFactory {
         final SubGroupDB subGroupDB = this.cloudSystem.getSubGroupByName(subGroupName).get();
         final ServerDB serverDB = subGroupDB.getServerDB();
 
-        final String wrapperName = this.master.getWrapperHandler().getRandomWrapper(subGroupName, serverDB.getWeightClass());
+        final String wrapperName = this.master.getWrapperHandler().getRandomWrapper(subGroupName, serverDB.getMemory());
         System.out.println("Wrapper-Name: " + wrapperName);
         final String serverName = subGroupName + "-" + getID(subGroupName);
 

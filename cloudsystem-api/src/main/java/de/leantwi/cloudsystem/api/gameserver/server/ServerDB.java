@@ -9,7 +9,7 @@ import org.bson.Document;
 public class ServerDB implements DBDocument {
 
     private String displayName, color;
-    private int maxPlayer, weightClass, minOnlineAmount, maxOnlineAmount, startServerByPlayersLimit;
+    private int maxPlayer, memory, minOnlineAmount, maxOnlineAmount, startServerByPlayersLimit;
     private boolean maintenance, globalCheck;
 
     @Override
@@ -17,7 +17,7 @@ public class ServerDB implements DBDocument {
         return new Document().append("displayName", this.displayName).
                 append("color", this.color).
                 append("maxPlayer", this.maxPlayer).
-                append("weightClass", this.weightClass).
+                append("memory", this.memory).
                 append("minOnlineAmount", this.minOnlineAmount).
                 append("maxOnlineAmount", this.maxOnlineAmount).
                 append("startServerByPlayersLimit", this.startServerByPlayersLimit).
@@ -37,8 +37,8 @@ public class ServerDB implements DBDocument {
         if (document.containsKey("maxPlayer")) {
             this.maxPlayer = document.getInteger("maxPlayer");
         }
-        if (document.containsKey("weightClass")) {
-            this.weightClass = document.getInteger("weightClass");
+        if (document.containsKey("memory")) {
+            this.memory = document.getInteger("memory");
         }
         if (document.containsKey("minOnlineAmount")) {
             this.minOnlineAmount = document.getInteger("minOnlineAmount");

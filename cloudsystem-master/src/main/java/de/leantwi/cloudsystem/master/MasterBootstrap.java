@@ -5,6 +5,7 @@ import de.leantwi.cloudsystem.api.CloudSystemAPI;
 import de.leantwi.cloudsystem.api.database.NatsConnectorAPI;
 import de.leantwi.cloudsystem.api.events.global.ShutdownSystemEvent;
 import de.leantwi.cloudsystem.master.api.config.IniFile;
+import de.leantwi.cloudsystem.master.command.GroupCommand;
 import de.leantwi.cloudsystem.master.command.HelpCommand;
 import de.leantwi.cloudsystem.master.command.StartCommand;
 import de.leantwi.cloudsystem.master.command.StopCommand;
@@ -80,6 +81,7 @@ public class MasterBootstrap extends Service {
         getCommandHandler().registerCommand(new StopCommand());
         getCommandHandler().registerCommand(new HelpCommand());
         getCommandHandler().registerCommand(new StartCommand());
+        getCommandHandler().registerCommand(new GroupCommand());
     }
 
     @Override
