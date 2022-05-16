@@ -192,4 +192,19 @@ public class CloudSystemBase implements CloudSystemAPI {
         this.groupHandler.createGroup(groupName, subGroupName);
     }
 
+    @Override
+    public CloudPlayerAPI getCloudPlayerByName(String playerName) {
+        return null;
+    }
+
+    @Override
+    public CloudPlayerAPI getCloudPlayerByUUID(UUID uuid) {
+        return null;
+    }
+
+    @Override
+    public List<CloudPlayerAPI> getCloudPlayersByServerName(String serverName) {
+        return null;
+    }
+
 }

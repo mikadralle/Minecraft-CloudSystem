@@ -29,6 +29,7 @@ public class NatsConnector implements NatsConnectorAPI {
                     .maxReconnects(-1)
                     .token(token.toCharArray())
                     .build();
+
             return Nats.connect(options);
         });
 

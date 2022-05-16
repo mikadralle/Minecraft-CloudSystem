@@ -13,6 +13,7 @@ import redis.clients.jedis.JedisPool;
 import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 public interface  CloudSystemAPI {
 
@@ -23,7 +24,6 @@ public interface  CloudSystemAPI {
     MongoDBConnectorAPI getMongoDBConnectorAPI();
     JedisPool getRedisPool();
     MongoClient getMongoDBClient();
-
 
     GameServerData getGameServerByServerName(String serverName);
 
@@ -48,5 +48,10 @@ public interface  CloudSystemAPI {
     void createGroup(String groupName, String subGroupName);
 
 
+    CloudPlayerAPI getCloudPlayerByName(String playerName);
+
+    CloudPlayerAPI getCloudPlayerByUUID(UUID uuid);
+
+    List<CloudPlayerAPI> getCloudPlayersByServerName(String serverName);
 
 }
