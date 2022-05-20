@@ -71,6 +71,13 @@ public class ProxyConnector extends Plugin {
         CloudSystem.getEventAPI().registerListener(new ShutdownSystemListener());
         CloudSystem.getEventAPI().registerListener(new GameTypeChangeListener());
         CloudSystem.getEventAPI().registerListener(new UnRegisterBungeeCordListener());
+
+
+        ProxyServer.getInstance().getPluginManager().registerListener(this, new LoginListener());
+        ProxyServer.getInstance().getPluginManager().registerListener(this, new LogoutListener());
+
+        CloudSystem.getEventAPI().registerListener(new CloudPlayerJoinNetworkListener());
+        CloudSystem.getEventAPI().registerListener(new CloudPlayerQuitNetworkListener());
         //ProxyServer.getInstance().getPluginManager().registerListener(this, new KickListener());
 
     }

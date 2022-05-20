@@ -16,12 +16,19 @@
         <maven.compiler.target>8</maven.compiler.target>
     </properties>
 
+
+    <repositories>
+        <repository>
+            <id>papermc</id>
+            <url>https://papermc.io/repo/repository/maven-public/</url>
+        </repository>
+    </repositories>
     <dependencies>
         <!-- Paper Spigot -->
         <dependency>
             <groupId>org.github.paperspigot</groupId>
             <artifactId>paperspigot-api</artifactId>
-            <version>1.8.8-R0.1-20211121.184308-1</version>
+            <version>1.8.8-R0.1-20160806.221350-1</version>
         </dependency>
         <!-- Gson -->
         <dependency>

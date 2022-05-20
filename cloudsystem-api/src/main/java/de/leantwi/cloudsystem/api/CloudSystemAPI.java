@@ -47,11 +47,16 @@ public interface  CloudSystemAPI {
 
     void createGroup(String groupName, String subGroupName);
 
-
     CloudPlayerAPI getCloudPlayerByName(String playerName);
 
     CloudPlayerAPI getCloudPlayerByUUID(UUID uuid);
 
     List<CloudPlayerAPI> getCloudPlayersByServerName(String serverName);
+
+    boolean existsCloudPlayer(String playerName);
+
+    boolean existsCloudPlayer(UUID uniqueID);
+
+    void updateCloudPlayer(CloudPlayerAPI cloudPlayerAPI);
 
 }
