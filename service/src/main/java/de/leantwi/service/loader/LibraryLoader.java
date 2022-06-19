@@ -13,6 +13,8 @@ import java.util.logging.Logger;
 @RequiredArgsConstructor
 public class LibraryLoader {
 
+    private MyClassloader myClassloader;
+
 
     private final File LIBRARY_FOLDER = new File("libraries/");
     @Getter
@@ -22,6 +24,8 @@ public class LibraryLoader {
      * Loads the libraries into the classpath
      */
     public void loadLibraries() {
+
+
         if (!LIBRARY_FOLDER.exists()) {
             LIBRARY_FOLDER.mkdir();
         }
@@ -29,22 +33,35 @@ public class LibraryLoader {
             return;
         }
 
+        this.myClassloader = new MyClassloader(new URL[0], this.getClass().getClassLoader());
+
         for (File libraryFile : LIBRARY_FOLDER.listFiles()) {
             if (!libraryFile.getName().endsWith(".jar")) {
                 continue;
             }
 
-            // Adding library to classpath
+
             try {
-                URLClassLoader loader = (URLClassLoader) LibraryLoader.class.getClassLoader();
-                Method addURL = URLClassLoader.class.getDeclaredMethod("addURL", URL.class);
-                addURL.setAccessible(true);
-                addURL.invoke(loader, libraryFile.toURI().toURL());
+
+                Method method = myClassloader.getClass().getMethod("addURL", URL.class);
+                method.setAccessible(true);
+                method.invoke(myClassloader, libraryFile.toURI().toURL());
 
                 this.logger.info("Loaded library " + libraryFile.getName());
             } catch (Exception ex) {
                 this.logger.log(Level.WARNING, "Couldn't load library " + libraryFile.getName(), ex);
             }
+        }
+    }
+
+    private class MyClassloader extends URLClassLoader {
+
+        public MyClassloader(URL[] urls, ClassLoader parent) {
+            super(urls, parent);
+        }
+
+        public void addURL(URL url) {
+            super.addURL(url);
         }
     }
 
