@@ -15,14 +15,18 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
-public interface  CloudSystemAPI {
+public interface CloudSystemAPI {
 
     EventHandlerAPI getEventHandler();
 
     NatsConnectorAPI getNatsConnector();
+
     RedisConnectorAPI getRedisConnectorAPI();
+
     MongoDBConnectorAPI getMongoDBConnectorAPI();
+
     JedisPool getRedisPool();
+
     MongoClient getMongoDBClient();
 
     GameServerData getGameServerByServerName(String serverName);
@@ -38,9 +42,13 @@ public interface  CloudSystemAPI {
     void deleteGameServer(GameServerData gameServerData);
 
     List<SubGroupDB> getAllSubGroups();
+
     List<SubGroupDB> getAllSubGroupByGroupName(String groupName);
+
     Collection<GroupDB> getAllGroups();
+
     GroupDB getGroupByName(String groupName);
+
     Optional<SubGroupDB> getSubGroupByName(String subGroupName);
 
     boolean existsGameServerByServerName(String serverName);
@@ -58,5 +66,7 @@ public interface  CloudSystemAPI {
     boolean existsCloudPlayer(UUID uniqueID);
 
     void updateCloudPlayer(CloudPlayerAPI cloudPlayerAPI);
+
+    void deleteCloudPlayer(CloudPlayerAPI cloudPlayerAPI);
 
 }

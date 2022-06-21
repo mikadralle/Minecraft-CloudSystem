@@ -1,6 +1,15 @@
 package de.leantwi.cloudsystem.api;
 
+import lombok.Getter;
+import lombok.Setter;
+
+import java.util.UUID;
+
+
+
 public class CloudPlayer extends CloudPlayerAPI {
+
+
 
 
     @Override

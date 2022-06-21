@@ -212,7 +212,7 @@ public class CloudSystemBase implements CloudSystemAPI {
             jedis.select(DATABASE_ID);
 
             if (jedis.exists(REDIS_CLOUD_PLAYERS_PATH + uuid)) {
-                return gson.fromJson(jedis.hget(REDIS_CLOUD_PLAYERS_PATH + uuid, "json"), CloudPlayerAPI.class);
+                return gson.fromJson(jedis.hget(REDIS_CLOUD_PLAYERS_PATH + uuid, "json"), CloudPlayer.class);
             } else {
 
 
@@ -259,6 +259,16 @@ public class CloudSystemBase implements CloudSystemAPI {
             jedis.select(DATABASE_ID);
             jedis.hset(REDIS_CLOUD_PLAYERS_PATH + cloudPlayer.getUniqueID(), "json", this.gson.toJson(cloudPlayer));
         }
+    }
+
+    @Override
+    public void deleteCloudPlayer(CloudPlayerAPI cloudPlayerAPI) {
+        try (Jedis jedis = this.getRedisPool().getResource()) {
+            jedis.select(DATABASE_ID);
+            jedis.del(REDIS_CLOUD_PLAYERS_PATH + cloudPlayerAPI.getUniqueID());
+        }
+
+
     }
 
 }

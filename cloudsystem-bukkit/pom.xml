@@ -26,9 +26,10 @@
     <dependencies>
         <!-- Paper Spigot -->
         <dependency>
-            <groupId>org.github.paperspigot</groupId>
-            <artifactId>paperspigot-api</artifactId>
-            <version>1.8.8-R0.1-20160806.221350-1</version>
+            <groupId>io.papermc.paper</groupId>
+            <artifactId>paper-api</artifactId>
+            <version>1.18.2-R0.1-SNAPSHOT</version>
+            <scope>provided</scope>
         </dependency>
         <!-- Gson -->
         <dependency>
