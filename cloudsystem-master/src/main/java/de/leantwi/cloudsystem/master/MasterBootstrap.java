@@ -10,7 +10,6 @@ import de.leantwi.cloudsystem.master.command.HelpCommand;
 import de.leantwi.cloudsystem.master.command.StartCommand;
 import de.leantwi.cloudsystem.master.command.StopCommand;
 import de.leantwi.cloudsystem.master.database.mongo.DatabaseHandler;
-import de.leantwi.cloudsystem.master.listeners.*;
 import de.leantwi.cloudsystem.master.handler.bungeecord.BungeeHandler;
 import de.leantwi.cloudsystem.master.handler.hoster.HosterCloud;
 import de.leantwi.cloudsystem.master.handler.message.CloudDispatcher;
@@ -21,13 +20,13 @@ import de.leantwi.cloudsystem.master.handler.server.ServerFactory;
 import de.leantwi.cloudsystem.master.handler.service.ServerOnlineAmountService;
 import de.leantwi.cloudsystem.master.handler.service.TimerTaskService;
 import de.leantwi.cloudsystem.master.handler.wrapper.WrapperHandler;
+import de.leantwi.cloudsystem.master.listeners.*;
 import de.leantwi.service.Service;
+import lombok.Getter;
+import redis.clients.jedis.Jedis;
 
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-
-import lombok.Getter;
-import redis.clients.jedis.Jedis;
 
 @Getter
 public class MasterBootstrap extends Service {
@@ -56,7 +55,7 @@ public class MasterBootstrap extends Service {
     // private Core core;
     private PacketHandler packetHandler;
 
-    private CloudSystemAPI cloudSystemAPI = CloudSystem.getAPI();
+    private final CloudSystemAPI cloudSystemAPI = CloudSystem.getAPI();
     //
     //private HetznerCloudAPI hetznerCloudAPI;
     private HosterCloud hosterCloud;
@@ -137,7 +136,6 @@ public class MasterBootstrap extends Service {
         //this.hetznerCloudAPI = new HetznerCloudAPI(this.configAPI.getProperty("heztner.token"));
 
         CloudSystem.getEventAPI().registerListener(new MessageListener());
-        CloudSystem.getEventAPI().registerListener(new PlayerMessageListener());
         CloudSystem.getEventAPI().registerListener(new PlayerChangeServerListener());
         CloudSystem.getEventAPI().registerListener(new StartGameServerListener());
         CloudSystem.getEventAPI().registerListener(new GameTypeChangeListener());

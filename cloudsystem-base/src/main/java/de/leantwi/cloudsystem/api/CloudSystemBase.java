@@ -19,17 +19,17 @@ import java.util.stream.Collectors;
 
 public class CloudSystemBase implements CloudSystemAPI {
 
-    private MongoDBConnectorAPI mongoDBConnectorAPI;
-    private NatsConnectorAPI natsConnectorAPI;
-    private RedisConnectorAPI redisConnectorAPI;
+    private final MongoDBConnectorAPI mongoDBConnectorAPI;
+    private final NatsConnectorAPI natsConnectorAPI;
+    private final RedisConnectorAPI redisConnectorAPI;
     public final int DATABASE_ID = 7;
     private final Gson gson = new Gson();
     public final String REDIS_CLOUD_SERVER_PATH = "cloud:server";
     public final String REDIS_CLOUD_PLAYERS_PATH = "cloud:players:";
 
-    private GroupHandler groupHandler;
+    private final GroupHandler groupHandler;
 
-    private CloudPlayerAPI cloudPlayer;
+    private final CloudPlayerAPI cloudPlayer;
 
     public CloudSystemBase(NatsConnectorAPI natsConnectorAPI, RedisConnectorAPI redisConnectorAPI, MongoDBConnectorAPI mongoDBConnectorAPI) {
         this.natsConnectorAPI = natsConnectorAPI;
@@ -265,7 +265,7 @@ public class CloudSystemBase implements CloudSystemAPI {
     public void deleteCloudPlayer(CloudPlayerAPI cloudPlayerAPI) {
         try (Jedis jedis = this.getRedisPool().getResource()) {
             jedis.select(DATABASE_ID);
-            jedis.del(REDIS_CLOUD_PLAYERS_PATH + cloudPlayerAPI.getUniqueID());
+            jedis.hdel(REDIS_CLOUD_PLAYERS_PATH + cloudPlayerAPI.getUniqueID(),"json");
         }
 
 

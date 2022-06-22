@@ -15,7 +15,6 @@ import java.util.concurrent.Executors;
 @Getter
 public class BukkitConnector extends JavaPlugin {
 
-
     @Getter
     private static BukkitConnector instance;
 

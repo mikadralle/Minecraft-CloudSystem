@@ -2,6 +2,7 @@ package de.leantwi.cloudsystem.master.handler.message;
 
 import de.leantwi.cloudsystem.master.MasterBootstrap;
 import io.nats.client.Dispatcher;
+
 import java.nio.charset.StandardCharsets;
 
 public class PingDispatcher {
@@ -16,7 +17,7 @@ public class PingDispatcher {
 
         case "ping":
           MasterBootstrap.getInstance().getNatsConnector().publish(message.getReplyTo(), "pong");
-          System.out.println("PONG");
+          MasterBootstrap.getInstance().getLogger().info("The wrapper has been pinged");
           break;
       }
     });

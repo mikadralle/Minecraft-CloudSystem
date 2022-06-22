@@ -17,9 +17,7 @@ public class CloudPlayerQuitNetworkListener implements Listener {
     public void onCloudPlayerQuitNetworkEvent(CloudPlayerQuitNetworkEvent event) {
 
         CloudPlayer cloudPlayer = (CloudPlayer) CloudSystem.getAPI().getCloudPlayerByUUID(event.getUniqueID());
-        cloudPlayer.setLastJoin(System.currentTimeMillis());
 
-        this.executorService.execute(() -> CloudSystem.getAPI().updateCloudPlayer(cloudPlayer));
         this.executorService.execute(() -> CloudSystem.getAPI().deleteCloudPlayer(cloudPlayer));
 
     }

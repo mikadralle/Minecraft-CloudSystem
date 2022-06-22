@@ -12,10 +12,12 @@ import de.leantwi.cloudsystem.wrapper.database.message.CloudDispatcher;
 import de.leantwi.cloudsystem.wrapper.database.message.InformationDispatcher;
 import de.leantwi.cloudsystem.wrapper.listeners.RequestGameServerListener;
 import de.leantwi.cloudsystem.wrapper.listeners.ShutdownSystemListener;
-import de.leantwi.cloudsystem.wrapper.utils.config.IniFile;
-import de.leantwi.service.Service;
 import de.leantwi.cloudsystem.wrapper.utils.WrapperSettings;
 import de.leantwi.cloudsystem.wrapper.utils.WrapperType;
+import de.leantwi.cloudsystem.wrapper.utils.config.IniFile;
+import de.leantwi.service.Service;
+import lombok.Getter;
+import lombok.Setter;
 
 import java.net.InetAddress;
 import java.net.UnknownHostException;
@@ -23,9 +25,6 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeoutException;
-
-import lombok.Getter;
-import lombok.Setter;
 
 @Getter
 public class WrapperBootstrap extends Service {
@@ -38,8 +37,6 @@ public class WrapperBootstrap extends Service {
     private InformationDispatcher informationDispatcher;
     private CloudDispatcher cloudDispatcher;
 
-
-    //
     private FolderUtils folderUtils;
     private WrapperCore wrapperCore;
     private IniFile configAPI;
@@ -91,7 +88,6 @@ public class WrapperBootstrap extends Service {
         CloudSystem.getEventAPI().registerListener(new ShutdownSystemListener());
         CloudSystem.getEventAPI().registerListener(new RequestGameServerListener());
 
-
         this.loadConfig();
         this.informationDispatcher.listen();
         String answer = null;
@@ -106,10 +102,6 @@ public class WrapperBootstrap extends Service {
             return;
         }
         getLogger().info("Master is doesn't available:");
-
-
-
-
 
     }
 

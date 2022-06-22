@@ -30,6 +30,7 @@ public class CloudPlayerJoinNetworkListener implements Listener {
 
             cloudPlayer.setUniqueID(event.getUniqueID());
             cloudPlayer.setLastJoin(System.currentTimeMillis());
+            cloudPlayer.setPlayerName(event.getPlayerName());
 
             this.executorService.execute(() -> CloudSystem.getAPI().updateCloudPlayer(cloudPlayer));
 
