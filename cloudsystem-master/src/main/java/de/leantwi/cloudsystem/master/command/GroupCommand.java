@@ -1,7 +1,6 @@
 package de.leantwi.cloudsystem.master.command;
 
 import de.leantwi.cloudsystem.CloudSystem;
-import de.leantwi.cloudsystem.api.CloudSystemBase;
 import de.leantwi.cloudsystem.api.gameserver.groups.GroupDB;
 import de.leantwi.cloudsystem.api.gameserver.groups.SubGroupDB;
 import de.leantwi.cloudsystem.group.GroupHandler;
@@ -15,7 +14,7 @@ public class GroupCommand implements CommandImplementation {
     public void execute(String[] strings) {
 
 
-        //group create <Group-Name> <Subgroup-Name>
+        //group create <Group-Name>
         //group addSubGroup <Group-Name> <SubGroup-Name>
 
 
@@ -28,7 +27,7 @@ public class GroupCommand implements CommandImplementation {
 
                 if (!list.stream().anyMatch(groupDB -> groupDB.getGroupName().equalsIgnoreCase(groupName))) {
 
-                    GroupHandler.getInstance().createGroup(groupName, subGroupName);
+                    GroupHandler.getInstance().createGroup(groupName);
                     MasterBootstrap.getInstance().getLogger().info("The Group " + groupName + " has been created. §cPlease restart the system!");
                     return;
                 }
@@ -37,7 +36,7 @@ public class GroupCommand implements CommandImplementation {
 
             }
 
-            if(strings[0].equalsIgnoreCase("addsubgroup")){
+            if (strings[0].equalsIgnoreCase("addsubgroup")) {
 
                 String groupName = strings[1];
                 String subGroupName = strings[2];
@@ -47,16 +46,12 @@ public class GroupCommand implements CommandImplementation {
                 if (list.stream().anyMatch(groupDB -> groupDB.getGroupName().equalsIgnoreCase(groupName)) && subGroupDBS.stream().anyMatch(subGroupDB -> subGroupDB.getSubGroupName().equalsIgnoreCase(subGroupName))) {
 
                     GroupHandler.getInstance().addSubGroupToGroup(groupName, subGroupName);
-                    MasterBootstrap.getInstance().getLogger().info("The SubGroup " + subGroupName + " has been added to the main group " +  groupName + ". §cPlease restart the system!");
+                    MasterBootstrap.getInstance().getLogger().info("The Sub-group " + subGroupName + " has been added to the main group " + groupName + ". §cPlease restart the system!");
                     return;
                 }
-                MasterBootstrap.getInstance().getLogger().info("§cThe group " + groupName + " or the subgroup " +subGroupName+ " does not exists!");
+                MasterBootstrap.getInstance().getLogger().info("§cThe group " + groupName + " or the sub-group " + subGroupName + " does not exists!");
                 return;
-
-
             }
-
-
 
         }
         MasterBootstrap.getInstance().getLogger().info("use the command /group create <group-name> <subgroup-name>");

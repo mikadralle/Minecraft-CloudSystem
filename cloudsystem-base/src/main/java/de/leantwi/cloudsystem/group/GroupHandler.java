@@ -48,14 +48,14 @@ public class GroupHandler {
 
     }
 
-    public void createGroup(String groupName, String subGroupName) {
+    public void createGroup(String groupName) {
 
         if (!this.groups.containsKey(groupName)) {
-            createDefault(groupName, subGroupName);
+            createDefault(groupName, groupName);
             return;
         }
 
-        this.groups.get(groupName).getSubGroupDBList().add(createSubGroup(subGroupName));
+        this.groups.get(groupName).getSubGroupDBList().add(createSubGroup(groupName));
         this.mongoDB.getMongoDatabase().getCollection("groups").updateOne(new Document("groupName", groupName), new Document("$set", groups.get(groupName).create()));
         this.groups.put(groups.get(groupName).getGroupName(), groups.get(groupName));
 

@@ -194,7 +194,7 @@ public class CloudSystemBase implements CloudSystemAPI {
 
     @Override
     public void createGroup(String groupName, String subGroupName) {
-        this.groupHandler.createGroup(groupName, subGroupName);
+        this.groupHandler.createGroup(groupName);
     }
 
     @Override
