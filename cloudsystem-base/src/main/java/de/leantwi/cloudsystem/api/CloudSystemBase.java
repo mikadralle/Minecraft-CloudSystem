@@ -193,8 +193,16 @@ public class CloudSystemBase implements CloudSystemAPI {
     }
 
     @Override
-    public void createGroup(String groupName, String subGroupName) {
+    public void createGroup(String groupName) {
+
         this.groupHandler.createGroup(groupName);
+
+    }
+
+    @Override
+    public void addNewSubGroupToGroup(String groupName, String subGroupName) {
+
+        this.groupHandler.addSubGroupToGroup(groupName, subGroupName);
     }
 
     @Override
@@ -265,7 +273,7 @@ public class CloudSystemBase implements CloudSystemAPI {
     public void deleteCloudPlayer(CloudPlayerAPI cloudPlayerAPI) {
         try (Jedis jedis = this.getRedisPool().getResource()) {
             jedis.select(DATABASE_ID);
-            jedis.hdel(REDIS_CLOUD_PLAYERS_PATH + cloudPlayerAPI.getUniqueID(),"json");
+            jedis.hdel(REDIS_CLOUD_PLAYERS_PATH + cloudPlayerAPI.getUniqueID(), "json");
         }
 
 

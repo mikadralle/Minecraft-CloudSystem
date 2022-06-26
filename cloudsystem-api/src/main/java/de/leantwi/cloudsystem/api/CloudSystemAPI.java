@@ -53,7 +53,9 @@ public interface CloudSystemAPI {
 
     boolean existsGameServerByServerName(String serverName);
 
-    void createGroup(String groupName, String subGroupName);
+    void addNewSubGroupToGroup(String groupName, String subGroupName);
+
+    void createGroup(String groupName);
 
     CloudPlayerAPI getCloudPlayerByName(String playerName);
 

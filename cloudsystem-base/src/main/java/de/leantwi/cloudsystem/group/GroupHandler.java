@@ -58,7 +58,6 @@ public class GroupHandler {
         this.groups.get(groupName).getSubGroupDBList().add(createSubGroup(groupName));
         this.mongoDB.getMongoDatabase().getCollection("groups").updateOne(new Document("groupName", groupName), new Document("$set", groups.get(groupName).create()));
         this.groups.put(groups.get(groupName).getGroupName(), groups.get(groupName));
-
     }
 
     private void createDefault(String groupName, String subGroupName) {

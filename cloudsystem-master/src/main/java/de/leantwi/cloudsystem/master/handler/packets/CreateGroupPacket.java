@@ -1,6 +1,5 @@
 package de.leantwi.cloudsystem.master.handler.packets;
 
-import de.leantwi.cloudsystem.CloudSystem;
 import de.leantwi.cloudsystem.master.MasterBootstrap;
 import de.leantwi.cloudsystem.master.handler.packets.handler.Packet;
 import lombok.Getter;
@@ -22,7 +21,7 @@ public class CreateGroupPacket extends Packet {
     String subGroupName = getStrings()[2];
 
     // group#subgrouop
-    CloudSystem.getAPI().createGroup(group,subGroupName);
+  //  CloudSystem.getAPI().createGroup(group,subGroupName);
     this.master.sendMessage("the group " + group + " and " + subGroupName + " has been created.");
 
   }
