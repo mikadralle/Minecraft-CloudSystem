@@ -3,17 +3,11 @@ package de.leantwi.cloudsystem.master.handler.server;
 import de.leantwi.cloudsystem.CloudSystem;
 import de.leantwi.cloudsystem.api.CloudSystemAPI;
 import de.leantwi.cloudsystem.api.events.gameserver.RequestGameServerEvent;
-import de.leantwi.cloudsystem.api.events.gameserver.StartGameServerEvent;
 import de.leantwi.cloudsystem.api.gameserver.GameServerData;
 import de.leantwi.cloudsystem.api.gameserver.GameState;
 import de.leantwi.cloudsystem.api.gameserver.groups.SubGroupDB;
 import de.leantwi.cloudsystem.api.gameserver.server.ServerDB;
 import de.leantwi.cloudsystem.master.MasterBootstrap;
-import lombok.Getter;
-import redis.clients.jedis.Jedis;
-
-import java.util.List;
-import java.util.Optional;
 
 
 public class ServerFactory {
@@ -25,7 +19,7 @@ public class ServerFactory {
 
 
     public void createServer(String subGroupName) {
-
+        MasterBootstrap.getInstance().getLogger().info("Create: " + subGroupName);
         final SubGroupDB subGroupDB = this.cloudSystem.getSubGroupByName(subGroupName).get();
         final ServerDB serverDB = subGroupDB.getServerDB();
 

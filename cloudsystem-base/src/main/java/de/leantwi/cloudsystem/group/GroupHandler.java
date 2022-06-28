@@ -23,7 +23,7 @@ public class GroupHandler {
     @Getter
     private static GroupHandler instance;
 
-    public GroupHandler(MongoDBConnectorAPI mongoDB){
+    public GroupHandler(MongoDBConnectorAPI mongoDB) {
         this.mongoDB = mongoDB;
         instance = this;
 
@@ -55,9 +55,12 @@ public class GroupHandler {
             return;
         }
 
-        this.groups.get(groupName).getSubGroupDBList().add(createSubGroup(groupName));
-        this.mongoDB.getMongoDatabase().getCollection("groups").updateOne(new Document("groupName", groupName), new Document("$set", groups.get(groupName).create()));
-        this.groups.put(groups.get(groupName).getGroupName(), groups.get(groupName));
+        GroupDB groupDB = this.groups.get(groupName);
+
+
+        groupDB.getSubGroupDBList().add(createSubGroup(groupName, this.groups.get(groupName)));
+        this.mongoDB.getMongoDatabase().getCollection("groups").updateOne(new Document("groupName", groupName), new Document("$set", groupDB.create()));
+        this.groups.put(groupDB.getGroupName(), groupDB);
     }
 
     private void createDefault(String groupName, String subGroupName) {
@@ -65,9 +68,11 @@ public class GroupHandler {
         GroupDB groupDB = new GroupDB();
         groupDB.setGroupName(groupName);
 
-        groupDB.getSubGroupDBList().add(createSubGroup(subGroupName));
-
+        groupDB.getSubGroupDBList().add(createSubGroup(subGroupName, groupDB));
         this.mongoDB.getMongoDatabase().getCollection("groups").insertOne(groupDB.create());
+
+        groupDB.fetch(groupDB.create());
+
         this.groups.put(groupDB.getGroupName(), groupDB);
         System.out.println("create default 'lobby'");
     }
@@ -75,29 +80,32 @@ public class GroupHandler {
     public void addSubGroupToGroup(String groupName, String subGroupName) {
 
         GroupDB groupDB = this.groups.get(groupName);
-        groupDB.getSubGroupDBList().add(createSubGroup(subGroupName));
+        groupDB.getSubGroupDBList().add(createSubGroup(subGroupName, groupDB));
         this.mongoDB.getMongoDatabase().getCollection("groups").insertOne(groupDB.create());
+        groupDB.fetch(groupDB.create());
         this.groups.put(groupDB.getGroupName(), groupDB);
 
     }
 
-    private SubGroupDB createSubGroup(String name) {
-        SubGroupDB subGroupDB = new SubGroupDB(null);
-        subGroupDB.setSubGroupName(name);
+    private SubGroupDB createSubGroup(String subGroupName, GroupDB groupDB) {
+        SubGroupDB subGroupDB = new SubGroupDB(groupDB);
+        System.out.println("SubGroupName: " + subGroupName);
+        subGroupDB.setSubGroupName(subGroupName);
 
         ServerDB serverDB = new ServerDB();
 
-        serverDB.setDisplayName("§eLobby§7-§e");
+        serverDB.setDisplayName("Default-Server");
         serverDB.setColor("§e");
         serverDB.setMemory(1024);
         serverDB.setMaxOnlineAmount(999);
-        serverDB.setMinOnlineAmount(2);
+        serverDB.setMinOnlineAmount(1);
         serverDB.setMaxPlayer(50);
         serverDB.setStartServerByPlayersLimit(50);
         serverDB.setMaintenance(false);
         serverDB.setGlobalCheck(false);
 
         subGroupDB.setServerDB(serverDB);
+
         return subGroupDB;
     }
 }

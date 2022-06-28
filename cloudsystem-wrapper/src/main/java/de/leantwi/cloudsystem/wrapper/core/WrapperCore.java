@@ -3,15 +3,14 @@ package de.leantwi.cloudsystem.wrapper.core;
 import de.leantwi.cloudsystem.CloudSystem;
 import de.leantwi.cloudsystem.api.CloudSystemAPI;
 import de.leantwi.cloudsystem.api.gameserver.GameServerData;
-import de.leantwi.cloudsystem.api.gameserver.server.ServerDB;
+import de.leantwi.cloudsystem.api.gameserver.groups.SubGroupDB;
 import de.leantwi.cloudsystem.wrapper.WrapperBootstrap;
+import lombok.Getter;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.*;
-import java.util.concurrent.ConcurrentHashMap;
-
-import lombok.Getter;
+import java.util.LinkedList;
+import java.util.Queue;
 
 public class WrapperCore {
 
@@ -40,6 +39,9 @@ public class WrapperCore {
             Thread.sleep(500);
 
             final String serverName = gameServerData.getServerName();
+            WrapperBootstrap.getInstance().getLogger().info("INFO-NAME: §e" + gameServerData.getSubGroupDB());
+            SubGroupDB subGroupDB = CloudSystem.getAPI().getSubGroupByName(gameServerData.getSubGroupDB()).get();
+            WrapperBootstrap.getInstance().getLogger().info("SubGroup: " + subGroupDB.getSubGroupName());
             final int memory = CloudSystem.getAPI().getSubGroupByName(gameServerData.getSubGroupDB()).get().getServerDB().getMemory();
 
             this.process = new ProcessBuilder(

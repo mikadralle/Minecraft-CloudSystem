@@ -180,7 +180,7 @@ public class CloudSystemBase implements CloudSystemAPI {
                 return subGroupDB;
             }
         }
-        return null;
+        return Optional.empty();
     }
 
     @Override
