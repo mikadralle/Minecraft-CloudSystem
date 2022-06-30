@@ -3,7 +3,7 @@ package de.leantwi.cloudsystem.master.listeners;
 import de.leantwi.cloudsystem.CloudSystem;
 import de.leantwi.cloudsystem.api.event.Listener;
 import de.leantwi.cloudsystem.api.event.PacketListener;
-import de.leantwi.cloudsystem.api.events.gameserver.GameTypeChangeEvent;
+import de.leantwi.cloudsystem.api.events.gameserver.UpdateGameServerStatusEvent;
 import de.leantwi.cloudsystem.api.gameserver.GameServerData;
 import de.leantwi.cloudsystem.api.gameserver.GameState;
 import de.leantwi.cloudsystem.master.MasterBootstrap;
@@ -11,12 +11,12 @@ import de.leantwi.cloudsystem.master.MasterBootstrap;
 public class GameTypeChangeListener implements Listener {
 
     @PacketListener
-    public void onGameTypeChangeListener(GameTypeChangeEvent event) {
+    public void onUpdateGameServerStatusEvent(UpdateGameServerStatusEvent event) {
 
         final String serverName = event.getServerName();
-        final GameState gameState = GameState.getGameStateByString(event.getGametype());
+        final GameState gameState = event.getGameStatus();
 
-        if (gameState == GameState.LOBBY) {
+        if (gameState == GameState.STARTED) {
             MasterBootstrap.getInstance().getLogger().info("the " + serverName + " is now §aonline§f.");
             return;
         }

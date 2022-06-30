@@ -2,9 +2,8 @@ package de.leantwi.cloudsystem.wrapper.commands;
 
 import de.leantwi.cloudsystem.CloudSystem;
 import de.leantwi.cloudsystem.api.CloudSystemAPI;
-import de.leantwi.cloudsystem.wrapper.core.WrapperCore;
-import de.leantwi.service.command.CommandImplementation;
 import de.leantwi.cloudsystem.wrapper.WrapperBootstrap;
+import de.leantwi.service.command.CommandImplementation;
 
 public class StopCommand implements CommandImplementation {
 
@@ -15,7 +14,6 @@ public class StopCommand implements CommandImplementation {
   public void execute(String[] strings) {
 
     final WrapperBootstrap wrapperBootstrap = WrapperBootstrap.getInstance();
-    final WrapperCore wrapperCore = wrapperBootstrap.getWrapperCore();
 
     //stop <server|group|sub-Group> <name>
 

@@ -40,6 +40,7 @@ public class BukkitConnector extends JavaPlugin {
 
     @Override
     public void onDisable() {
+
         this.spigotConnector.logoutSpigotServer();
 
     }

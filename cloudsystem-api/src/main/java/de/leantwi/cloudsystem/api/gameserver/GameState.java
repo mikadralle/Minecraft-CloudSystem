@@ -5,9 +5,20 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public enum GameState {
 
+    /*
+
+    0 = OFFLINE
+    1 = STARTED
+    20 = LOBBY
+    30 = InGame
+    40 = RESTART
+
+     */
+
     STARTS("starts"),
+    STARTED("started"),
     LOBBY("lobby"),
-    GAME("game"),
+    InGAME("ingame"),
     RESTART("restart"),
     STATIC("static"),
     SHUTDOWN("shutdown"),
@@ -20,13 +31,14 @@ public enum GameState {
 
     public static GameState getGameStateByString(String type) {
         switch (type) {
-
             case "starts":
                 return STARTS;
+            case "started":
+                return STARTED;
             case "lobby":
                 return LOBBY;
-            case "game":
-                return GAME;
+            case "ingame":
+                return InGAME;
             case "restart":
                 return RESTART;
             case "static":

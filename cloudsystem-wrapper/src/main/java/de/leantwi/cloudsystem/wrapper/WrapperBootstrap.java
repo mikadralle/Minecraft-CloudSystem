@@ -6,7 +6,7 @@ import de.leantwi.cloudsystem.api.events.wrapper.UnRegisterWrapperEvent;
 import de.leantwi.cloudsystem.wrapper.commands.HelpCommand;
 import de.leantwi.cloudsystem.wrapper.commands.StopCommand;
 import de.leantwi.cloudsystem.wrapper.core.FolderUtils;
-import de.leantwi.cloudsystem.wrapper.core.WrapperCore;
+import de.leantwi.cloudsystem.wrapper.core.GameServerHandler;
 import de.leantwi.cloudsystem.wrapper.core.handler.TimerTaskHandler;
 import de.leantwi.cloudsystem.wrapper.database.message.CloudDispatcher;
 import de.leantwi.cloudsystem.wrapper.database.message.InformationDispatcher;
@@ -39,7 +39,7 @@ public class WrapperBootstrap extends Service {
     private CloudDispatcher cloudDispatcher;
 
     private FolderUtils folderUtils;
-    private WrapperCore wrapperCore;
+    private GameServerHandler gameServerHandler;
     private IniFile configAPI;
     //
     private WrapperSettings wrapperSettings;
@@ -123,7 +123,7 @@ public class WrapperBootstrap extends Service {
         this.configAPI = new IniFile("config.ini");
         this.cloudDispatcher = new CloudDispatcher();
         this.folderUtils = new FolderUtils();
-        this.wrapperCore = new WrapperCore();
+        this.gameServerHandler = new GameServerHandler();
         this.wrapperSettings = new WrapperSettings();
         this.informationDispatcher = new InformationDispatcher();
 

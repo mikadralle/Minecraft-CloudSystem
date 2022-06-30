@@ -3,7 +3,6 @@ package de.leantwi.cloudsystem.wrapper.core;
 import de.leantwi.cloudsystem.CloudSystem;
 import de.leantwi.cloudsystem.api.CloudSystemAPI;
 import de.leantwi.cloudsystem.api.gameserver.GameServerData;
-import de.leantwi.cloudsystem.api.gameserver.groups.SubGroupDB;
 import de.leantwi.cloudsystem.wrapper.WrapperBootstrap;
 import lombok.Getter;
 
@@ -12,24 +11,33 @@ import java.io.IOException;
 import java.util.LinkedList;
 import java.util.Queue;
 
-public class WrapperCore {
+public class GameServerHandler {
 
     private final CloudSystemAPI cloudSystemAPI = CloudSystem.getAPI();
     public final WrapperBootstrap wrapper = WrapperBootstrap.getInstance();
-    public Queue<GameServerData> gameServerDataQueue = new LinkedList<>();
+
+    private final Queue<GameServerData> gameServerQueue = new LinkedList<>();
+    private final Queue<GameServerData> gameServerStartQueue = new LinkedList<>();
+
     //
+
     private final FolderUtils folderUtils = this.wrapper.getFolderUtils();
     @Getter
     private Process process;
 
     public void startServer() {
 
-        if (this.gameServerDataQueue.isEmpty()) {
+        if (this.gameServerQueue.isEmpty()) {
             return;
         }
 
-        this.start(gameServerDataQueue.poll());
+        if (!this.gameServerStartQueue.isEmpty()) {
+            final GameServerData gameServerData = this.gameServerQueue.peek();
+            this.gameServerStartQueue.add(gameServerData);
+            this.start(gameServerData);
+        }
     }
+
 
     private void start(GameServerData gameServerData) {
 
@@ -39,9 +47,6 @@ public class WrapperCore {
             Thread.sleep(500);
 
             final String serverName = gameServerData.getServerName();
-            WrapperBootstrap.getInstance().getLogger().info("INFO-NAME: §e" + gameServerData.getSubGroupDB());
-            SubGroupDB subGroupDB = CloudSystem.getAPI().getSubGroupByName(gameServerData.getSubGroupDB()).get();
-            WrapperBootstrap.getInstance().getLogger().info("SubGroup: " + subGroupDB.getSubGroupName());
             final int memory = CloudSystem.getAPI().getSubGroupByName(gameServerData.getSubGroupDB()).get().getServerDB().getMemory();
 
             this.process = new ProcessBuilder(
@@ -58,7 +63,12 @@ public class WrapperCore {
     }
 
     public void addRequestedGameServer(String serverName) {
-        this.gameServerDataQueue.add(this.cloudSystemAPI.getGameServerByServerName(serverName));
+        this.gameServerQueue.add(this.cloudSystemAPI.getGameServerByServerName(serverName));
+    }
+
+    public void finishServer(GameServerData gameServerData) {
+        this.gameServerStartQueue.remove(gameServerData);
+        this.gameServerQueue.remove(gameServerData);
     }
 
 

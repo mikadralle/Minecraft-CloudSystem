@@ -13,7 +13,7 @@ public class RequestGameServerListener implements Listener {
         if(!WrapperBootstrap.getInstance().getWrapperSettings().getWrapperID().equalsIgnoreCase(event.getWrapperID())){
             return;
         }
-        WrapperBootstrap.getInstance().getWrapperCore().addRequestedGameServer(event.getServerName());
+        WrapperBootstrap.getInstance().getGameServerHandler().addRequestedGameServer(event.getServerName());
         WrapperBootstrap.getInstance().getLogger().info("The server " + event.getServerName() + " request has been accepted.");
 
     }
