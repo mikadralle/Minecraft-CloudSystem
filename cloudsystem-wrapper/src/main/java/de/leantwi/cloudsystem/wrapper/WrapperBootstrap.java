@@ -12,6 +12,7 @@ import de.leantwi.cloudsystem.wrapper.database.message.CloudDispatcher;
 import de.leantwi.cloudsystem.wrapper.database.message.InformationDispatcher;
 import de.leantwi.cloudsystem.wrapper.listeners.RequestGameServerListener;
 import de.leantwi.cloudsystem.wrapper.listeners.ShutdownSystemListener;
+import de.leantwi.cloudsystem.wrapper.listeners.UpdateGameServerStatusListener;
 import de.leantwi.cloudsystem.wrapper.listeners.groups.RefreshGroupsListener;
 import de.leantwi.cloudsystem.wrapper.utils.WrapperSettings;
 import de.leantwi.cloudsystem.wrapper.utils.WrapperType;
@@ -89,6 +90,7 @@ public class WrapperBootstrap extends Service {
         CloudSystem.getEventAPI().registerListener(new ShutdownSystemListener());
         CloudSystem.getEventAPI().registerListener(new RequestGameServerListener());
         CloudSystem.getEventAPI().registerListener(new RefreshGroupsListener());
+        CloudSystem.getEventAPI().registerListener(new UpdateGameServerStatusListener());
 
         this.loadConfig();
         this.informationDispatcher.listen();

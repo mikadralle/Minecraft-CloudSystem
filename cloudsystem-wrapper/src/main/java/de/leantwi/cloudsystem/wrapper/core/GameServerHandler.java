@@ -8,7 +8,9 @@ import lombok.Getter;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.LinkedList;
+import java.util.List;
 import java.util.Queue;
 
 public class GameServerHandler {
@@ -16,8 +18,8 @@ public class GameServerHandler {
     private final CloudSystemAPI cloudSystemAPI = CloudSystem.getAPI();
     public final WrapperBootstrap wrapper = WrapperBootstrap.getInstance();
 
-    private final Queue<GameServerData> gameServerQueue = new LinkedList<>();
-    private final Queue<GameServerData> gameServerStartQueue = new LinkedList<>();
+    private final Queue<String> gameServerQueue = new LinkedList<>();
+    private final List<String> gameServerStartQueue = new ArrayList<>();
 
     //
 
@@ -26,27 +28,28 @@ public class GameServerHandler {
     private Process process;
 
     public void startServer() {
-
         if (this.gameServerQueue.isEmpty()) {
             return;
         }
 
-        if (!this.gameServerStartQueue.isEmpty()) {
-            final GameServerData gameServerData = this.gameServerQueue.peek();
-            this.gameServerStartQueue.add(gameServerData);
-            this.start(gameServerData);
+        if (this.gameServerStartQueue.isEmpty()) {
+            final String serverName = this.gameServerQueue.peek();
+            this.gameServerStartQueue.add(serverName);
+            this.start(serverName);
         }
     }
 
 
-    private void start(GameServerData gameServerData) {
+    private void start(String serverName) {
+
+
+        final GameServerData gameServerData = this.cloudSystemAPI.getGameServerByServerName(serverName);
 
         try {
 
             this.folderUtils.createTemp(gameServerData);
             Thread.sleep(500);
 
-            final String serverName = gameServerData.getServerName();
             final int memory = CloudSystem.getAPI().getSubGroupByName(gameServerData.getSubGroupDB()).get().getServerDB().getMemory();
 
             this.process = new ProcessBuilder(
@@ -63,12 +66,12 @@ public class GameServerHandler {
     }
 
     public void addRequestedGameServer(String serverName) {
-        this.gameServerQueue.add(this.cloudSystemAPI.getGameServerByServerName(serverName));
+        this.gameServerQueue.add(serverName);
     }
 
-    public void finishServer(GameServerData gameServerData) {
-        this.gameServerStartQueue.remove(gameServerData);
-        this.gameServerQueue.remove(gameServerData);
+    public void finishServer(String serverName) {
+        this.gameServerStartQueue.remove(serverName);
+        this.gameServerQueue.remove(serverName);
     }
 
 

@@ -7,6 +7,7 @@ import de.leantwi.cloudsystem.api.gameserver.GameServerData;
 import de.leantwi.cloudsystem.api.gameserver.GameState;
 import de.leantwi.cloudsystem.bukkit.config.IniFile;
 import lombok.Getter;
+import org.bukkit.Bukkit;
 
 @Getter
 public class SpigotConnector {
@@ -23,6 +24,7 @@ public class SpigotConnector {
         GameServerData gameServerData = this.cloudSystemAPI.getGameServerByServerName(serverName);
         gameServerData.setGameState(GameState.STARTED);
         CloudSystem.getAPI().updateGameServer(gameServerData);
+        Bukkit.getConsoleSender().sendMessage("GameStatus: " + gameServerData.getGameState().getName());
         CloudSystem.getEventAPI().callEvent(new UpdateGameServerStatusEvent(gameServerData.getGameState().getName(), gameServerData.getServerName()));
     }
 

@@ -18,10 +18,10 @@ public class UpdateGameServerStatusListener implements Listener {
     public void onUpdateGameServerStatusEvent(UpdateGameServerStatusEvent event) {
 
 
-        GameState gameState = event.getGameStatus();
+        final GameState gameState = event.getGameStatus();
 
         if(gameState == GameState.STARTED){
-            this.gameServerHandler.finishServer(this.cloudSystemAPI.getGameServerByServerName(event.getServerName()));
+            this.gameServerHandler.finishServer(event.getServerName());
         }
 
 
