@@ -32,6 +32,8 @@ public class GroupHandler {
 
     public void fetch() {
 
+        this.groups.clear();
+
         this.mongoDB.getMongoDatabase().getCollection("groups").find().iterator().forEachRemaining(document -> {
             GroupDB groupDB = new GroupDB();
             groupDB.fetch(document);

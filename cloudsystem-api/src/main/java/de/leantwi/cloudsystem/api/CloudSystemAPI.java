@@ -37,6 +37,7 @@ public interface CloudSystemAPI {
 
     List<GameServerData> getAllGameServer();
 
+    void refreshGroups();
     void updateGameServer(GameServerData gameServerData);
 
     void deleteGameServer(GameServerData gameServerData);

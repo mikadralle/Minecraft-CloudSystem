@@ -122,6 +122,11 @@ public class CloudSystemBase implements CloudSystemAPI {
     }
 
     @Override
+    public void refreshGroups() {
+        this.groupHandler.fetch();
+    }
+
+    @Override
     public void updateGameServer(GameServerData gameServerData) {
 
         try (Jedis jedis = this.getRedisPool().getResource()) {
