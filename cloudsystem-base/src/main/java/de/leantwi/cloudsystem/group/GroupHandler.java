@@ -60,7 +60,7 @@ public class GroupHandler {
         GroupDB groupDB = this.groups.get(groupName);
 
 
-        groupDB.getSubGroupDBList().add(createSubGroup(groupName, this.groups.get(groupName)));
+        groupDB.getSubGroupDBList().add(createSubGroup(groupName, groupName));
         this.mongoDB.getMongoDatabase().getCollection("groups").updateOne(new Document("groupName", groupName), new Document("$set", groupDB.create()));
         this.groups.put(groupDB.getGroupName(), groupDB);
     }
@@ -70,27 +70,44 @@ public class GroupHandler {
         GroupDB groupDB = new GroupDB();
         groupDB.setGroupName(groupName);
 
-        groupDB.getSubGroupDBList().add(createSubGroup(subGroupName, groupDB));
+        groupDB.getSubGroupDBList().add(createSubGroup(subGroupName, groupName));
         this.mongoDB.getMongoDatabase().getCollection("groups").insertOne(groupDB.create());
-
         groupDB.fetch(groupDB.create());
-
         this.groups.put(groupDB.getGroupName(), groupDB);
         System.out.println("create default 'lobby'");
     }
 
-    public void addSubGroupToGroup(String groupName, String subGroupName) {
+    /**
+     * create a group with a head main group
+     *
+     * @param mainGroupName the main group name
+     * @param subGroupName  the sub group name
+     */
+    public void addSubGroupToGroup(String mainGroupName, String subGroupName) {
+        GroupDB groupDB;
+        if (!this.groups.containsKey(mainGroupName)) {
+            groupDB = new GroupDB();
+            groupDB.setGroupName(mainGroupName);
+            System.out.println("create main group " + mainGroupName);
 
-        GroupDB groupDB = this.groups.get(groupName);
-        groupDB.getSubGroupDBList().add(createSubGroup(subGroupName, groupDB));
-        this.mongoDB.getMongoDatabase().getCollection("groups").insertOne(groupDB.create());
-        groupDB.fetch(groupDB.create());
+        } else {
+            groupDB = this.groups.get(mainGroupName);
+        }
+        //create subgroup
+        groupDB.getSubGroupDBList().add(createSubGroup(subGroupName, groupDB.getGroupName()));
+        //insert into the database
+        if (this.groups.containsKey(mainGroupName)) {
+            this.mongoDB.getMongoDatabase().getCollection("groups").updateOne(new Document("groupName", groupDB.getGroupName()), new Document("$set", groupDB.create()));
+        } else {
+            this.mongoDB.getMongoDatabase().getCollection("groups").insertOne(groupDB.create());
+        }
+        //put in the hashmap
         this.groups.put(groupDB.getGroupName(), groupDB);
 
     }
 
-    private SubGroupDB createSubGroup(String subGroupName, GroupDB groupDB) {
-        SubGroupDB subGroupDB = new SubGroupDB(groupDB);
+    private SubGroupDB createSubGroup(String subGroupName, String mainGroupName) {
+        SubGroupDB subGroupDB = new SubGroupDB(mainGroupName);
         System.out.println("SubGroupName: " + subGroupName);
         subGroupDB.setSubGroupName(subGroupName);
 

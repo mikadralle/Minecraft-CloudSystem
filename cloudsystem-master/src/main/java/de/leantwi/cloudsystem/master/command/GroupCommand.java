@@ -8,9 +8,9 @@ import de.leantwi.cloudsystem.master.MasterBootstrap;
 import de.leantwi.service.command.CommandImplementation;
 
 import java.util.Collection;
+import java.util.Optional;
 
 public class GroupCommand implements CommandImplementation {
-
 
 
     @Override
@@ -19,7 +19,7 @@ public class GroupCommand implements CommandImplementation {
 
 
         //group create <Group-Name>
-        //group addSubGroup <Group-Name> <SubGroup-Name>
+        //group addSubGroup <Main-Group-Name> <SubGroup-Name>
 
         if (strings.length == 2) {
 
@@ -39,7 +39,7 @@ public class GroupCommand implements CommandImplementation {
                     } catch (InterruptedException e) {
                         throw new RuntimeException(e);
                     }
-                    CloudSystem.getEventAPI().callEvent(new RefreshGroupEvent(groupName,groupName));
+                    CloudSystem.getEventAPI().callEvent(new RefreshGroupEvent(groupName, groupName));
 
 
                     return;
@@ -60,12 +60,19 @@ public class GroupCommand implements CommandImplementation {
 
                 String groupName = strings[1];
                 String subGroupName = strings[2];
-                Collection<GroupDB> list = CloudSystem.getAPI().getAllGroups();
+                Collection<GroupDB> groupsList = CloudSystem.getAPI().getAllGroups();
                 Collection<SubGroupDB> subGroupDBS = CloudSystem.getAPI().getAllSubGroups();
 
-                if (list.stream().anyMatch(groupDB -> groupDB.getGroupName().equalsIgnoreCase(groupName)) && subGroupDBS.stream().anyMatch(subGroupDB -> subGroupDB.getSubGroupName().equalsIgnoreCase(subGroupName))) {
 
-                    CloudSystem.getAPI().addNewSubGroupToGroup(groupName,subGroupName);
+                if (!groupsList.stream().anyMatch(groupDB -> groupDB.getGroupName().equalsIgnoreCase(groupName))) {
+                    MasterBootstrap.getInstance().getLogger().info("The main group §e" + groupName + "§r has been created. ");
+                }
+
+                Optional<SubGroupDB> existsObject = subGroupDBS.stream().findAny().filter(subGroupDB -> subGroupDB.getSubGroupName().equalsIgnoreCase(subGroupName));
+
+                if (existsObject.isEmpty()) {
+
+                    CloudSystem.getAPI().addNewSubGroupToGroup(groupName, subGroupName);
                     MasterBootstrap.getInstance().getLogger().info("The Sub-group " + subGroupName + " has been added to the main group " + groupName + ". §cPlease restart the system!");
 
 
@@ -74,16 +81,18 @@ public class GroupCommand implements CommandImplementation {
                     } catch (InterruptedException e) {
                         throw new RuntimeException(e);
                     }
-                    CloudSystem.getEventAPI().callEvent(new RefreshGroupEvent(groupName,subGroupName));
+                    CloudSystem.getEventAPI().callEvent(new RefreshGroupEvent(groupName, subGroupName));
                     return;
+
                 }
+
                 MasterBootstrap.getInstance().getLogger().info("§cThe group " + groupName + " or the sub-group " + subGroupName + " does not exists!");
                 return;
             }
 
         }
         MasterBootstrap.getInstance().getLogger().info("use the command /group create <group-name> <subgroup-name>");
-        MasterBootstrap.getInstance().getLogger().info("use the command /group addsubgroup <group-name> <subgroup-name>");
+        MasterBootstrap.getInstance().getLogger().info("use the command /group addsubgroup <main-group-name> <subgroup-name>");
 
     }
 

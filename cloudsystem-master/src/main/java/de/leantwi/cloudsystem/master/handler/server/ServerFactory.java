@@ -35,7 +35,7 @@ public class ServerFactory {
         final String hostName = this.master.getWrapperHandler().getWrapperServer(wrapperName).getHostName();
         //create class GameServerData
         GameServerData gameServerData = new GameServerData(hostName, serverName, wrapperName,
-                subGroupDB.getSubGroupName(), subGroupDB.getGroupDB().getGroupName(),
+                subGroupDB.getSubGroupName(), subGroupDB.getMainGroupName(),
                 port, 0, 0, serverDB.getMaxPlayer(), GameState.STARTS);
         //sets data into redis.
         this.cloudSystem.updateGameServer(gameServerData);

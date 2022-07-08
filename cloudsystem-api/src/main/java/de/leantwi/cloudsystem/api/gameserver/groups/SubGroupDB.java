@@ -12,7 +12,7 @@ import org.bson.Document;
 @RequiredArgsConstructor
 public class SubGroupDB implements DBDocument {
 
-    private final GroupDB groupDB;
+    private final String mainGroupName;
     private String subGroupName;
     private ServerDB serverDB = new ServerDB();
     //private List<SessionServer> startSessionServerList = new ArrayList<>();

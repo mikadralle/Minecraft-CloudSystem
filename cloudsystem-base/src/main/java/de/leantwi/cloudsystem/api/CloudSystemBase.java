@@ -206,7 +206,6 @@ public class CloudSystemBase implements CloudSystemAPI {
 
     @Override
     public void addNewSubGroupToGroup(String groupName, String subGroupName) {
-
         this.groupHandler.addSubGroupToGroup(groupName, subGroupName);
     }
 

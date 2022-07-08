@@ -34,7 +34,7 @@ public class GroupDB implements DBDocument {
 
             List<Document> list = document.getList("groups", Document.class);
             list.forEach(subGroupDocument -> {
-                SubGroupDB subGroupDB = new SubGroupDB(this);
+                SubGroupDB subGroupDB = new SubGroupDB(groupName);
                 subGroupDB.fetch(subGroupDocument);
                 this.subGroupDBList.add(subGroupDB);
 
