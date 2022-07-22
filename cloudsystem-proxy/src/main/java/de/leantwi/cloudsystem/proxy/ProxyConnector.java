@@ -5,7 +5,6 @@ import de.leantwi.cloudsystem.CloudSystemInit;
 import de.leantwi.cloudsystem.proxy.config.IniFile;
 import de.leantwi.cloudsystem.proxy.listeners.*;
 import de.leantwi.cloudsystem.proxy.messager.BackendDispatcher;
-import de.leantwi.cloudsystem.proxy.messager.CloudDispatcher;
 import de.leantwi.cloudsystem.proxy.server.BungeeConnector;
 import de.leantwi.cloudsystem.proxy.server.ProxyHandler;
 import lombok.Getter;
@@ -25,7 +24,6 @@ public class ProxyConnector extends Plugin {
     private ProxyHandler proxyHandler;
     private BungeeConnector bungeeConnector;
     private CloudSystemInit cloudSystemInit;
-    private CloudDispatcher cloudDispatcher;
     private BackendDispatcher backendDispatcher;
 
     public static ProxyConnector getInstance() {
@@ -50,7 +48,6 @@ public class ProxyConnector extends Plugin {
 
         this.configAPI = new IniFile("database.ini");
 
-        this.cloudDispatcher = new CloudDispatcher();
         this.backendDispatcher = new BackendDispatcher();
         this.proxyHandler = new ProxyHandler();
         this.bungeeConnector = new BungeeConnector();
@@ -63,7 +60,6 @@ public class ProxyConnector extends Plugin {
 
     private void init() {
         this.backendDispatcher.listen();
-        this.cloudDispatcher.listen();
         this.proxyHandler.loginProxyServer();
 
         ProxyServer.getInstance().getPluginManager().registerListener(this, new ServerConnectListener());

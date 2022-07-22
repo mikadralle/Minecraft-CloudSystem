@@ -1,12 +1,5 @@
 package de.leantwi.cloudsystem.api;
 
-import lombok.Getter;
-import lombok.Setter;
-
-import java.util.UUID;
-
-
-
 public class CloudPlayer extends CloudPlayerAPI {
 
 
@@ -18,9 +11,10 @@ public class CloudPlayer extends CloudPlayerAPI {
     }
 
     @Override
-    String getCurrentServerName() {
+    public String getCurrentServerName() {
         return null;
     }
+
 
     @Override
     public boolean isOnline() {

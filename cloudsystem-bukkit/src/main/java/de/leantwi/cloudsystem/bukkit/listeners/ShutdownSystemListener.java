@@ -3,7 +3,6 @@ package de.leantwi.cloudsystem.bukkit.listeners;
 import de.leantwi.cloudsystem.api.event.Listener;
 import de.leantwi.cloudsystem.api.event.PacketListener;
 import de.leantwi.cloudsystem.api.events.global.ShutdownSystemEvent;
-import de.leantwi.cloudsystem.bukkit.BukkitConnector;
 import org.bukkit.Bukkit;
 
 public class ShutdownSystemListener implements Listener {

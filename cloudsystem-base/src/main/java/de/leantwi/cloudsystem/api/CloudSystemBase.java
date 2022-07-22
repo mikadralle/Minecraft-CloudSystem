@@ -11,6 +11,7 @@ import de.leantwi.cloudsystem.api.gameserver.GameServerData;
 import de.leantwi.cloudsystem.api.gameserver.groups.GroupDB;
 import de.leantwi.cloudsystem.api.gameserver.groups.SubGroupDB;
 import de.leantwi.cloudsystem.group.GroupHandler;
+import lombok.Getter;
 import redis.clients.jedis.Jedis;
 import redis.clients.jedis.JedisPool;
 
@@ -27,6 +28,7 @@ public class CloudSystemBase implements CloudSystemAPI {
     public final String REDIS_CLOUD_SERVER_PATH = "cloud:server";
     public final String REDIS_CLOUD_PLAYERS_PATH = "cloud:players:";
 
+    @Getter
     private final GroupHandler groupHandler;
 
     private final CloudPlayerAPI cloudPlayer;

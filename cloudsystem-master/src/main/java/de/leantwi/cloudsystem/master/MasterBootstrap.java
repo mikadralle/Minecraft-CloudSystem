@@ -12,7 +12,6 @@ import de.leantwi.cloudsystem.master.command.StopCommand;
 import de.leantwi.cloudsystem.master.database.mongo.DatabaseHandler;
 import de.leantwi.cloudsystem.master.handler.bungeecord.BungeeHandler;
 import de.leantwi.cloudsystem.master.handler.hoster.HosterCloud;
-import de.leantwi.cloudsystem.master.handler.message.CloudDispatcher;
 import de.leantwi.cloudsystem.master.handler.message.PingDispatcher;
 import de.leantwi.cloudsystem.master.handler.message.VerifyDispatcher;
 import de.leantwi.cloudsystem.master.handler.packets.handler.PacketHandler;
@@ -40,7 +39,6 @@ public class MasterBootstrap extends Service {
     //database & messaging
     private NatsConnectorAPI natsConnector;
     //dispatcher
-    private CloudDispatcher cloudDispatcher;
     private VerifyDispatcher verifyDispatcher;
     private PingDispatcher pingDispatcher;
     //
@@ -102,7 +100,6 @@ public class MasterBootstrap extends Service {
         // connections
         this.natsConnector = this.cloudSystemAPI.getNatsConnector();
         // dispatcher
-        this.cloudDispatcher = new CloudDispatcher();
         this.verifyDispatcher = new VerifyDispatcher();
         this.pingDispatcher = new PingDispatcher();
         //
@@ -124,7 +121,6 @@ public class MasterBootstrap extends Service {
         sleep(100);
 
         // dispatcher
-        this.cloudDispatcher.listen(); // Wird überarbeitet.
         this.verifyDispatcher.listen(); // wird überarbeitet.
         this.pingDispatcher.listen(); // Wird überarbeitet.
 

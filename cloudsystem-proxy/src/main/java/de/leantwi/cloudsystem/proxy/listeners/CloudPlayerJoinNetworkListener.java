@@ -17,6 +17,7 @@ public class CloudPlayerJoinNetworkListener implements Listener {
     @PacketListener
     public void onCloudPlayerJoinNetworkEvent(CloudPlayerJoinNetworkEvent event) {
 
+
         if (CloudSystem.getAPI().existsCloudPlayer(event.getUniqueID())) {
 
             CloudPlayer cloudPlayer = (CloudPlayer) CloudSystem.getAPI().getCloudPlayerByUUID(event.getUniqueID());

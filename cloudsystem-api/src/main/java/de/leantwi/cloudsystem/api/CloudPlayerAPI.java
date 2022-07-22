@@ -1,6 +1,7 @@
 package de.leantwi.cloudsystem.api;
 
-import lombok.*;
+import lombok.Getter;
+import lombok.Setter;
 
 import java.util.UUID;
 
@@ -13,11 +14,12 @@ public abstract class CloudPlayerAPI {
     private UUID uniqueID;
 
     private long lastJoin;
-    abstract void sendToServer(String serverName);
 
-    abstract String getCurrentServerName();
+    public abstract void sendToServer(String serverName);
 
-    abstract boolean isOnline();
+    public abstract String getCurrentServerName();
+
+    public abstract boolean isOnline();
 
 
 }
