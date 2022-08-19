@@ -30,7 +30,7 @@ public class CloudSystemInit {
         properties.setProperty("mongoDB.authDB", "admin");
         properties.setProperty("mongoDB.defaultDB", "cloud");
         properties.setProperty("mongoDB.user", "admin");
-        properties.setProperty("mongoDB.password", "YnRz7zQLxkjqRhrFBNNNgNEBLHYYEdzgH53eQ847WwbThSYCNQTLm6Ydr6cvWPH6");
+        properties.setProperty("mongoDB.password", "nmxLngfD4gYhEzbw6vwxTvxMRW6Hxww1nnYeD7mpptxskbHY7Ja5zdvMGSmU");
 
 
         CloudSystemAPI cloudSystemAPI = new CloudSystemBase(new NatsConnector(
