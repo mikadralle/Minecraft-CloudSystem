@@ -52,10 +52,11 @@ public class GameServerHandler {
 
             final int memory = CloudSystem.getAPI().getSubGroupByName(gameServerData.getSubGroupDB()).get().getServerDB().getMemory();
 
+
             this.process = new ProcessBuilder(
                     "screen", "-AmdS", serverName.toLowerCase(),
                     "java", "-Xms" + memory + "M", "-Xmx" + memory + "M", "-jar", "spigot.jar")
-                    .directory(new File("live/" + gameServerData.getGroupDB() + "/" + gameServerData.getSubGroupDB() + "/" + serverName + "/")).inheritIO().start();
+                    .directory(new File(this.folderUtils.getPath(gameServerData) + "/" + gameServerData.getGroupDB() + "/" + gameServerData.getSubGroupDB() + "/" + serverName + "/")).inheritIO().start();
 
             WrapperBootstrap.getInstance().getLogger().info("§aServer §e" + serverName + "§a will be started.");
 
