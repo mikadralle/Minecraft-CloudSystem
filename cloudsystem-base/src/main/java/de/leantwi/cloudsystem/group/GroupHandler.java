@@ -122,6 +122,7 @@ public class GroupHandler {
         serverDB.setStartServerByPlayersLimit(50);
         serverDB.setMaintenance(false);
         serverDB.setGlobalCheck(false);
+        serverDB.setStaticMode(false);
 
         subGroupDB.setServerDB(serverDB);
 

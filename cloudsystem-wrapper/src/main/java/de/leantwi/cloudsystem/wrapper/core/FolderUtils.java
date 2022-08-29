@@ -14,8 +14,9 @@ import java.io.IOException;
 
 public class FolderUtils {
 
-    private final String tempPath = "temp/";
-    private final String livePath = "live/";
+    private final File TEMP_PATH = new File("temp/");
+    private final File LIVE_PATH = new File("live/");
+    private final File LIVE_STATIC_PATH = new File("static/");
     private final File DEFAULT_PLUGINS = new File("default/plugins/");
     private final File DEFAULT_VERSIONS = new File("default/versions");
     private final File DEFAULT_SERVER = new File("default/server");
@@ -26,11 +27,11 @@ public class FolderUtils {
     public void load() {
         this.deleteFolder(new File("live/"));
 
-        if (!existsFolder(tempPath)) {
-            createFolder(tempPath);
+        if (!TEMP_PATH.exists()) {
+            TEMP_PATH.mkdirs();
         }
-        if (!existsFolder(livePath)) {
-            createFolder(livePath);
+        if (!LIVE_PATH.exists()) {
+            LIVE_PATH.mkdirs();
         }
 
         if (!DEFAULT_PLUGINS.exists()) {
@@ -49,29 +50,39 @@ public class FolderUtils {
         }
 
         //load new groups folder.
-        this.checkForNewGroups();
+        this.
+
+                checkForNewGroups();
 
     }
 
     public void createTemp(GameServerData gameServerData) {
 
+        final File currentLivePath = getPath(gameServerData);
         final String groupName = gameServerData.getGroupDB();
         final String subGroupName = gameServerData.getSubGroupDB();
         final String serverName = gameServerData.getServerName();
 
-        if (!existsFolder(tempPath + groupName)) {
-            createFolder(tempPath + groupName);
-        }
-        if (!existsFolder(tempPath + groupName + "/" + subGroupName)) {
-            createFolder(tempPath + groupName + "/" + subGroupName);
-        }
-        deleteFolder(new File("live/" + groupName + "/" + subGroupName + "/" + serverName));
-        if (!existsFolder("live/" + groupName + "/" + subGroupName + "/" + serverName)) {
-            createFolder("live/" + groupName + "/" + subGroupName + "/" + serverName);
+        final File temp_File = new File(this.TEMP_PATH + groupName + "/" + subGroupName + "/");
+        final File live_file = new File(currentLivePath + groupName + "/" + subGroupName + "/" + serverName);
+
+        //TODO: Überarbeiten
+        //create folders for GameServer
+        this.createFolder(temp_File);
+
+        if (!gameServerData.isStaticMode()) {
+            this.deleteFolder(live_file);
+            this.createFolder(live_file);
+        } else {
+            if (this.existsFolder(live_file)) {
+                return;
+            }
+            this.createFolder(live_file);
+            WrapperBootstrap.getInstance().getLogger().info("The static folder " + gameServerData.getServerName() + " has been created. ");
+
         }
 
-        File temp_File = new File(tempPath + groupName + "/" + subGroupName + "/");
-        File live_file = new File("live/" + "/" + groupName + "/" + subGroupName + "/" + serverName);
+
         try {
             FileUtils.copyDirectory(temp_File, live_file);
             FileUtils.copyDirectoryToDirectory(DEFAULT_PLUGINS, live_file);
@@ -79,15 +90,15 @@ public class FolderUtils {
             e.printStackTrace();
         }
 
-        setSpigotYML(gameServerData);
-        setBukkitYML(gameServerData);
-        setServerProperties(gameServerData);
-        setCloudConfig(gameServerData);
+        setSpigotYML(gameServerData, currentLivePath);
+        setBukkitYML(gameServerData, currentLivePath);
+        setServerProperties(gameServerData, currentLivePath);
+        setCloudConfig(gameServerData, currentLivePath);
     }
 
 
-    public void setSpigotYML(GameServerData gameServerData) {
-        ConfigAPI configAPI = new ConfigAPI("live/" + gameServerData.getGroupDB() + "/" + gameServerData.getSubGroupDB() + "/" + gameServerData.getServerName(), "spigot.yml", ": ");
+    public void setSpigotYML(GameServerData gameServerData, File livePath) {
+        ConfigAPI configAPI = new ConfigAPI(livePath + gameServerData.getGroupDB() + "/" + gameServerData.getSubGroupDB() + "/" + gameServerData.getServerName(), "spigot.yml", ": ");
         configAPI.delete();
         configAPI.createFile();
         configAPI.set("settings.bungeecord", true);
@@ -96,16 +107,16 @@ public class FolderUtils {
 
     }
 
-    public void setBukkitYML(GameServerData gameServerData) {
-        ConfigAPI configAPI = new ConfigAPI("live/" + gameServerData.getGroupDB() + "/" + gameServerData.getSubGroupDB() + "/" + gameServerData.getServerName(), "bukkit.yml", ": ");
+    public void setBukkitYML(GameServerData gameServerData, File livePath) {
+        ConfigAPI configAPI = new ConfigAPI(livePath + gameServerData.getGroupDB() + "/" + gameServerData.getSubGroupDB() + "/" + gameServerData.getServerName(), "bukkit.yml", ": ");
         configAPI.delete();
         configAPI.createFile();
         configAPI.set("settings.allow-end", false);
         configAPI.set("settings.connection-throttle", -1);
     }
 
-    public void setServerProperties(GameServerData gameServerData) {
-        ConfigAPI configAPI = new ConfigAPI("live/" + gameServerData.getGroupDB() + "/" + gameServerData.getSubGroupDB() + "/" + gameServerData.getServerName(), "server.properties", "=");
+    public void setServerProperties(GameServerData gameServerData, File livePath) {
+        ConfigAPI configAPI = new ConfigAPI(livePath + gameServerData.getGroupDB() + "/" + gameServerData.getSubGroupDB() + "/" + gameServerData.getServerName(), "server.properties", "=");
         configAPI.delete();
         configAPI.createFile();
         configAPI.set("server-port", gameServerData.getPort());
@@ -126,21 +137,29 @@ public class FolderUtils {
         configAPI.set("server-name", gameServerData.getServerName());
     }
 
-    public void setCloudConfig(GameServerData gameServerData) {
-        IniFile iniFile = new IniFile("live/" + gameServerData.getGroupDB() + "/" + gameServerData.getSubGroupDB() + "/" + gameServerData.getServerName() + "/cloud.ini");
+    public void setCloudConfig(GameServerData gameServerData, File livePath) {
+        IniFile iniFile = new IniFile(livePath + gameServerData.getGroupDB() + "/" + gameServerData.getSubGroupDB() + "/" + gameServerData.getServerName() + "/cloud.ini");
         if (iniFile.isEmpty()) {
             iniFile.setProperty("serverName", gameServerData.getServerName());
             iniFile.saveToFile();
         }
     }
 
-    private boolean existsFolder(String path) {
-        final File file = new File(path);
+
+    private File getPath(GameServerData gameServerData) {
+
+        if (cloudSystemAPI.getSubGroupByName(gameServerData.getSubGroupDB()).get().getServerDB().isStaticMode()) {
+            return LIVE_STATIC_PATH;
+        }
+        return LIVE_PATH;
+
+    }
+
+    private boolean existsFolder(File file) {
         return file.exists();
     }
 
-    private void createFolder(String path) {
-        final File file = new File(path);
+    private void createFolder(File file) {
         file.mkdir();
     }
 
@@ -183,7 +202,7 @@ public class FolderUtils {
     }
 
     public void createGroupFolder(String groupName, String subGroupName) {
-        File currentFolder = new File(tempPath + groupName + "/" + subGroupName);
+        File currentFolder = new File(TEMP_PATH + groupName + "/" + subGroupName);
         if (!currentFolder.exists()) {
             currentFolder.mkdirs();
 

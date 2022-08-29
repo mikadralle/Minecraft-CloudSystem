@@ -12,6 +12,7 @@ public class GameServerData {
 
     private String hostName, serverName, wrapperID, subGroupDB, groupDB;
     private int port, onlinePlayers, weightClass, maxOnlinePlayers;
+    private boolean staticMode;
     private GameState gameState;
 /*
     public void fetch(JedisPool jedisPool) {

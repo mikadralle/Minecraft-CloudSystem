@@ -10,7 +10,7 @@ public class ServerDB implements DBDocument {
 
     private String displayName, color;
     private int maxPlayer, memory, minOnlineAmount, maxOnlineAmount, startServerByPlayersLimit;
-    private boolean maintenance, globalCheck;
+    private boolean maintenance, globalCheck, staticMode;
 
     @Override
     public Document create() {
@@ -22,7 +22,8 @@ public class ServerDB implements DBDocument {
                 append("maxOnlineAmount", this.maxOnlineAmount).
                 append("startServerByPlayersLimit", this.startServerByPlayersLimit).
                 append("maintenance", this.maintenance).
-                append("globalCheck", this.globalCheck);
+                append("globalCheck", this.globalCheck).
+                append("staticMode", this.staticMode);
     }
 
     @Override
@@ -54,6 +55,9 @@ public class ServerDB implements DBDocument {
         }
         if (document.containsKey("globalCheck")) {
             this.globalCheck = document.getBoolean("globalCheck");
+        }
+        if (document.containsKey("staticMode")) {
+            this.staticMode = document.getBoolean("staticMode");
         }
 
     }

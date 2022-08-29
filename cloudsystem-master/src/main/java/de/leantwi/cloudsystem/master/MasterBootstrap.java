@@ -126,7 +126,7 @@ public class MasterBootstrap extends Service {
 
         this.executorService.execute(new TimerTaskService());
         this.cloudSystemAPI.getNatsConnector().publish("info", "master_connected"); // Broadcast that the master is now online
-        //TODO: Unnötog, aber leider noch wichtig.
+        //TODO: Unnötog, aber leider noch wichtig. Ich sollte das dringend ändern.
         this.wrapperHandler.addPublicIP("wrapper-1", this.configAPI.getProperty("wrapper.master.address"));
 
         //this.hetznerCloudAPI = new HetznerCloudAPI(this.configAPI.getProperty("heztner.token"));

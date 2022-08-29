@@ -29,8 +29,8 @@ public class CloudSystemInit {
         properties.setProperty("mongoDB.hostname", "mongodb.leantwi.de");
         properties.setProperty("mongoDB.authDB", "admin");
         properties.setProperty("mongoDB.defaultDB", "cloud");
-        properties.setProperty("mongoDB.user", "admin");
-        properties.setProperty("mongoDB.password", "nmxLngfD4gYhEzbw6vwxTvxMRW6Hxww1nnYeD7mpptxskbHY7Ja5zdvMGSmU");
+        properties.setProperty("mongoDB.user", "revane");
+        properties.setProperty("mongoDB.password", "GEpC4bsvXnTywNggc3DnZvL6RWaP3unN6LcnNzNpemwaFSKkVkf1Z7um2K6Y");
 
 
         CloudSystemAPI cloudSystemAPI = new CloudSystemBase(new NatsConnector(
