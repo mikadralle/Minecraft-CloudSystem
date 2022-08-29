@@ -2,12 +2,11 @@ package de.leantwi.cloudsystem.wrapper.core;
 
 import de.leantwi.cloudsystem.CloudSystem;
 import de.leantwi.cloudsystem.api.CloudSystemAPI;
-import de.leantwi.cloudsystem.api.gameserver.GameServerData;
+import de.leantwi.cloudsystem.api.wrapper.SetupServerHandlerAPI;
 import de.leantwi.cloudsystem.wrapper.WrapperBootstrap;
+import de.leantwi.cloudsystem.wrapper.core.folder.SpigotFolderHandler;
 import lombok.Getter;
 
-import java.io.File;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
@@ -21,7 +20,7 @@ public class GameServerHandler {
     private final Queue<String> gameServerQueue = new LinkedList<>();
     private final List<String> gameServerStartQueue = new ArrayList<>();
 
-    //
+    private SetupServerHandlerAPI currentServerSetup;
 
     private final FolderUtils folderUtils = this.wrapper.getFolderUtils();
     @Getter
@@ -42,26 +41,15 @@ public class GameServerHandler {
 
     private void start(String serverName) {
 
-
-        final GameServerData gameServerData = this.cloudSystemAPI.getGameServerByServerName(serverName);
-
         try {
 
-            this.folderUtils.createTemp(gameServerData);
+
+            this.currentServerSetup = new SpigotFolderHandler(this.cloudSystemAPI.getGameServerByServerName(serverName));
+            this.currentServerSetup.setup(); // create folders and copy the folder from temp folder
             Thread.sleep(500);
+            this.currentServerSetup.startServer(); // start server
 
-            final int memory = CloudSystem.getAPI().getSubGroupByName(gameServerData.getSubGroupDB()).get().getServerDB().getMemory();
-
-
-            this.process = new ProcessBuilder(
-                    "screen", "-AmdS", serverName.toLowerCase(),
-                    "java", "-Xms" + memory + "M", "-Xmx" + memory + "M", "-jar", "spigot.jar")
-                    .directory(new File(this.folderUtils.getPath(gameServerData) + "/" + gameServerData.getGroupDB() + "/" + gameServerData.getSubGroupDB() + "/" + serverName + "/")).inheritIO().start();
-
-            WrapperBootstrap.getInstance().getLogger().info("§aServer §e" + serverName + "§a will be started.");
-
-
-        } catch (IOException | InterruptedException e) {
+        } catch (InterruptedException e) {
             e.printStackTrace();
         }
     }

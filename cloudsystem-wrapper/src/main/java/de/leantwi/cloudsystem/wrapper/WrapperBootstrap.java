@@ -113,7 +113,6 @@ public class WrapperBootstrap extends Service {
         this.isMasterOnline = true;
         this.verifyWrapper();
         this.cloudDispatcher.listen();
-        this.folderUtils.load();
         this.executorService.execute(new TimerTaskHandler());
         getLogger().info("The wrapper is ready to start!");
 
