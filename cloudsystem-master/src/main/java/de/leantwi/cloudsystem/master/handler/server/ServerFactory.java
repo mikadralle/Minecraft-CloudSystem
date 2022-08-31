@@ -62,16 +62,6 @@ public class ServerFactory {
             if (!existsServer) {
                 return i;
             }
-            /*
-            for (GameServerData gameServerData : cloudSystem.getAllGameServerBySubGroupName(subGroupName)) {
-                MasterBootstrap.getInstance().getLogger().info("§cIS: " + gameServerData.getServerName() + " != " + subGroupName + "-" + i);
-                if (!gameServerData.getServerName().equalsIgnoreCase(subGroupName + "-" + i)) {
-                    MasterBootstrap.getInstance().getLogger().info("Ich wurde berufen! " + i);
-                    return i;
-                }
-            }
-
-           */
         }
         MasterBootstrap.getInstance().getLogger().info("§dALso keiner konnte was liefern: " + this.cloudSystem.getAllGameServerBySubGroupName(subGroupName).size() + 1);
         return this.cloudSystem.getAllGameServerBySubGroupName(subGroupName).size() + 1;
