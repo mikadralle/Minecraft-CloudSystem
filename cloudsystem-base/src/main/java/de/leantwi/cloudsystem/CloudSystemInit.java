@@ -32,7 +32,7 @@ public class CloudSystemInit {
         properties.setProperty("mongoDB.user", "revane");
         properties.setProperty("mongoDB.password", "GEpC4bsvXnTywNggc3DnZvL6RWaP3unN6LcnNzNpemwaFSKkVkf1Z7um2K6Y");
 
-
+        //AirBerlin hat kein Plan vom Linux
         CloudSystemAPI cloudSystemAPI = new CloudSystemBase(new NatsConnector(
                 System.getProperty("nats.hostname"),
                 System.getProperty("nats.token"), 4222),
