@@ -3,7 +3,8 @@ package de.leantwi.cloudsystem.bukkit;
 import de.leantwi.cloudsystem.CloudSystem;
 import de.leantwi.cloudsystem.CloudSystemInit;
 import de.leantwi.cloudsystem.api.CloudSystemAPI;
-import de.leantwi.cloudsystem.bukkit.listeners.ShutdownSystemListener;
+import de.leantwi.cloudsystem.bukkit.listeners.cloud.ShutdownSystemListener;
+import de.leantwi.cloudsystem.bukkit.listeners.cloud.StopGameServerListener;
 import de.leantwi.cloudsystem.bukkit.server.SpigotConnector;
 import lombok.Getter;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -30,6 +31,7 @@ public class BukkitConnector extends JavaPlugin {
     @Override
     public void onEnable() {
 
+
         instance = this;
         this.registerClasses();
         this.init();
@@ -52,6 +54,7 @@ public class BukkitConnector extends JavaPlugin {
 
         //Cloud listeners
         CloudSystem.getEventAPI().registerListener(new ShutdownSystemListener());
+        CloudSystem.getEventAPI().registerListener(new StopGameServerListener());
 
         this.spigotConnector.loginSpigotServer();
     }

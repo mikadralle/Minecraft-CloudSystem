@@ -5,7 +5,6 @@ import de.leantwi.cloudsystem.api.CloudSystemAPI;
 import de.leantwi.cloudsystem.api.events.gameserver.UpdateGameServerStatusEvent;
 import de.leantwi.cloudsystem.api.gameserver.GameServerData;
 import de.leantwi.cloudsystem.api.gameserver.GameState;
-import de.leantwi.cloudsystem.bukkit.config.IniFile;
 import lombok.Getter;
 import org.bukkit.Bukkit;
 
@@ -18,8 +17,8 @@ public class SpigotConnector {
 
 
     public void loginSpigotServer() {
-        final IniFile iniFile = new IniFile("cloud.ini");
-        this.serverName = iniFile.getProperty("serverName");
+
+        this.serverName = System.getProperty("cloud.serverName");
         this.cloudSystemAPI.getNatsConnector().publish("cloud", "online#" + this.serverName);
         GameServerData gameServerData = this.cloudSystemAPI.getGameServerByServerName(serverName);
         gameServerData.setGameState(GameState.STARTED);

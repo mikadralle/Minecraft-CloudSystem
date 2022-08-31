@@ -1,4 +1,4 @@
-package de.leantwi.cloudsystem.bukkit.listeners;
+package de.leantwi.cloudsystem.bukkit.listeners.cloud;
 
 import de.leantwi.cloudsystem.api.event.Listener;
 import de.leantwi.cloudsystem.api.event.PacketListener;

@@ -2,6 +2,7 @@ package de.leantwi.cloudsystem.proxy;
 
 import de.leantwi.cloudsystem.CloudSystem;
 import de.leantwi.cloudsystem.CloudSystemInit;
+import de.leantwi.cloudsystem.proxy.command.CloudCommand;
 import de.leantwi.cloudsystem.proxy.config.IniFile;
 import de.leantwi.cloudsystem.proxy.listeners.*;
 import de.leantwi.cloudsystem.proxy.messager.BackendDispatcher;
@@ -53,9 +54,6 @@ public class ProxyConnector extends Plugin {
         this.bungeeConnector = new BungeeConnector();
 
 
-
-
-
     }
 
     private void init() {
@@ -68,7 +66,7 @@ public class ProxyConnector extends Plugin {
         CloudSystem.getEventAPI().registerListener(new GameTypeChangeListener());
         CloudSystem.getEventAPI().registerListener(new UnRegisterBungeeCordListener());
 
-
+        ProxyServer.getInstance().getPluginManager().registerCommand(this, new CloudCommand());
         ProxyServer.getInstance().getPluginManager().registerListener(this, new LoginListener());
         ProxyServer.getInstance().getPluginManager().registerListener(this, new LogoutListener());
 

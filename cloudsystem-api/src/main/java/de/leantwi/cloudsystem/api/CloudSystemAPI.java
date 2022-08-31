@@ -48,9 +48,11 @@ public interface CloudSystemAPI {
 
     Collection<GroupDB> getAllGroups();
 
+
     GroupDB getGroupByName(String groupName);
 
     Optional<SubGroupDB> getSubGroupByName(String subGroupName);
+
 
     boolean existsGameServerByServerName(String serverName);
 

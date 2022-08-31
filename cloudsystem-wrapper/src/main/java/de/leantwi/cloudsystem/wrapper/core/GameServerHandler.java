@@ -7,10 +7,7 @@ import de.leantwi.cloudsystem.wrapper.WrapperBootstrap;
 import de.leantwi.cloudsystem.wrapper.core.folder.SpigotFolderHandler;
 import lombok.Getter;
 
-import java.util.ArrayList;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Queue;
+import java.util.*;
 
 public class GameServerHandler {
 
@@ -19,7 +16,8 @@ public class GameServerHandler {
 
     private final Queue<String> gameServerQueue = new LinkedList<>();
     private final List<String> gameServerStartQueue = new ArrayList<>();
-
+    @Getter
+    private final Map<String, Process> processMap = new HashMap<>();
     private SetupServerHandlerAPI currentServerSetup;
 
     private final FolderUtils folderUtils = this.wrapper.getFolderUtils();

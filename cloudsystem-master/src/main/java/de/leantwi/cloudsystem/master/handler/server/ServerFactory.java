@@ -19,12 +19,10 @@ public class ServerFactory {
 
 
     public void createServer(String subGroupName) {
-        MasterBootstrap.getInstance().getLogger().info("Create: " + subGroupName);
         final SubGroupDB subGroupDB = this.cloudSystem.getSubGroupByName(subGroupName).get();
         final ServerDB serverDB = subGroupDB.getServerDB();
 
         final String wrapperName = this.master.getWrapperHandler().getRandomWrapper(subGroupName, serverDB.getMemory());
-        System.out.println("Wrapper-Name: " + wrapperName);
         final String serverName = subGroupName + "-" + getID(subGroupName);
 
         if (wrapperName == null) {
@@ -51,17 +49,31 @@ public class ServerFactory {
     public int getID(String subGroupName) {
 
         if (cloudSystem.getAllGameServerBySubGroupName(subGroupName).isEmpty()) {
+            MasterBootstrap.getInstance().getLogger().info("DEBUG-ID: YES I WAS TRIGGERD");
             return 1;
         }
 
         for (int i = 1; i < 9999; i++) {
 
+
+            int finalI = i;
+            boolean existsServer = cloudSystem.getAllGameServerByGroupName(subGroupName).stream().allMatch(gameServerData -> gameServerData.getServerName().equalsIgnoreCase(subGroupName + "-" + finalI));
+
+            if (!existsServer) {
+                return i;
+            }
+            /*
             for (GameServerData gameServerData : cloudSystem.getAllGameServerBySubGroupName(subGroupName)) {
+                MasterBootstrap.getInstance().getLogger().info("§cIS: " + gameServerData.getServerName() + " != " + subGroupName + "-" + i);
                 if (!gameServerData.getServerName().equalsIgnoreCase(subGroupName + "-" + i)) {
+                    MasterBootstrap.getInstance().getLogger().info("Ich wurde berufen! " + i);
                     return i;
                 }
             }
+
+           */
         }
+        MasterBootstrap.getInstance().getLogger().info("§dALso keiner konnte was liefern: " + this.cloudSystem.getAllGameServerBySubGroupName(subGroupName).size() + 1);
         return this.cloudSystem.getAllGameServerBySubGroupName(subGroupName).size() + 1;
     }
 

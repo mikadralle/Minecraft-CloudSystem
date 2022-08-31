@@ -14,11 +14,13 @@ import org.apache.commons.io.FileUtils;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.concurrent.Executors;
 
 @Getter
 @Setter
 public class SpigotFolderHandler implements SetupServerHandlerAPI {
-
 
     private final FolderUtils folderUtils = WrapperBootstrap.getInstance().getFolderUtils();
     private final CloudSystemAPI cloudSystemAPI = CloudSystem.getAPI();
@@ -77,14 +79,50 @@ public class SpigotFolderHandler implements SetupServerHandlerAPI {
         String serverName = this.gameServerData.getServerName();
         int memory = this.cloudSystemAPI.getSubGroupByName(this.gameServerData.getSubGroupDB()).get().getServerDB().getMemory();
 
-        try {
-            this.process = new ProcessBuilder(
-                    "screen", "-AmdS", serverName.toLowerCase(),
-                    "java", "-Xms" + memory + "M", "-Xmx" + memory + "M", "-jar", "spigot.jar")
-                    .directory(new File(this.folderUtils.getPath(this.gameServerData) + "/" + this.gameServerData.getGroupDB() + "/" + this.gameServerData.getSubGroupDB() + "/" + serverName + "/")).inheritIO().start();
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
+        List<String> argumentList = new ArrayList<>();
+        argumentList.add("screen");
+        argumentList.add("-AmdS");
+        argumentList.add(serverName.toLowerCase());
+        argumentList.add("java");
+        argumentList.add("-Xmx" + memory + "M");
+        //cloud configuration
+        argumentList.add("-Dcloud.serverName=" + serverName.toLowerCase());
+        //mongoDB configuration
+        argumentList.add("-DmongoDB.hostname=");
+        argumentList.add("-DmongoDB.port=");
+        argumentList.add("-DmongoDB.username");
+        argumentList.add("-DmongoDB.password");
+        argumentList.add("-DmongoDB.authDB");
+        argumentList.add("-DmongoDB.defaultDB");
+        //redis configuration
+        argumentList.add("-Dredis.hostname");
+        argumentList.add("-Dredis.port");
+        argumentList.add("-Dredis.password");
+        argumentList.add("-Dredis.databaseID");
+        //nats configuration
+        argumentList.add("-Dnats.hostname");
+        argumentList.add("-Dnats.token");
+        argumentList.add("-jar");
+        argumentList.add("spigot.jar");
+
+        argumentList.add("--port");
+        argumentList.add(String.valueOf(gameServerData.getPort()));
+        argumentList.add("--host");
+        argumentList.add(gameServerData.getHostName());
+
+        ProcessBuilder processBuilder = new ProcessBuilder(argumentList);
+        processBuilder.directory(new File(this.LIVE_PATH + "/" + this.gameServerData.getGroupDB() + "/" + this.gameServerData.getSubGroupDB() + "/" + serverName + "/"));
+        //TODO: Hinzufügen wäre nice:
+        //   processBuilder.redirectOutput(logsFile);
+        //  processBuilder.redirectError(logsFile);
+        Executors.newSingleThreadExecutor().execute(() -> {
+            try {
+                WrapperBootstrap.getInstance().getGameServerHandler().getProcessMap().put(this.gameServerData.getServerName(), processBuilder.start());
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+        });
+
 
         WrapperBootstrap.getInstance().getLogger().info("§aServer §e" + serverName + "§a will be started.");
     }

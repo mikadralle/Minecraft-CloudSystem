@@ -138,7 +138,7 @@ public class MasterBootstrap extends Service {
         // unregister listeners
         CloudSystem.getEventAPI().registerListener(new UnRegisterBungeeCordListener());
         CloudSystem.getEventAPI().registerListener(new UnRegisterWrapperListener());
-
+        CloudSystem.getEventAPI().registerListener(new RequestsServerListener());
 
         // MasterBootstrap.getInstance().sendMessage("All Datacenter: " + this.hetznerCloudAPI.getDatacenters().getDatacenters().toString());
 
