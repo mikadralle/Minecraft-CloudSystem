@@ -49,7 +49,6 @@ public class ServerFactory {
     public int getID(String subGroupName) {
 
         if (cloudSystem.getAllGameServerBySubGroupName(subGroupName).isEmpty()) {
-            MasterBootstrap.getInstance().getLogger().info("DEBUG-ID: YES I WAS TRIGGERD");
             return 1;
         }
 
