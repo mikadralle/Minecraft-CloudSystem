@@ -8,4 +8,5 @@ import lombok.Getter;
 public class NatsData {
 
     private String hostName, token;
+    private int port;
 }

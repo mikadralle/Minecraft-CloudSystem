@@ -3,6 +3,9 @@ package de.leantwi.cloudsystem.api;
 import com.mongodb.MongoClient;
 import de.leantwi.cloudsystem.api.database.NatsConnectorAPI;
 import de.leantwi.cloudsystem.api.database.RedisConnectorAPI;
+import de.leantwi.cloudsystem.api.database.data.MongoDBData;
+import de.leantwi.cloudsystem.api.database.data.NatsData;
+import de.leantwi.cloudsystem.api.database.data.RedisData;
 import de.leantwi.cloudsystem.api.database.mongodb.MongoDBConnectorAPI;
 import de.leantwi.cloudsystem.api.event.EventHandlerAPI;
 import de.leantwi.cloudsystem.api.gameserver.GameServerData;
@@ -16,6 +19,12 @@ import java.util.Optional;
 import java.util.UUID;
 
 public interface CloudSystemAPI {
+
+    MongoDBData getMongoDBData();
+
+    RedisData getRedisData();
+
+    NatsData getNatsData();
 
     EventHandlerAPI getEventHandler();
 
@@ -38,6 +47,7 @@ public interface CloudSystemAPI {
     List<GameServerData> getAllGameServer();
 
     void refreshGroups();
+
     void updateGameServer(GameServerData gameServerData);
 
     void deleteGameServer(GameServerData gameServerData);

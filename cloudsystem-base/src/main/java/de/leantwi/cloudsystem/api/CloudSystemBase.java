@@ -5,11 +5,17 @@ import com.mongodb.MongoClient;
 import de.leantwi.cloudsystem.CloudSystem;
 import de.leantwi.cloudsystem.api.database.NatsConnectorAPI;
 import de.leantwi.cloudsystem.api.database.RedisConnectorAPI;
+import de.leantwi.cloudsystem.api.database.data.MongoDBData;
+import de.leantwi.cloudsystem.api.database.data.NatsData;
+import de.leantwi.cloudsystem.api.database.data.RedisData;
 import de.leantwi.cloudsystem.api.database.mongodb.MongoDBConnectorAPI;
 import de.leantwi.cloudsystem.api.event.EventHandlerAPI;
 import de.leantwi.cloudsystem.api.gameserver.GameServerData;
 import de.leantwi.cloudsystem.api.gameserver.groups.GroupDB;
 import de.leantwi.cloudsystem.api.gameserver.groups.SubGroupDB;
+import de.leantwi.cloudsystem.database.MongoDBConnector;
+import de.leantwi.cloudsystem.database.NatsConnector;
+import de.leantwi.cloudsystem.database.RedisConnector;
 import de.leantwi.cloudsystem.group.GroupHandler;
 import lombok.Getter;
 import redis.clients.jedis.Jedis;
@@ -33,10 +39,17 @@ public class CloudSystemBase implements CloudSystemAPI {
 
     private final CloudPlayerAPI cloudPlayer;
 
-    public CloudSystemBase(NatsConnectorAPI natsConnectorAPI, RedisConnectorAPI redisConnectorAPI, MongoDBConnectorAPI mongoDBConnectorAPI) {
-        this.natsConnectorAPI = natsConnectorAPI;
-        this.redisConnectorAPI = redisConnectorAPI;
-        this.mongoDBConnectorAPI = mongoDBConnectorAPI;
+    private final NatsData natsData;
+    private final MongoDBData mongoDBData;
+    private final RedisData redisData;
+
+    public CloudSystemBase(NatsData natsData, RedisData redisData, MongoDBData mongoDBData) {
+        this.natsData = natsData;
+        this.mongoDBData = mongoDBData;
+        this.redisData = redisData;
+        this.natsConnectorAPI = new NatsConnector(natsData.getHostName(), natsData.getToken(), natsData.getPort());
+        this.redisConnectorAPI = new RedisConnector(redisData.getHostName(), redisData.getPassword(), redisData.getPort(), redisData.getDatabaseID());
+        this.mongoDBConnectorAPI = new MongoDBConnector(mongoDBData.getHostName(), mongoDBData.getAuthDB(), mongoDBData.getDefaultDB(), mongoDBData.getUserName(), mongoDBData.getPassword());
 
         this.natsConnectorAPI.connect();
         this.redisConnectorAPI.connect();
@@ -51,6 +64,21 @@ public class CloudSystemBase implements CloudSystemAPI {
 
     }
 
+
+    @Override
+    public MongoDBData getMongoDBData() {
+        return this.mongoDBData;
+    }
+
+    @Override
+    public RedisData getRedisData() {
+        return this.redisData;
+    }
+
+    @Override
+    public NatsData getNatsData() {
+        return this.natsData;
+    }
 
     @Override
     public EventHandlerAPI getEventHandler() {

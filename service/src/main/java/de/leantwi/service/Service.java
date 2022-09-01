@@ -1,10 +1,16 @@
 package de.leantwi.service;
 
 import de.leantwi.cloudsystem.CloudSystemInit;
+import de.leantwi.cloudsystem.api.database.data.MongoDBData;
+import de.leantwi.cloudsystem.api.database.data.NatsData;
+import de.leantwi.cloudsystem.api.database.data.RedisData;
 import de.leantwi.service.command.CommandHandler;
+import de.leantwi.service.config.IniFile;
 import de.leantwi.service.loader.LibraryLoader;
 import de.leantwi.service.logger.LoggingOutputStream;
 import de.leantwi.service.logger.ServiceLogger;
+import jline.console.ConsoleReader;
+import lombok.Getter;
 
 import java.io.IOException;
 import java.io.PrintStream;
@@ -12,9 +18,6 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-
-import jline.console.ConsoleReader;
-import lombok.Getter;
 
 @Getter
 public abstract class Service {
@@ -24,10 +27,13 @@ public abstract class Service {
     private CloudSystemInit cloudSystemInit;
     private final CommandHandler commandHandler;
     private LibraryLoader libraryLoader;
+    private final IniFile configAPI;
 
     public Service() {
 
 
+        this.configAPI = new IniFile("config.yml");
+        loadConfig();
         final long timeStamp = System.currentTimeMillis();
         commandHandler = new CommandHandler(this);
         registerCommands();
@@ -44,8 +50,26 @@ public abstract class Service {
             this.libraryLoader = new LibraryLoader(this.logger);
             // load all libraries in the folder libraries
             this.libraryLoader.loadLibraries();
+            RedisData redisData = new RedisData(
+                    this.configAPI.getProperty("redis.hostname"),
+                    this.configAPI.getProperty("redis.password"),
+                    Integer.parseInt(this.configAPI.getProperty("redis.port")),
+                    Integer.parseInt(this.configAPI.getProperty("redis.databaseID")));
 
-            this.cloudSystemInit = new CloudSystemInit();
+            MongoDBData mongoDBData = new MongoDBData(
+                    this.configAPI.getProperty("mongoDB.hostname"),
+                    this.configAPI.getProperty("mongoDB.username"),
+                    this.configAPI.getProperty("mongoDB.password"),
+                    this.configAPI.getProperty("mongoDB.authDB"),
+                    this.configAPI.getProperty("mongoDB.defaultDB"),
+                    Integer.parseInt(this.configAPI.getProperty("mongoDB.port")));
+
+            NatsData natsData = new NatsData(
+                    this.configAPI.getProperty("nats.hostname"),
+                    this.configAPI.getProperty("nats.token"),
+                    Integer.parseInt(this.configAPI.getProperty("nats.port")));
+
+            this.cloudSystemInit = new CloudSystemInit(redisData, mongoDBData, natsData);
 
             this.executorService.execute(() -> {
 
@@ -97,5 +121,31 @@ public abstract class Service {
 
     public abstract void registerCommands();
 
+    private void loadConfig() {
+
+        if (this.configAPI.isEmpty()) {
+
+            //redis connector configuration //
+            this.configAPI.setProperty("redis.hostname", "127.0.0.1");
+            this.configAPI.setProperty("redis.port", "6379");
+            this.configAPI.setProperty("redis.password", "password");
+            this.configAPI.setProperty("redis.databaseID", "7");
+
+            //mongdb connector configuration //
+            this.configAPI.setProperty("mongoDB.hostname", "127.0.0.1");
+            this.configAPI.setProperty("mongoDB.username", "admin");
+            this.configAPI.setProperty("mongoDB.password", "password");
+            this.configAPI.setProperty("mongoDB.authDB", "admin");
+            this.configAPI.setProperty("mongoDB.defaultDB", "cloud");
+            this.configAPI.setProperty("mongoDB.port", "27017");
+
+            // nats.io connector configuration
+            this.configAPI.setProperty("nats.hostname", "127.0.0.0.1");
+            this.configAPI.setProperty("nats.port", "4222");
+            this.configAPI.setProperty("nats.token", "token");
+
+            this.configAPI.saveToFile();
+        }
+    }
 
 }
