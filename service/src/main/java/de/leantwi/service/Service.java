@@ -32,7 +32,7 @@ public abstract class Service {
     public Service() {
 
 
-        this.configAPI = new IniFile("config.yml");
+        this.configAPI = new IniFile("database.ini");
         loadConfig();
         final long timeStamp = System.currentTimeMillis();
         commandHandler = new CommandHandler(this);
@@ -58,8 +58,8 @@ public abstract class Service {
 
             MongoDBData mongoDBData = new MongoDBData(
                     this.configAPI.getProperty("mongoDB.hostname"),
-                    this.configAPI.getProperty("mongoDB.username"),
                     this.configAPI.getProperty("mongoDB.password"),
+                    this.configAPI.getProperty("mongoDB.username"),
                     this.configAPI.getProperty("mongoDB.authDB"),
                     this.configAPI.getProperty("mongoDB.defaultDB"),
                     Integer.parseInt(this.configAPI.getProperty("mongoDB.port")));

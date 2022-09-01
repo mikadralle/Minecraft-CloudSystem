@@ -2,6 +2,9 @@ package de.leantwi.cloudsystem.proxy;
 
 import de.leantwi.cloudsystem.CloudSystem;
 import de.leantwi.cloudsystem.CloudSystemInit;
+import de.leantwi.cloudsystem.api.database.data.MongoDBData;
+import de.leantwi.cloudsystem.api.database.data.NatsData;
+import de.leantwi.cloudsystem.api.database.data.RedisData;
 import de.leantwi.cloudsystem.proxy.command.CloudCommand;
 import de.leantwi.cloudsystem.proxy.config.IniFile;
 import de.leantwi.cloudsystem.proxy.listeners.*;
@@ -33,7 +36,28 @@ public class ProxyConnector extends Plugin {
 
     @Override
     public void onLoad() {
-        this.cloudSystemInit = new CloudSystemInit();
+
+        this.configAPI = new IniFile("database.ini");
+        RedisData redisData = new RedisData(
+                this.configAPI.getProperty("redis.hostname"),
+                this.configAPI.getProperty("redis.password"),
+                Integer.parseInt(this.configAPI.getProperty("redis.port")),
+                Integer.parseInt(this.configAPI.getProperty("redis.databaseID")));
+
+        MongoDBData mongoDBData = new MongoDBData(
+                this.configAPI.getProperty("mongoDB.hostname"),
+                this.configAPI.getProperty("mongoDB.password"),
+                this.configAPI.getProperty("mongoDB.username"),
+                this.configAPI.getProperty("mongoDB.authDB"),
+                this.configAPI.getProperty("mongoDB.defaultDB"),
+                Integer.parseInt(this.configAPI.getProperty("mongoDB.port")));
+
+        NatsData natsData = new NatsData(
+                this.configAPI.getProperty("nats.hostname"),
+                this.configAPI.getProperty("nats.token"),
+                Integer.parseInt(this.configAPI.getProperty("nats.port")));
+
+        this.cloudSystemInit = new CloudSystemInit(redisData, mongoDBData, natsData);
     }
 
     @Override
@@ -82,5 +106,31 @@ public class ProxyConnector extends Plugin {
         this.proxyHandler.logoutProxyServer();
     }
 
+    private void loadConfig() {
+
+        if (this.configAPI.isEmpty()) {
+
+            //redis connector configuration //
+            this.configAPI.setProperty("redis.hostname", "127.0.0.1");
+            this.configAPI.setProperty("redis.port", "6379");
+            this.configAPI.setProperty("redis.password", "password");
+            this.configAPI.setProperty("redis.databaseID", "7");
+
+            //mongdb connector configuration //
+            this.configAPI.setProperty("mongoDB.hostname", "127.0.0.1");
+            this.configAPI.setProperty("mongoDB.username", "admin");
+            this.configAPI.setProperty("mongoDB.password", "password");
+            this.configAPI.setProperty("mongoDB.authDB", "admin");
+            this.configAPI.setProperty("mongoDB.defaultDB", "cloud");
+            this.configAPI.setProperty("mongoDB.port", "27017");
+
+            // nats.io connector configuration
+            this.configAPI.setProperty("nats.hostname", "127.0.0.0.1");
+            this.configAPI.setProperty("nats.port", "4222");
+            this.configAPI.setProperty("nats.token", "token");
+
+            this.configAPI.saveToFile();
+        }
+    }
 
 }

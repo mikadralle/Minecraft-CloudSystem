@@ -16,7 +16,6 @@ import de.leantwi.cloudsystem.wrapper.listeners.UpdateGameServerStatusListener;
 import de.leantwi.cloudsystem.wrapper.listeners.groups.RefreshGroupsListener;
 import de.leantwi.cloudsystem.wrapper.utils.WrapperSettings;
 import de.leantwi.cloudsystem.wrapper.utils.WrapperType;
-import de.leantwi.cloudsystem.wrapper.utils.config.IniFile;
 import de.leantwi.service.Service;
 import lombok.Getter;
 import lombok.Setter;
@@ -41,7 +40,6 @@ public class WrapperBootstrap extends Service {
 
     private FolderUtils folderUtils;
     private GameServerHandler gameServerHandler;
-    private IniFile configAPI;
     //
     private WrapperSettings wrapperSettings;
     @Setter
@@ -92,7 +90,6 @@ public class WrapperBootstrap extends Service {
         CloudSystem.getEventAPI().registerListener(new RefreshGroupsListener());
         CloudSystem.getEventAPI().registerListener(new UpdateGameServerStatusListener());
 
-        this.loadConfig();
         this.informationDispatcher.listen();
         String answer = null;
         try {
@@ -121,7 +118,6 @@ public class WrapperBootstrap extends Service {
 
     private void registerClasses() {
 
-        this.configAPI = new IniFile("config.ini");
         this.cloudDispatcher = new CloudDispatcher();
         this.folderUtils = new FolderUtils();
         this.gameServerHandler = new GameServerHandler();
@@ -145,12 +141,12 @@ public class WrapperBootstrap extends Service {
     private void verifyWrapper() {
 
 
-        getLogger().info("wrapper config will be loaded...");
-        this.loadConfig();
+        //getLogger().info("wrapper config will be loaded...");
+        // this.loadConfig();
         getLogger().info("wrapper config has been load.");
-        this.wrapperSettings.setMaster(Boolean.parseBoolean(this.configAPI.getProperty("wrapper.master")));
+        this.wrapperSettings.setMaster(true);
         this.wrapperSettings.setPriority(this.wrapperSettings.isMaster() ? 100 : 50);
-        this.wrapperSettings.setWeightClass(Integer.parseInt(this.configAPI.getProperty("wrapper.weight-class")));
+        this.wrapperSettings.setWeightClass(9999);
 
 
         //TODO Update Wrapper id's
@@ -161,7 +157,7 @@ public class WrapperBootstrap extends Service {
         }
         this.getLogger().info("The wrapper was assigned the " + this.wrapperSettings.getWrapperID());
 
-        String type = this.configAPI.getProperty("wrapper.type");
+        String type = "public";// this.configAPI.getProperty("wrapper.type");
 
         if (type.equalsIgnoreCase("public")) {
             this.wrapperSettings.setType(WrapperType.PUBLIC);
@@ -178,27 +174,6 @@ public class WrapperBootstrap extends Service {
 
     }
 
-    private void loadConfig() {
-
-        if (this.configAPI.isEmpty()) {
-            // create nats configuration
-            this.configAPI.setProperty("nats.hostname", "127.0.0.1");
-            this.configAPI.setProperty("nats.port", "4222");
-            this.configAPI.setProperty("nats.token", "token");
-            // create redis configuration
-            this.configAPI.setProperty("redis.hostname", "127.0.0.1");
-            this.configAPI.setProperty("redis.port", "6379");
-            this.configAPI.setProperty("redis.password", "passwd");
-            this.configAPI.setProperty("redis.databaseID", "8");
-            // create wrapper configuration
-            this.configAPI.setProperty("wrapper.type", "public");
-            this.configAPI.setProperty("wrapper.weight-class", "350");
-            this.configAPI.setProperty("wrapper.master", "true");
-            this.configAPI.saveToFile();
-
-        }
-
-    }
 
 }
 

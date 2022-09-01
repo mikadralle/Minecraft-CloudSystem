@@ -29,7 +29,7 @@ public class CloudSystemBase implements CloudSystemAPI {
     private final MongoDBConnectorAPI mongoDBConnectorAPI;
     private final NatsConnectorAPI natsConnectorAPI;
     private final RedisConnectorAPI redisConnectorAPI;
-    public final int DATABASE_ID = 7;
+    public int DATABASE_ID;
     private final Gson gson = new Gson();
     public final String REDIS_CLOUD_SERVER_PATH = "cloud:server";
     public final String REDIS_CLOUD_PLAYERS_PATH = "cloud:players:";
@@ -47,6 +47,7 @@ public class CloudSystemBase implements CloudSystemAPI {
         this.natsData = natsData;
         this.mongoDBData = mongoDBData;
         this.redisData = redisData;
+        this.DATABASE_ID = redisData.getDatabaseID();
         this.natsConnectorAPI = new NatsConnector(natsData.getHostName(), natsData.getToken(), natsData.getPort());
         this.redisConnectorAPI = new RedisConnector(redisData.getHostName(), redisData.getPassword(), redisData.getPort(), redisData.getDatabaseID());
         this.mongoDBConnectorAPI = new MongoDBConnector(mongoDBData.getHostName(), mongoDBData.getAuthDB(), mongoDBData.getDefaultDB(), mongoDBData.getUserName(), mongoDBData.getPassword());

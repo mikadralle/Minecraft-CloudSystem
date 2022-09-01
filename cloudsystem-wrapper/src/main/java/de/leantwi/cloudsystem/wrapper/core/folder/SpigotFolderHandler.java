@@ -2,6 +2,9 @@ package de.leantwi.cloudsystem.wrapper.core.folder;
 
 import de.leantwi.cloudsystem.CloudSystem;
 import de.leantwi.cloudsystem.api.CloudSystemAPI;
+import de.leantwi.cloudsystem.api.database.data.MongoDBData;
+import de.leantwi.cloudsystem.api.database.data.NatsData;
+import de.leantwi.cloudsystem.api.database.data.RedisData;
 import de.leantwi.cloudsystem.api.gameserver.GameServerData;
 import de.leantwi.cloudsystem.api.wrapper.SetupServerHandlerAPI;
 import de.leantwi.cloudsystem.wrapper.WrapperBootstrap;
@@ -79,6 +82,10 @@ public class SpigotFolderHandler implements SetupServerHandlerAPI {
         String serverName = this.gameServerData.getServerName();
         int memory = this.cloudSystemAPI.getSubGroupByName(this.gameServerData.getSubGroupDB()).get().getServerDB().getMemory();
 
+        MongoDBData mongoDBData = this.cloudSystemAPI.getMongoDBData();
+        RedisData redisData = this.cloudSystemAPI.getRedisData();
+        NatsData natsData = this.cloudSystemAPI.getNatsData();
+
         List<String> argumentList = new ArrayList<>();
         argumentList.add("screen");
         argumentList.add("-AmdS");
@@ -88,20 +95,21 @@ public class SpigotFolderHandler implements SetupServerHandlerAPI {
         //cloud configuration
         argumentList.add("-Dcloud.serverName=" + serverName.toLowerCase());
         //mongoDB configuration
-        argumentList.add("-DmongoDB.hostname=");
-        argumentList.add("-DmongoDB.port=");
-        argumentList.add("-DmongoDB.username");
-        argumentList.add("-DmongoDB.password");
-        argumentList.add("-DmongoDB.authDB");
-        argumentList.add("-DmongoDB.defaultDB");
+        argumentList.add("-DmongoDB.hostname=" + mongoDBData.getHostName());
+        argumentList.add("-DmongoDB.port=" + mongoDBData.getPort());
+        argumentList.add("-DmongoDB.username=" + mongoDBData.getUserName());
+        argumentList.add("-DmongoDB.password=" + mongoDBData.getPassword());
+        argumentList.add("-DmongoDB.authDB=" + mongoDBData.getAuthDB());
+        argumentList.add("-DmongoDB.defaultDB=" + mongoDBData.getDefaultDB());
         //redis configuration
-        argumentList.add("-Dredis.hostname");
-        argumentList.add("-Dredis.port");
-        argumentList.add("-Dredis.password");
-        argumentList.add("-Dredis.databaseID");
+        argumentList.add("-Dredis.hostname=" + redisData.getHostName());
+        argumentList.add("-Dredis.port=" + redisData.getPort());
+        argumentList.add("-Dredis.password=" + redisData.getPassword());
+        argumentList.add("-Dredis.databaseID=" + redisData.getDatabaseID());
         //nats configuration
-        argumentList.add("-Dnats.hostname");
-        argumentList.add("-Dnats.token");
+        argumentList.add("-Dnats.hostname=" + natsData.getHostName());
+        argumentList.add("-Dnats.token=" + natsData.getToken());
+        argumentList.add("-Dnats.port=" + natsData.getPort());
         argumentList.add("-jar");
         argumentList.add("spigot.jar");
 

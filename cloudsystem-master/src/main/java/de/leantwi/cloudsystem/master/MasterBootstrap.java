@@ -35,7 +35,7 @@ public class MasterBootstrap extends Service {
 
     private final ExecutorService executorService = Executors.newCachedThreadPool();
     //config
-    private IniFile configAPI;
+    private IniFile iniFile;
     //database & messaging
     private NatsConnectorAPI natsConnector;
     //dispatcher
@@ -95,7 +95,7 @@ public class MasterBootstrap extends Service {
     }
 
     private void initClass() {
-        this.configAPI = new IniFile("config.yml");
+        this.iniFile = new IniFile("config.yml");
         this.loadConfig();
         // connections
         this.natsConnector = this.cloudSystemAPI.getNatsConnector();
@@ -115,7 +115,7 @@ public class MasterBootstrap extends Service {
     private void init() {
         //clearing the redis cache pool
         try (Jedis jedis = this.cloudSystemAPI.getRedisPool().getResource()) {
-            jedis.select(7);
+            jedis.select(this.cloudSystemAPI.getRedisData().getDatabaseID());
             jedis.del("cloud:server");
         }
         sleep(100);
@@ -127,7 +127,7 @@ public class MasterBootstrap extends Service {
         this.executorService.execute(new TimerTaskService());
         this.cloudSystemAPI.getNatsConnector().publish("info", "master_connected"); // Broadcast that the master is now online
         //TODO: Unnötog, aber leider noch wichtig. Ich sollte das dringend ändern.
-        this.wrapperHandler.addPublicIP("wrapper-1", this.configAPI.getProperty("wrapper.master.address"));
+        this.wrapperHandler.addPublicIP("wrapper-1", this.iniFile.getProperty("wrapper.master.address"));
 
         //this.hetznerCloudAPI = new HetznerCloudAPI(this.configAPI.getProperty("heztner.token"));
 
@@ -146,29 +146,12 @@ public class MasterBootstrap extends Service {
 
     private void loadConfig() {
 
-        if (this.configAPI.isEmpty()) {
+        if (this.iniFile.isEmpty()) {
 
-            //redis connector configuration //
-            this.configAPI.setProperty("redis.host", "127.0.0.1");
-            this.configAPI.setProperty("redis.port", "6379");
-            this.configAPI.setProperty("redis.password", "password");
-            this.configAPI.setProperty("redis.databaseID", "7");
 
-            //mongdb connector configuration //
-            this.configAPI.setProperty("mongoDB.host", "127.0.0.1");
-            this.configAPI.setProperty("mongoDB.user", "admin");
-            this.configAPI.setProperty("mongoDB.password", "password");
-            this.configAPI.setProperty("mongoDB.authDB", "admin");
-            this.configAPI.setProperty("mongoDB.defaultDB", "cloud");
-
-            // nats.io connector configuration
-            this.configAPI.setProperty("nats.hostname", "127.0.0.0.1");
-            this.configAPI.setProperty("nats.port", "4222");
-            this.configAPI.setProperty("nats.token", "token");
-
-            this.configAPI.setProperty("heztner.token", "token");
-            this.configAPI.setProperty("wrapper.master.address", "5.9.13.253");
-            this.configAPI.saveToFile();
+            this.iniFile.setProperty("heztner.token", "token");
+            this.iniFile.setProperty("wrapper.master.address", "hannover.leantwi.de");
+            this.iniFile.saveToFile();
         }
     }
 

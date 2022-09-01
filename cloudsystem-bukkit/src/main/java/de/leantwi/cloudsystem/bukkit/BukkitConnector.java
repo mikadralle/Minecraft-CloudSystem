@@ -3,6 +3,9 @@ package de.leantwi.cloudsystem.bukkit;
 import de.leantwi.cloudsystem.CloudSystem;
 import de.leantwi.cloudsystem.CloudSystemInit;
 import de.leantwi.cloudsystem.api.CloudSystemAPI;
+import de.leantwi.cloudsystem.api.database.data.MongoDBData;
+import de.leantwi.cloudsystem.api.database.data.NatsData;
+import de.leantwi.cloudsystem.api.database.data.RedisData;
 import de.leantwi.cloudsystem.bukkit.listeners.cloud.ShutdownSystemListener;
 import de.leantwi.cloudsystem.bukkit.listeners.cloud.StopGameServerListener;
 import de.leantwi.cloudsystem.bukkit.server.SpigotConnector;
@@ -25,7 +28,24 @@ public class BukkitConnector extends JavaPlugin {
 
     @Override
     public void onLoad() {
-        this.cloudSystemInit = new CloudSystemInit();
+
+        this.cloudSystemInit = new CloudSystemInit(
+                new RedisData(
+                        System.getProperty("redis.hostname"),
+                        System.getProperty("redis.password"),
+                        Integer.parseInt(System.getProperty("redis.port")),
+                        Integer.parseInt(System.getProperty("redis.databaseID"))),
+                new MongoDBData(
+                        System.getProperty("mongoDB.hostname"),
+                        System.getProperty("mongoDB.password"),
+                        System.getProperty("mongoDB.username"),
+                        System.getProperty("mongoDB.authDB"),
+                        System.getProperty("mongoDB.defaultDB"),
+                        Integer.parseInt(System.getProperty("mongoDB.port"))),
+                new NatsData(System.getProperty("nats.hostname"),
+                        System.getProperty("nats.token"),
+                        Integer.parseInt(System.getProperty("nats.port"))));
+
     }
 
     @Override
