@@ -20,6 +20,8 @@ import de.leantwi.cloudsystem.group.GroupHandler;
 import lombok.Getter;
 import redis.clients.jedis.Jedis;
 import redis.clients.jedis.JedisPool;
+import redis.clients.jedis.Pipeline;
+import redis.clients.jedis.Response;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -30,14 +32,13 @@ public class CloudSystemBase implements CloudSystemAPI {
     private final NatsConnectorAPI natsConnectorAPI;
     private final RedisConnectorAPI redisConnectorAPI;
     public int DATABASE_ID;
-    private final Gson gson = new Gson();
+    public final String REDIS_CLOUD_PLAYERS_NAME_PATH = "cloud:databases:names:";
     public final String REDIS_CLOUD_SERVER_PATH = "cloud:server";
     public final String REDIS_CLOUD_PLAYERS_PATH = "cloud:players:";
+    private final Gson gson = GsonHandler.getGson();
 
     @Getter
     private final GroupHandler groupHandler;
-
-    private final CloudPlayerAPI cloudPlayer;
 
     private final NatsData natsData;
     private final MongoDBData mongoDBData;
@@ -58,10 +59,6 @@ public class CloudSystemBase implements CloudSystemAPI {
 
         this.groupHandler = new GroupHandler(this.mongoDBConnectorAPI);
         this.groupHandler.fetch();
-
-
-        this.cloudPlayer = new CloudPlayer();
-
 
     }
 
@@ -241,39 +238,35 @@ public class CloudSystemBase implements CloudSystemAPI {
     }
 
     @Override
-    public CloudPlayerAPI getCloudPlayerByName(String playerName) {
-
-
-        return null;
-    }
-
-    @Override
-    public CloudPlayerAPI getCloudPlayerByUUID(UUID uuid) {
-
-
-        try (Jedis jedis = this.getRedisPool().getResource()) {
-            jedis.select(DATABASE_ID);
-
-            if (jedis.exists(REDIS_CLOUD_PLAYERS_PATH + uuid)) {
-                return gson.fromJson(jedis.hget(REDIS_CLOUD_PLAYERS_PATH + uuid, "json"), CloudPlayer.class);
-            } else {
-
-
-                CloudPlayer cloudPlayer = new CloudPlayer();
-
-                cloudPlayer.setUniqueID(uuid);
-                cloudPlayer.setLastJoin(System.currentTimeMillis());
-                jedis.hset(REDIS_CLOUD_PLAYERS_PATH + uuid, "json", gson.toJson(cloudPlayer));
-                return cloudPlayer;
-            }
-
-        }
-    }
-
-
-    @Override
     public List<CloudPlayerAPI> getCloudPlayersByServerName(String serverName) {
         return null;
+    }
+
+    @Override
+    public List<CloudPlayerAPI> getAllCloudPlayers() {
+        List<CloudPlayerAPI> list = new ArrayList<>();
+        try (Jedis jedis = this.redisConnectorAPI.getJedisPool().getResource()) {
+            jedis.select(DATABASE_ID);
+
+
+            Pipeline pipeline = jedis.pipelined();
+            Set<String> setList = jedis.keys(REDIS_CLOUD_PLAYERS_PATH);
+            Map<String, String> allMaps = new HashMap<>();
+            setList.forEach(key -> {
+                String uuid = key.split(":")[2];
+                Response<Map<String, String>> map = pipeline.hgetAll(REDIS_CLOUD_PLAYERS_PATH + uuid);
+                allMaps.putAll(map.get());
+            });
+            pipeline.sync();
+
+
+            allMaps.values().forEach(value -> {
+                list.add(this.gson.fromJson(value, CloudPlayerAPI.class));
+            });
+
+        }
+
+        return list;
     }
 
     @Override
@@ -286,21 +279,20 @@ public class CloudSystemBase implements CloudSystemAPI {
     public boolean existsCloudPlayer(UUID uniqueID) {
 
         try (Jedis jedis = this.getRedisPool().getResource()) {
-
             jedis.select(DATABASE_ID);
-
             return jedis.exists(REDIS_CLOUD_PLAYERS_PATH + uniqueID);
-
 
         }
     }
 
     @Override
     public void updateCloudPlayer(CloudPlayerAPI cloudPlayer) {
-
         try (Jedis jedis = this.getRedisPool().getResource()) {
             jedis.select(DATABASE_ID);
-            jedis.hset(REDIS_CLOUD_PLAYERS_PATH + cloudPlayer.getUniqueID(), "json", this.gson.toJson(cloudPlayer));
+            if (!jedis.exists(REDIS_CLOUD_PLAYERS_NAME_PATH + cloudPlayer.getPlayerName())) {
+                jedis.hset(REDIS_CLOUD_PLAYERS_NAME_PATH + cloudPlayer.getPlayerName().toLowerCase(), "uuid", cloudPlayer.getUniqueID().toString());
+            }
+            jedis.hset(REDIS_CLOUD_PLAYERS_PATH + cloudPlayer.getUniqueID(), cloudPlayer.getUniqueID().toString(), gson.toJson(cloudPlayer, CloudPlayerAPI.class));
         }
     }
 
@@ -308,7 +300,7 @@ public class CloudSystemBase implements CloudSystemAPI {
     public void deleteCloudPlayer(CloudPlayerAPI cloudPlayerAPI) {
         try (Jedis jedis = this.getRedisPool().getResource()) {
             jedis.select(DATABASE_ID);
-            jedis.hdel(REDIS_CLOUD_PLAYERS_PATH + cloudPlayerAPI.getUniqueID(), "json");
+            jedis.hdel(REDIS_CLOUD_PLAYERS_PATH + cloudPlayerAPI.getUniqueID(), cloudPlayerAPI.getUniqueID().toString());
         }
 
 

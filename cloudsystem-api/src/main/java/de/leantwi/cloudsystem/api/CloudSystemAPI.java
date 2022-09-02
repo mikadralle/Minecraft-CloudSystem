@@ -70,13 +70,12 @@ public interface CloudSystemAPI {
 
     void createGroup(String groupName);
 
-    CloudPlayerAPI getCloudPlayerByName(String playerName);
-
-    CloudPlayerAPI getCloudPlayerByUUID(UUID uuid);
-
     List<CloudPlayerAPI> getCloudPlayersByServerName(String serverName);
 
+    List<CloudPlayerAPI> getAllCloudPlayers();
+
     boolean existsCloudPlayer(String playerName);
+
 
     boolean existsCloudPlayer(UUID uniqueID);
 

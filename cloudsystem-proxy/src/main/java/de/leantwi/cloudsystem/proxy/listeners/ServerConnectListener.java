@@ -9,15 +9,14 @@ import net.md_5.bungee.event.EventPriority;
 
 public class ServerConnectListener implements Listener {
 
-    private ProxyConnector proxyConnector = ProxyConnector.getInstance();
-    private BungeeConnector bungeeConnector = this.proxyConnector.getBungeeConnector();
+    private final ProxyConnector proxyConnector = ProxyConnector.getInstance();
+    private final BungeeConnector bungeeConnector = this.proxyConnector.getBungeeConnector();
 
 
     @EventHandler(priority = EventPriority.LOWEST)
     public void onServerConnect(ServerConnectEvent event) {
         if (event.getTarget().getName().equalsIgnoreCase("fallbackServer")) {
             event.setTarget(this.bungeeConnector.getLobbyServer());
-            return;
         }
     }
 

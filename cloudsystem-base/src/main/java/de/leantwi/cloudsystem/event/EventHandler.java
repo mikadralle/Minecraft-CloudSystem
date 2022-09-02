@@ -2,6 +2,7 @@ package de.leantwi.cloudsystem.event;
 
 import com.google.gson.*;
 import de.leantwi.cloudsystem.CloudSystem;
+import de.leantwi.cloudsystem.api.CloudPlayerAPI;
 import de.leantwi.cloudsystem.api.event.Event;
 import de.leantwi.cloudsystem.api.event.EventHandlerAPI;
 import de.leantwi.cloudsystem.api.event.Listener;
@@ -14,7 +15,9 @@ import java.lang.reflect.Type;
 public class EventHandler implements EventHandlerAPI {
 
     public final EventBus eventBus;
-    private final GsonBuilder gsonBuilder = new GsonBuilder().registerTypeAdapter(Event.class, new PacketSerializer<Event>());
+    private final GsonBuilder gsonBuilder = new GsonBuilder().
+            registerTypeAdapter(Event.class, new PacketSerializer<Event>()).
+            registerTypeAdapter(CloudPlayerAPI.class, new PacketSerializer<CloudPlayerAPI>());
 
     public EventHandler(Connection connection) {
         this.eventBus = new EventBus();
@@ -28,10 +31,11 @@ public class EventHandler implements EventHandlerAPI {
         Gson gson = gsonBuilder.create();
         return gson.fromJson(jsonKey, Event.class);
     }
-    public String getJsonKeyFromEvent(Event event){
+
+    public String getJsonKeyFromEvent(Event event) {
         gsonBuilder.setPrettyPrinting();
         Gson gson = gsonBuilder.create();
-        return gson.toJson(event,Event.class);
+        return gson.toJson(event, Event.class);
     }
 
     @Override

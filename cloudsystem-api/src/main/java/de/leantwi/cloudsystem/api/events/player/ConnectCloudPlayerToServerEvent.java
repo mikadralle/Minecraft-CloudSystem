@@ -7,13 +7,14 @@ import lombok.Setter;
 
 import java.util.UUID;
 
-@AllArgsConstructor
 @Getter
 @Setter
-public class CloudPlayerJoinNetworkEvent extends Event {
+@AllArgsConstructor
+public class ConnectCloudPlayerToServerEvent extends Event {
 
-    private final UUID uniqueID;
-    private final String playerName, ProxyID;
+    private UUID uuid;
+
+    private String targetServerName;
 
 
 }

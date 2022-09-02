@@ -33,14 +33,53 @@ public class CloudCommand extends Command {
 
             if (strings[0].equalsIgnoreCase("stop")) {
                 ProxiedPlayer player = (ProxiedPlayer) commandSender;
-                CloudPlayer cloudPlayer = (CloudPlayer) this.cloudSystemAPI.getCloudPlayerByName(player.getName());
-                CloudSystem.getEventAPI().callEvent(new StopGameServerEvent(cloudPlayer.getCurrentServerName()));
+                CloudPlayer cloudPlayer = CloudPlayer.getCloudPlayer(player.getUniqueId());
+                CloudSystem.getEventAPI().callEvent(new StopGameServerEvent(cloudPlayer.getGameServerName()));
+                return;
+            }
+            if (strings[0].equalsIgnoreCase("info")) {
+
+                ProxiedPlayer player = (ProxiedPlayer) commandSender;
+                CloudPlayer cloudPlayer = CloudPlayer.getCloudPlayer(player.getUniqueId());
+                cloudPlayer.sendMessage("Du bist auf " + cloudPlayer.getGameServerName() + " online.");
                 return;
             }
             commandSender.sendMessage("§c/cloud stop : You will be stopping the current GameServer");
+            commandSender.sendMessage("§c/cloud info : You see all Server infos");
+            return;
         }
 
+        if (strings.length == 2) {
+            if (strings[0].equalsIgnoreCase("info")) {
+
+                ProxiedPlayer player = (ProxiedPlayer) commandSender;
+                CloudPlayer cloudPlayer = CloudPlayer.getCloudPlayer(player.getUniqueId());
+                CloudPlayer targetCloudPlayer = CloudPlayer.getCloudPlayer(strings[1].toLowerCase());
+                if (targetCloudPlayer != null) {
+                    cloudPlayer.sendMessage("Der Spieler " + targetCloudPlayer.getPlayerName() + " ist auf " + targetCloudPlayer.getGameServerName() + " online.");
+                    return;
+                }
+                cloudPlayer.sendMessage("Der Spieler " + strings[1] + " ist nicht online!");
+                return;
+            }
+        }
+
+
         if (strings.length == 3) {
+
+            if (strings[0].equalsIgnoreCase("send")) {
+
+                String targetServer = strings[2];
+
+                if (strings[1].equalsIgnoreCase("all")) {
+
+                    CloudSystem.getAPI().getAllCloudPlayers().forEach(cloudPlayers -> cloudPlayers.connect(targetServer));
+
+
+                    return;
+                }
+
+            }
 
             if (strings[0].equalsIgnoreCase("start")) {
 
@@ -69,5 +108,7 @@ public class CloudCommand extends Command {
     //cloud start <SubGroup-Group> <Amount>
     //cloud stop <Server-Name> // cloud stop
     //cloud info -> show all server info
+    //cloud send <Spieler/all> <target Server>
+    //cloud info <Name>
     //cloud notify
 }

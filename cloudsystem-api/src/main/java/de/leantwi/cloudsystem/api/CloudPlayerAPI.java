@@ -1,5 +1,7 @@
 package de.leantwi.cloudsystem.api;
 
+import de.leantwi.cloudsystem.CloudProxy;
+import de.leantwi.cloudsystem.api.gameserver.GameServerData;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -10,16 +12,36 @@ import java.util.UUID;
 @Setter
 public abstract class CloudPlayerAPI {
 
-    private String playerName, currentServerName, proxyID;
-    private UUID uniqueID;
+    public String playerName, serverName, proxyID;
+    public UUID uniqueID;
 
-    private long lastJoin;
+    public long lastJoinTime;
 
-    public abstract void sendToServer(String serverName);
+    public CloudPlayerAPI(String playerName, String serverName, String proxyID, UUID uuid, long lastJoinTime) {
 
-    public abstract String getCurrentServerName();
+        this.playerName = playerName;
+        this.serverName = serverName;
+        this.proxyID = proxyID;
+        this.uniqueID = uuid;
+        this.lastJoinTime = lastJoinTime;
+
+    }
+
+
+    public abstract void connect(String serverName);
+
+    public abstract void connect(GameServerData gameServerData);
+
+
+    public abstract String getGameServerName();
 
     public abstract boolean isOnline();
+
+    public abstract CloudProxy getProxy();
+
+    public abstract void sendMessage(String message);
+
+    public abstract void kickPlayer(String message);
 
 
 }

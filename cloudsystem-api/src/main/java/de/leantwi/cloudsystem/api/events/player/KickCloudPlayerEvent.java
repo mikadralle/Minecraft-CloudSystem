@@ -7,12 +7,12 @@ import lombok.Setter;
 
 import java.util.UUID;
 
-@Getter@Setter@AllArgsConstructor
-public class SendPlayerToServerEvent extends Event {
-
+@Getter
+@Setter
+@AllArgsConstructor
+public class KickCloudPlayerEvent extends Event {
     private UUID uuid;
+    private String kickMessage;
 
-    private String targetServerName;
-    private String fromServerName;
 
 }

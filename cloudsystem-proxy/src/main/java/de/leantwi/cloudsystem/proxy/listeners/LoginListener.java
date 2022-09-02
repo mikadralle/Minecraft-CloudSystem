@@ -10,6 +10,6 @@ public class LoginListener implements Listener {
 
     @EventHandler
     public void onLoginEvent(LoginEvent event) {
-        CloudSystem.getEventAPI().callEvent(new CloudPlayerJoinNetworkEvent(event.getConnection().getUniqueId(), event.getConnection().getName()));
+        CloudSystem.getEventAPI().callEvent(new CloudPlayerJoinNetworkEvent(event.getConnection().getUniqueId(), event.getConnection().getName(), "bungeecord-01"));
     }
 }
