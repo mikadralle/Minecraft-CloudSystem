@@ -15,7 +15,6 @@ public class CloudPlayer extends CloudPlayerAPI {
     public static final String REDIS_CLOUD_PLAYERS_PATH = "cloud:players:";
     public static final String REDIS_CLOUD_PLAYERS_NAME_PATH = "cloud:databases:names:";
     private final static Gson gson = GsonHandler.getGson();
-    private final int databaseID = CloudSystem.getAPI().getRedisData().getDatabaseID();
 
     public CloudPlayer(String playerName, String serverName, String proxyID, UUID uuid, long lastJoinTime) {
         super(playerName, serverName, proxyID, uuid, lastJoinTime);
@@ -31,12 +30,12 @@ public class CloudPlayer extends CloudPlayerAPI {
         return cloudPlayerAPI;
     }
 
+
     public static CloudPlayer getCloudPlayer(String playerName) {
         UUID uuid;
         try (Jedis jedis = CloudSystem.getAPI().getRedisPool().getResource()) {
-
-            uuid = UUID.fromString(jedis.hget(REDIS_CLOUD_PLAYERS_NAME_PATH + playerName, "uuid"));
-
+            jedis.select(CloudSystem.getAPI().getRedisData().getDatabaseID());
+            uuid = UUID.fromString(jedis.hget(REDIS_CLOUD_PLAYERS_NAME_PATH + playerName.toLowerCase(), "uuid"));
         }
         return getCloudPlayer(uuid);
     }

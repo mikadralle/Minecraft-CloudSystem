@@ -16,7 +16,6 @@ import redis.clients.jedis.JedisPool;
 import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
-import java.util.UUID;
 
 public interface CloudSystemAPI {
 
@@ -74,10 +73,6 @@ public interface CloudSystemAPI {
 
     List<CloudPlayerAPI> getAllCloudPlayers();
 
-    boolean existsCloudPlayer(String playerName);
-
-
-    boolean existsCloudPlayer(UUID uniqueID);
 
     void updateCloudPlayer(CloudPlayerAPI cloudPlayerAPI);
 

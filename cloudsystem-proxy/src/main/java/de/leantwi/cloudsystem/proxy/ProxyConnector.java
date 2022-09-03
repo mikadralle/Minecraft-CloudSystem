@@ -11,6 +11,7 @@ import de.leantwi.cloudsystem.proxy.listeners.*;
 import de.leantwi.cloudsystem.proxy.listeners.players.CloudPlayerJoinNetworkListener;
 import de.leantwi.cloudsystem.proxy.listeners.players.CloudPlayerQuitNetworkListener;
 import de.leantwi.cloudsystem.proxy.listeners.players.ConnectCloudPlayerToServerListener;
+import de.leantwi.cloudsystem.proxy.listeners.players.SendMessageToCloudPlayerListener;
 import de.leantwi.cloudsystem.proxy.messager.BackendDispatcher;
 import de.leantwi.cloudsystem.proxy.server.BungeeConnector;
 import de.leantwi.cloudsystem.proxy.server.ProxyHandler;
@@ -93,6 +94,7 @@ public class ProxyConnector extends Plugin {
         CloudSystem.getEventAPI().registerListener(new GameTypeChangeListener());
         CloudSystem.getEventAPI().registerListener(new UnRegisterBungeeCordListener());
         CloudSystem.getEventAPI().registerListener(new ConnectCloudPlayerToServerListener());
+        CloudSystem.getEventAPI().registerListener(new SendMessageToCloudPlayerListener());
 
         ProxyServer.getInstance().getPluginManager().registerCommand(this, new CloudCommand());
         ProxyServer.getInstance().getPluginManager().registerListener(this, new LoginListener());

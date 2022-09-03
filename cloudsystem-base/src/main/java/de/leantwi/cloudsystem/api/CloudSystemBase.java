@@ -255,22 +255,6 @@ public class CloudSystemBase implements CloudSystemAPI {
     }
 
     @Override
-    public boolean existsCloudPlayer(String playerName) {
-
-        return false;
-    }
-
-    @Override
-    public boolean existsCloudPlayer(UUID uniqueID) {
-
-        try (Jedis jedis = this.getRedisPool().getResource()) {
-            jedis.select(DATABASE_ID);
-            return jedis.exists(REDIS_CLOUD_PLAYERS_PATH + uniqueID);
-
-        }
-    }
-
-    @Override
     public void updateCloudPlayer(CloudPlayerAPI cloudPlayer) {
         try (Jedis jedis = this.getRedisPool().getResource()) {
             jedis.select(DATABASE_ID);
@@ -285,7 +269,9 @@ public class CloudSystemBase implements CloudSystemAPI {
     public void deleteCloudPlayer(CloudPlayerAPI cloudPlayerAPI) {
         try (Jedis jedis = this.getRedisPool().getResource()) {
             jedis.select(DATABASE_ID);
+            jedis.del(REDIS_CLOUD_PLAYERS_NAME_PATH + cloudPlayerAPI.getPlayerName().toLowerCase());
             jedis.hdel(REDIS_CLOUD_PLAYERS_PATH + cloudPlayerAPI.getUniqueID(), cloudPlayerAPI.getUniqueID().toString());
+
         }
 
 
