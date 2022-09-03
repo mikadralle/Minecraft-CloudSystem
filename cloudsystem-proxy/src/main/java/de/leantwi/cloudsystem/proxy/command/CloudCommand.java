@@ -31,7 +31,6 @@ public class CloudCommand extends Command {
         }
 
         if (strings.length == 1) {
-
             if (strings[0].equalsIgnoreCase("stop")) {
                 ProxiedPlayer player = (ProxiedPlayer) commandSender;
                 CloudPlayer cloudPlayer = CloudPlayer.getCloudPlayer(player.getUniqueId());
@@ -39,7 +38,6 @@ public class CloudCommand extends Command {
                 return;
             }
             if (strings[0].equalsIgnoreCase("info")) {
-
                 ProxiedPlayer player = (ProxiedPlayer) commandSender;
                 CloudPlayer cloudPlayer = CloudPlayer.getCloudPlayer(player.getUniqueId());
                 cloudPlayer.sendMessage("Du bist auf " + cloudPlayer.getGameServerName() + " online.");
@@ -68,20 +66,33 @@ public class CloudCommand extends Command {
 
         if (strings.length == 3) {
 
+            final String targetServer = strings[2].toLowerCase();
+
+            if (ProxyServer.getInstance().getServerInfo(targetServer) == null) {
+                commandSender.sendMessage(ProxyConnector.getInstance().getCloudPrefix() + "The Server §c" + targetServer + " §7does not exists!");
+                return;
+            }
+
             if (strings[0].equalsIgnoreCase("send")) {
-                ProxyServer.getInstance().getConsole().sendMessage("DEBUG-1");
-                String targetServer = strings[2];
-                ProxyServer.getInstance().getConsole().sendMessage("DEBUG-2");
 
                 if (strings[1].equalsIgnoreCase("all")) {
-                    ProxyServer.getInstance().getConsole().sendMessage("DEBUG-3");
-
+                    commandSender.sendMessage(ProxyConnector.getInstance().getCloudPrefix() + "All players will be moved to §e" + targetServer);
                     CloudSystem.getAPI().getAllCloudPlayers().forEach(cloudPlayers -> cloudPlayers.connect(targetServer));
-                    ProxyServer.getInstance().getConsole().sendMessage("DEBUG-4");
-
-
                     return;
                 }
+
+
+                CloudPlayer targetPlayer = CloudPlayer.getCloudPlayer(strings[1].toLowerCase());
+
+                if (targetPlayer != null) {
+
+                    targetPlayer.connect(targetServer);
+                    commandSender.sendMessage(ProxyConnector.getInstance().getCloudPrefix() + "You sent §e" + targetPlayer.getPlayerName() + "§7 to §e" + targetServer);
+                    return;
+                }
+
+                commandSender.sendMessage(ProxyConnector.getInstance().getCloudPrefix() + "The player §c" + strings[1] + "§7 is offline!");
+                return;
 
             }
 
@@ -103,6 +114,7 @@ public class CloudCommand extends Command {
                 return;
             }
             commandSender.sendMessage("§c/cloud start <SubGroupName> <Amount>");
+            commandSender.sendMessage("§c/cloud send <all/player-name> <target-server>");
 
         }
 

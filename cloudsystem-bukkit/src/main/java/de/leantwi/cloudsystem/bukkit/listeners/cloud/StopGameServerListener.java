@@ -8,15 +8,11 @@ import org.bukkit.Bukkit;
 
 public class StopGameServerListener implements Listener {
 
-
     @PacketListener
     public void onStopGameServerEvent(StopGameServerEvent event) {
-
         if (BukkitConnector.getInstance().getSpigotConnector().getServerName().equalsIgnoreCase(event.getServerName())) {
-            Bukkit.getOnlinePlayers().forEach(players -> players.kickPlayer("§cThe gameserver is restarting!"));
+            Bukkit.getScheduler().runTaskLater(BukkitConnector.getInstance(), Bukkit::shutdown, 5);
         }
-
-
     }
 
 }
