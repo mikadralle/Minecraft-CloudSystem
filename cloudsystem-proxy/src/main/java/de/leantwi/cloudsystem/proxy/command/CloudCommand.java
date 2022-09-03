@@ -9,6 +9,7 @@ import de.leantwi.cloudsystem.api.gameserver.groups.SubGroupDB;
 import de.leantwi.cloudsystem.proxy.ProxyConnector;
 import lombok.Getter;
 import net.md_5.bungee.api.CommandSender;
+import net.md_5.bungee.api.ProxyServer;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
 import net.md_5.bungee.api.plugin.Command;
 
@@ -68,12 +69,15 @@ public class CloudCommand extends Command {
         if (strings.length == 3) {
 
             if (strings[0].equalsIgnoreCase("send")) {
-
+                ProxyServer.getInstance().getConsole().sendMessage("DEBUG-1");
                 String targetServer = strings[2];
+                ProxyServer.getInstance().getConsole().sendMessage("DEBUG-2");
 
                 if (strings[1].equalsIgnoreCase("all")) {
+                    ProxyServer.getInstance().getConsole().sendMessage("DEBUG-3");
 
                     CloudSystem.getAPI().getAllCloudPlayers().forEach(cloudPlayers -> cloudPlayers.connect(targetServer));
+                    ProxyServer.getInstance().getConsole().sendMessage("DEBUG-4");
 
 
                     return;

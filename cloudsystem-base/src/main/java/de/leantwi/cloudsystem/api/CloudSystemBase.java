@@ -20,8 +20,6 @@ import de.leantwi.cloudsystem.group.GroupHandler;
 import lombok.Getter;
 import redis.clients.jedis.Jedis;
 import redis.clients.jedis.JedisPool;
-import redis.clients.jedis.Pipeline;
-import redis.clients.jedis.Response;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -227,9 +225,7 @@ public class CloudSystemBase implements CloudSystemAPI {
 
     @Override
     public void createGroup(String groupName) {
-
         this.groupHandler.createGroup(groupName);
-
     }
 
     @Override
@@ -244,26 +240,15 @@ public class CloudSystemBase implements CloudSystemAPI {
 
     @Override
     public List<CloudPlayerAPI> getAllCloudPlayers() {
+
         List<CloudPlayerAPI> list = new ArrayList<>();
+
         try (Jedis jedis = this.redisConnectorAPI.getJedisPool().getResource()) {
             jedis.select(DATABASE_ID);
-
-
-            Pipeline pipeline = jedis.pipelined();
-            Set<String> setList = jedis.keys(REDIS_CLOUD_PLAYERS_PATH);
-            Map<String, String> allMaps = new HashMap<>();
-            setList.forEach(key -> {
+            jedis.keys(REDIS_CLOUD_PLAYERS_PATH + "*").forEach(key -> {
                 String uuid = key.split(":")[2];
-                Response<Map<String, String>> map = pipeline.hgetAll(REDIS_CLOUD_PLAYERS_PATH + uuid);
-                allMaps.putAll(map.get());
+                list.add(this.gson.fromJson(jedis.hget(REDIS_CLOUD_PLAYERS_PATH + uuid, uuid), CloudPlayerAPI.class));
             });
-            pipeline.sync();
-
-
-            allMaps.values().forEach(value -> {
-                list.add(this.gson.fromJson(value, CloudPlayerAPI.class));
-            });
-
         }
 
         return list;

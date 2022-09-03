@@ -43,7 +43,6 @@ public class CloudPlayer extends CloudPlayerAPI {
 
     @Override
     public void connect(String serverName) {
-
         CloudSystem.getEventAPI().callEvent(new ConnectCloudPlayerToServerEvent(uniqueID, serverName));
     }
 
