@@ -1,4 +1,4 @@
-package de.leantwi.cloudsystem.proxy.listeners;
+package de.leantwi.cloudsystem.proxy.listeners.proxy;
 
 import de.leantwi.cloudsystem.api.event.Listener;
 import de.leantwi.cloudsystem.api.event.PacketListener;

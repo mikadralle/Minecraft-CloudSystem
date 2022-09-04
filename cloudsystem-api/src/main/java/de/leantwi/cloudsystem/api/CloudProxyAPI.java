@@ -1,20 +1,26 @@
 package de.leantwi.cloudsystem.api;
 
 import de.leantwi.cloudsystem.api.gameserver.GameServerData;
+import lombok.Getter;
+import lombok.Setter;
 
 import java.util.List;
 
-public interface CloudProxyAPI {
+public abstract class CloudProxyAPI {
 
-    long startProxyTime();
+    @Getter
+    @Setter
+    private long proxyStartTime;
+    @Getter
+    @Setter
+    private String proxyID;
 
-    String getProxyID();
 
-    List<CloudPlayerAPI> getAllProxyPlayers();
+    public abstract List<CloudPlayerAPI> getAllProxyPlayers();
 
-    void stopProxy(String shutdownMessage);
+    public abstract void stopProxy(String shutdownMessage);
 
-    List<GameServerData> getAllGameServers();
+    public abstract List<GameServerData> getAllGameServers();
 
 
 }

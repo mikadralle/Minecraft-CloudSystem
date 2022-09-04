@@ -1,4 +1,4 @@
-package de.leantwi.cloudsystem.proxy.api;
+package de.leantwi.cloudsystem.proxy.handler;
 
 import de.leantwi.cloudsystem.CloudSystem;
 import de.leantwi.cloudsystem.api.CloudPlayerAPI;
@@ -16,28 +16,16 @@ import java.util.List;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeoutException;
 
-public class CloudProxy implements CloudProxyAPI {
+public class CloudProxy extends CloudProxyAPI {
 
     private final CloudSystemAPI cloudSystemAPI = CloudSystem.getAPI();
     private final String prefix = ProxyConnector.getInstance().getCloudPrefix();
-    private final long startProxyTime;
-    private String proxyID;
 
     public CloudProxy() {
-        this.startProxyTime = System.currentTimeMillis();
 
+        setProxyStartTime(System.currentTimeMillis());
         this.loginProxyServer();
 
-    }
-
-    @Override
-    public long startProxyTime() {
-        return this.startProxyTime;
-    }
-
-    @Override
-    public String getProxyID() {
-        return this.proxyID;
     }
 
     @Override
@@ -47,6 +35,8 @@ public class CloudProxy implements CloudProxyAPI {
 
     @Override
     public void stopProxy(String shutdownMessage) {
+
+        ProxyServer.getInstance().stop(shutdownMessage);
 
     }
 
@@ -58,7 +48,7 @@ public class CloudProxy implements CloudProxyAPI {
 
     private void loginProxyServer() {
         try {
-            this.proxyID = this.cloudSystemAPI.getNatsConnector().request("verify", "bungeecord_register#");
+            setProxyID(this.cloudSystemAPI.getNatsConnector().request("verify", "bungeecord_register#"));
         } catch (InterruptedException | ExecutionException | TimeoutException e) {
             e.printStackTrace();
         }
@@ -81,7 +71,7 @@ public class CloudProxy implements CloudProxyAPI {
 
     public void logoutProxyServer() {
 
-        CloudSystem.getEventAPI().callEvent(new UnRegisterBungeeCordEvent(this.proxyID));
+        CloudSystem.getEventAPI().callEvent(new UnRegisterBungeeCordEvent(this.getProxyID()));
         ProxyServer.getInstance().getPlayers().forEach(players -> players.disconnect(this.prefix + "§cProxy will be restarted!"));
 
         this.cloudSystemAPI.deleteCloudProxy(this);

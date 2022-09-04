@@ -1,7 +1,6 @@
 package de.leantwi.cloudsystem.api;
 
 import com.google.gson.Gson;
-import de.leantwi.cloudsystem.CloudProxy;
 import de.leantwi.cloudsystem.CloudSystem;
 import de.leantwi.cloudsystem.api.events.player.ConnectCloudPlayerToServerEvent;
 import de.leantwi.cloudsystem.api.events.player.KickCloudPlayerEvent;
@@ -61,9 +60,10 @@ public class CloudPlayer extends CloudPlayerAPI {
     }
 
     @Override
-    public CloudProxy getProxy() {
-        return null;
+    public String getProxyID() {
+        return this.proxyID;
     }
+
 
     @Override
     public void sendMessage(String message) {

@@ -39,7 +39,7 @@ public class StopCommand implements CommandImplementation {
                     if (!this.cloudSystemAPI.existsGameServerByServerName(name)) {
                         wrapperBootstrap.getLogger().info("§cThis server doesn't exists!");
                         StringBuilder stringBuilder = new StringBuilder();
-                        this.cloudSystemAPI.getAllGameServer().forEach(server -> stringBuilder.append(server).append(", "));
+                        this.cloudSystemAPI.getAllGameServers().forEach(server -> stringBuilder.append(server).append(", "));
                         wrapperBootstrap.getLogger().info("§aAll available servers: " + stringBuilder);
                         return;
                     }

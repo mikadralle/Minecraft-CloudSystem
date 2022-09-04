@@ -36,7 +36,7 @@ public abstract class CloudPlayerAPI {
 
     public abstract boolean isOnline();
 
-    public abstract CloudProxyAPI getProxy();
+    public abstract String getProxyID();
 
     public abstract void sendMessage(String message);
 

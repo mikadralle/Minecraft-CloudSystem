@@ -5,14 +5,16 @@ import de.leantwi.cloudsystem.CloudSystemInit;
 import de.leantwi.cloudsystem.api.database.data.MongoDBData;
 import de.leantwi.cloudsystem.api.database.data.NatsData;
 import de.leantwi.cloudsystem.api.database.data.RedisData;
-import de.leantwi.cloudsystem.proxy.api.CloudProxy;
 import de.leantwi.cloudsystem.proxy.command.CloudCommand;
+import de.leantwi.cloudsystem.proxy.command.ProxyInfoCommand;
 import de.leantwi.cloudsystem.proxy.config.IniFile;
+import de.leantwi.cloudsystem.proxy.handler.CloudProxy;
 import de.leantwi.cloudsystem.proxy.listeners.*;
 import de.leantwi.cloudsystem.proxy.listeners.players.CloudPlayerJoinNetworkListener;
 import de.leantwi.cloudsystem.proxy.listeners.players.CloudPlayerQuitNetworkListener;
 import de.leantwi.cloudsystem.proxy.listeners.players.ConnectCloudPlayerToServerListener;
 import de.leantwi.cloudsystem.proxy.listeners.players.SendMessageToCloudPlayerListener;
+import de.leantwi.cloudsystem.proxy.listeners.proxy.ShutdownSystemListener;
 import de.leantwi.cloudsystem.proxy.listeners.proxy.StopProxyServerListener;
 import de.leantwi.cloudsystem.proxy.server.BungeeConnector;
 import lombok.Getter;
@@ -83,7 +85,7 @@ public class ProxyConnector extends Plugin {
 
         ProxyServer.getInstance().getPluginManager().registerListener(this, new ServerConnectListener());
         CloudSystem.getEventAPI().registerListener(new StartGameServerListener());
-        CloudSystem.getEventAPI().registerListener(new ShutdownSystemListener());
+
         CloudSystem.getEventAPI().registerListener(new GameTypeChangeListener());
         CloudSystem.getEventAPI().registerListener(new UnRegisterBungeeCordListener());
         CloudSystem.getEventAPI().registerListener(new ConnectCloudPlayerToServerListener());
@@ -91,12 +93,15 @@ public class ProxyConnector extends Plugin {
 
         //proxies events
         CloudSystem.getEventAPI().registerListener(new StopProxyServerListener());
+        CloudSystem.getEventAPI().registerListener(new ShutdownSystemListener());
 
-
+        //commands
         ProxyServer.getInstance().getPluginManager().registerCommand(this, new CloudCommand());
+        ProxyServer.getInstance().getPluginManager().registerCommand(this, new ProxyInfoCommand());
+
+
         ProxyServer.getInstance().getPluginManager().registerListener(this, new LoginListener());
         ProxyServer.getInstance().getPluginManager().registerListener(this, new LogoutListener());
-        ProxyServer.getInstance().getPluginManager().registerListener(this, new ServerConnectedListener());
 
         CloudSystem.getEventAPI().registerListener(new CloudPlayerJoinNetworkListener());
         CloudSystem.getEventAPI().registerListener(new CloudPlayerQuitNetworkListener());

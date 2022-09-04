@@ -12,7 +12,6 @@ public class StopProxyServerListener implements Listener {
     public void onStopProxyServerEvent(StopProxyServerEvent event) {
 
         if (event.getProxyID().equalsIgnoreCase(ProxyConnector.getInstance().getCloudProxy().getProxyID())) {
-            ProxyServer.getInstance().getPlayers().forEach(players -> players.disconnect("§cProxy is restarting!"));
             ProxyServer.getInstance().stop(event.getShutdownMessage());
         }
 

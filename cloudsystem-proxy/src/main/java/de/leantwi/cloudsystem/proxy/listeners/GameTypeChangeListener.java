@@ -18,12 +18,12 @@ public class GameTypeChangeListener implements Listener {
 
         if (gameState == GameState.STARTED) {
             GameServerData gameServerData = CloudSystem.getAPI().getGameServerByServerName(serverName);
-            ProxyConnector.getInstance().getProxyHandler().addServer(gameServerData.getServerName(), gameServerData.getHostName(), gameServerData.getPort());
+            ProxyConnector.getInstance().getCloudProxy().addServer(gameServerData.getServerName(), gameServerData.getHostName(), gameServerData.getPort());
             return;
         }
         if (gameState == GameState.SHUTDOWN) {
 
-            ProxyConnector.getInstance().getProxyHandler().removeServer(serverName);
+            ProxyConnector.getInstance().getCloudProxy().removeServer(serverName);
         }
 
 

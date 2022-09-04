@@ -281,6 +281,11 @@ public class CloudSystemBase implements CloudSystemAPI {
     @Override
     public void deleteCloudProxy(CloudProxyAPI cloudProxyAPI) {
 
+        try (Jedis jedis = this.redisConnectorAPI.getJedisPool().getResource()) {
+            jedis.select(DATABASE_ID);
+            jedis.del(REDIS_CLOUD_PROXY_PATH + cloudProxyAPI.getProxyID());
+        }
+
     }
 
 }
