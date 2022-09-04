@@ -66,15 +66,14 @@ public class CloudCommand extends Command {
 
         if (strings.length == 3) {
 
-            final String targetServer = strings[2].toLowerCase();
-
-            if (ProxyServer.getInstance().getServerInfo(targetServer) == null) {
-                commandSender.sendMessage(ProxyConnector.getInstance().getCloudPrefix() + "The Server §c" + targetServer + " §7does not exists!");
-                return;
-            }
 
             if (strings[0].equalsIgnoreCase("send")) {
+                final String targetServer = strings[2].toLowerCase();
 
+                if (ProxyServer.getInstance().getServerInfo(targetServer) == null) {
+                    commandSender.sendMessage(ProxyConnector.getInstance().getCloudPrefix() + "The Server §c" + targetServer + " §7does not exists!");
+                    return;
+                }
                 if (strings[1].equalsIgnoreCase("all")) {
                     commandSender.sendMessage(ProxyConnector.getInstance().getCloudPrefix() + "All players will be moved to §e" + targetServer);
                     CloudSystem.getAPI().getAllCloudPlayers().forEach(cloudPlayers -> cloudPlayers.connect(targetServer));
@@ -98,8 +97,10 @@ public class CloudCommand extends Command {
 
             if (strings[0].equalsIgnoreCase("start")) {
 
+                final String targetServer = strings[1].toLowerCase();
 
-                Optional<SubGroupDB> subGroupDB = this.cloudSystemAPI.getSubGroupByName(strings[1].toLowerCase());
+
+                Optional<SubGroupDB> subGroupDB = this.cloudSystemAPI.getSubGroupByName(targetServer.toLowerCase());
 
                 if (subGroupDB.isPresent()) {
                     int amount = Integer.parseInt(strings[2]);

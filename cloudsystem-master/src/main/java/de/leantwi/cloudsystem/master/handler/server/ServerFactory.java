@@ -56,7 +56,7 @@ public class ServerFactory {
 
 
             int finalI = i;
-            boolean existsServer = cloudSystem.getAllGameServerByGroupName(subGroupName).stream().allMatch(gameServerData -> gameServerData.getServerName().equalsIgnoreCase(subGroupName + "-" + finalI));
+            boolean existsServer = cloudSystem.getAllGameServerByGroupName(subGroupName).stream().anyMatch(gameServerData -> gameServerData.getServerName().equalsIgnoreCase(subGroupName + "-" + finalI));
 
             if (!existsServer) {
                 return i;
