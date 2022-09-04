@@ -13,7 +13,7 @@ import de.leantwi.cloudsystem.proxy.listeners.players.CloudPlayerJoinNetworkList
 import de.leantwi.cloudsystem.proxy.listeners.players.CloudPlayerQuitNetworkListener;
 import de.leantwi.cloudsystem.proxy.listeners.players.ConnectCloudPlayerToServerListener;
 import de.leantwi.cloudsystem.proxy.listeners.players.SendMessageToCloudPlayerListener;
-import de.leantwi.cloudsystem.proxy.messager.BackendDispatcher;
+import de.leantwi.cloudsystem.proxy.listeners.proxy.StopProxyServerListener;
 import de.leantwi.cloudsystem.proxy.server.BungeeConnector;
 import lombok.Getter;
 import net.md_5.bungee.api.ProxyServer;
@@ -31,7 +31,6 @@ public class ProxyConnector extends Plugin {
     private CloudProxy cloudProxy;
     private BungeeConnector bungeeConnector;
     private CloudSystemInit cloudSystemInit;
-    private BackendDispatcher backendDispatcher;
 
     public static ProxyConnector getInstance() {
         return instance;
@@ -75,14 +74,12 @@ public class ProxyConnector extends Plugin {
 
     private void registerClasses() {
 
-        this.backendDispatcher = new BackendDispatcher();
         this.bungeeConnector = new BungeeConnector();
         this.cloudProxy = new CloudProxy();
 
     }
 
     private void init() {
-        this.backendDispatcher.listen();
 
         ProxyServer.getInstance().getPluginManager().registerListener(this, new ServerConnectListener());
         CloudSystem.getEventAPI().registerListener(new StartGameServerListener());
@@ -91,6 +88,10 @@ public class ProxyConnector extends Plugin {
         CloudSystem.getEventAPI().registerListener(new UnRegisterBungeeCordListener());
         CloudSystem.getEventAPI().registerListener(new ConnectCloudPlayerToServerListener());
         CloudSystem.getEventAPI().registerListener(new SendMessageToCloudPlayerListener());
+
+        //proxies events
+        CloudSystem.getEventAPI().registerListener(new StopProxyServerListener());
+
 
         ProxyServer.getInstance().getPluginManager().registerCommand(this, new CloudCommand());
         ProxyServer.getInstance().getPluginManager().registerListener(this, new LoginListener());

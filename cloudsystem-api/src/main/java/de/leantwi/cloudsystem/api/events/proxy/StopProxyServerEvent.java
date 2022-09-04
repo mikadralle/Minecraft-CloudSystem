@@ -12,5 +12,5 @@ import lombok.Setter;
 @NoArgsConstructor
 public class StopProxyServerEvent extends Event {
 
-    private String shutdownMessage;
+    private String proxyID, shutdownMessage;
 }
