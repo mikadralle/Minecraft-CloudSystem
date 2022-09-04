@@ -43,7 +43,7 @@ public interface CloudSystemAPI {
 
     List<GameServerData> getAllGameServerByGroupName(String groupName);
 
-    List<GameServerData> getAllGameServer();
+    List<GameServerData> getAllGameServers();
 
     void refreshGroups();
 
@@ -77,5 +77,9 @@ public interface CloudSystemAPI {
     void updateCloudPlayer(CloudPlayerAPI cloudPlayerAPI);
 
     void deleteCloudPlayer(CloudPlayerAPI cloudPlayerAPI);
+
+    void updateCloudProxy(CloudProxyAPI cloudProxyAPI);
+
+    void deleteCloudProxy(CloudProxyAPI cloudProxyAPI);
 
 }

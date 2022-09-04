@@ -1,7 +1,10 @@
-package de.leantwi.cloudsystem.api.events.bungeecord;
+package de.leantwi.cloudsystem.api.events.proxy;
 
 import de.leantwi.cloudsystem.api.event.Event;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 @Getter
 @Setter

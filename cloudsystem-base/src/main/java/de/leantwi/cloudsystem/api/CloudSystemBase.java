@@ -33,6 +33,7 @@ public class CloudSystemBase implements CloudSystemAPI {
     public final String REDIS_CLOUD_PLAYERS_NAME_PATH = "cloud:databases:names:";
     public final String REDIS_CLOUD_SERVER_PATH = "cloud:server";
     public final String REDIS_CLOUD_PLAYERS_PATH = "cloud:players:";
+    public final String REDIS_CLOUD_PROXY_PATH = "cloud:proxy:";
     private final Gson gson = GsonHandler.getGson();
 
     @Getter
@@ -120,21 +121,21 @@ public class CloudSystemBase implements CloudSystemAPI {
 
     @Override
     public List<GameServerData> getAllGameServerBySubGroupName(String subGroupName) {
-        return getAllGameServer().stream()
+        return getAllGameServers().stream()
                 .filter(gameServerData -> gameServerData.getSubGroupDB().equalsIgnoreCase(subGroupName))
                 .collect(Collectors.toList());
     }
 
     @Override
     public List<GameServerData> getAllGameServerByGroupName(String groupName) {
-        return getAllGameServer().stream()
+        return getAllGameServers().stream()
                 .filter(gameServerData -> gameServerData.getGroupDB().equalsIgnoreCase(groupName))
                 .collect(Collectors.toList());
 
     }
 
     @Override
-    public List<GameServerData> getAllGameServer() {
+    public List<GameServerData> getAllGameServers() {
         List<GameServerData> list = new ArrayList<>();
         try (Jedis jedis = this.getRedisPool().getResource()) {
             jedis.select(DATABASE_ID);
@@ -159,7 +160,6 @@ public class CloudSystemBase implements CloudSystemAPI {
             jedis.select(DATABASE_ID);
             jedis.hset(REDIS_CLOUD_SERVER_PATH, gameServerData.getServerName(), this.gson.toJson(gameServerData));
         }
-
     }
 
     @Override
@@ -168,26 +168,21 @@ public class CloudSystemBase implements CloudSystemAPI {
             jedis.select(DATABASE_ID);
             jedis.hdel(REDIS_CLOUD_SERVER_PATH, gameServerData.getServerName());
         }
-
-
     }
 
     @Override
     public List<SubGroupDB> getAllSubGroups() {
 
         List<SubGroupDB> allList = new ArrayList<>();
-
         for (GroupDB groupDB : this.groupHandler.getGroups().values()) {
             allList.addAll(groupDB.getSubGroupDBList());
         }
-
         return allList;
     }
 
     @Override
     public List<SubGroupDB> getAllSubGroupByGroupName(String groupName) {
         return this.groupHandler.getGroups().get(groupName.toLowerCase()).getSubGroupDBList();
-
     }
 
     @Override
@@ -273,7 +268,18 @@ public class CloudSystemBase implements CloudSystemAPI {
             jedis.hdel(REDIS_CLOUD_PLAYERS_PATH + cloudPlayerAPI.getUniqueID(), cloudPlayerAPI.getUniqueID().toString());
 
         }
+    }
 
+    @Override
+    public void updateCloudProxy(CloudProxyAPI cloudProxyAPI) {
+        try (Jedis jedis = this.redisConnectorAPI.getJedisPool().getResource()) {
+            jedis.select(DATABASE_ID);
+            jedis.hset(REDIS_CLOUD_PROXY_PATH + cloudProxyAPI.getProxyID(), "json", this.gson.toJson(cloudProxyAPI, CloudProxyAPI.class));
+        }
+    }
+
+    @Override
+    public void deleteCloudProxy(CloudProxyAPI cloudProxyAPI) {
 
     }
 

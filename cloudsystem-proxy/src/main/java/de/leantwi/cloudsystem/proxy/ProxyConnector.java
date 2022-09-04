@@ -5,6 +5,7 @@ import de.leantwi.cloudsystem.CloudSystemInit;
 import de.leantwi.cloudsystem.api.database.data.MongoDBData;
 import de.leantwi.cloudsystem.api.database.data.NatsData;
 import de.leantwi.cloudsystem.api.database.data.RedisData;
+import de.leantwi.cloudsystem.proxy.api.CloudProxy;
 import de.leantwi.cloudsystem.proxy.command.CloudCommand;
 import de.leantwi.cloudsystem.proxy.config.IniFile;
 import de.leantwi.cloudsystem.proxy.listeners.*;
@@ -14,7 +15,6 @@ import de.leantwi.cloudsystem.proxy.listeners.players.ConnectCloudPlayerToServer
 import de.leantwi.cloudsystem.proxy.listeners.players.SendMessageToCloudPlayerListener;
 import de.leantwi.cloudsystem.proxy.messager.BackendDispatcher;
 import de.leantwi.cloudsystem.proxy.server.BungeeConnector;
-import de.leantwi.cloudsystem.proxy.server.ProxyHandler;
 import lombok.Getter;
 import net.md_5.bungee.api.ProxyServer;
 import net.md_5.bungee.api.plugin.Plugin;
@@ -28,8 +28,7 @@ public class ProxyConnector extends Plugin {
     private static ProxyConnector instance;
     private final ExecutorService executorService = Executors.newCachedThreadPool();
     private final String cloudPrefix = "§bCloud §8┃§7 ";
-    private IniFile configAPI;
-    private ProxyHandler proxyHandler;
+    private CloudProxy cloudProxy;
     private BungeeConnector bungeeConnector;
     private CloudSystemInit cloudSystemInit;
     private BackendDispatcher backendDispatcher;
@@ -41,25 +40,26 @@ public class ProxyConnector extends Plugin {
     @Override
     public void onLoad() {
 
-        this.configAPI = new IniFile("database.ini");
+        IniFile configAPI = new IniFile("database.ini");
+        this.loadConfig(configAPI);
         RedisData redisData = new RedisData(
-                this.configAPI.getProperty("redis.hostname"),
-                this.configAPI.getProperty("redis.password"),
-                Integer.parseInt(this.configAPI.getProperty("redis.port")),
-                Integer.parseInt(this.configAPI.getProperty("redis.databaseID")));
+                configAPI.getProperty("redis.hostname"),
+                configAPI.getProperty("redis.password"),
+                Integer.parseInt(configAPI.getProperty("redis.port")),
+                Integer.parseInt(configAPI.getProperty("redis.databaseID")));
 
         MongoDBData mongoDBData = new MongoDBData(
-                this.configAPI.getProperty("mongoDB.hostname"),
-                this.configAPI.getProperty("mongoDB.password"),
-                this.configAPI.getProperty("mongoDB.username"),
-                this.configAPI.getProperty("mongoDB.authDB"),
-                this.configAPI.getProperty("mongoDB.defaultDB"),
-                Integer.parseInt(this.configAPI.getProperty("mongoDB.port")));
+                configAPI.getProperty("mongoDB.hostname"),
+                configAPI.getProperty("mongoDB.password"),
+                configAPI.getProperty("mongoDB.username"),
+                configAPI.getProperty("mongoDB.authDB"),
+                configAPI.getProperty("mongoDB.defaultDB"),
+                Integer.parseInt(configAPI.getProperty("mongoDB.port")));
 
         NatsData natsData = new NatsData(
-                this.configAPI.getProperty("nats.hostname"),
-                this.configAPI.getProperty("nats.token"),
-                Integer.parseInt(this.configAPI.getProperty("nats.port")));
+                configAPI.getProperty("nats.hostname"),
+                configAPI.getProperty("nats.token"),
+                Integer.parseInt(configAPI.getProperty("nats.port")));
 
         this.cloudSystemInit = new CloudSystemInit(redisData, mongoDBData, natsData);
     }
@@ -75,18 +75,14 @@ public class ProxyConnector extends Plugin {
 
     private void registerClasses() {
 
-        this.configAPI = new IniFile("database.ini");
-
         this.backendDispatcher = new BackendDispatcher();
-        this.proxyHandler = new ProxyHandler();
         this.bungeeConnector = new BungeeConnector();
-
+        this.cloudProxy = new CloudProxy();
 
     }
 
     private void init() {
         this.backendDispatcher.listen();
-        this.proxyHandler.loginProxyServer();
 
         ProxyServer.getInstance().getPluginManager().registerListener(this, new ServerConnectListener());
         CloudSystem.getEventAPI().registerListener(new StartGameServerListener());
@@ -110,33 +106,33 @@ public class ProxyConnector extends Plugin {
 
     @Override
     public void onDisable() {
-        this.proxyHandler.logoutProxyServer();
+        this.cloudProxy.logoutProxyServer();
     }
 
-    private void loadConfig() {
+    private void loadConfig(IniFile config) {
 
-        if (this.configAPI.isEmpty()) {
+        if (config.isEmpty()) {
 
             //redis connector configuration //
-            this.configAPI.setProperty("redis.hostname", "127.0.0.1");
-            this.configAPI.setProperty("redis.port", "6379");
-            this.configAPI.setProperty("redis.password", "password");
-            this.configAPI.setProperty("redis.databaseID", "7");
+            config.setProperty("redis.hostname", "127.0.0.1");
+            config.setProperty("redis.port", "6379");
+            config.setProperty("redis.password", "password");
+            config.setProperty("redis.databaseID", "7");
 
             //mongdb connector configuration //
-            this.configAPI.setProperty("mongoDB.hostname", "127.0.0.1");
-            this.configAPI.setProperty("mongoDB.username", "admin");
-            this.configAPI.setProperty("mongoDB.password", "password");
-            this.configAPI.setProperty("mongoDB.authDB", "admin");
-            this.configAPI.setProperty("mongoDB.defaultDB", "cloud");
-            this.configAPI.setProperty("mongoDB.port", "27017");
+            config.setProperty("mongoDB.hostname", "127.0.0.1");
+            config.setProperty("mongoDB.username", "admin");
+            config.setProperty("mongoDB.password", "password");
+            config.setProperty("mongoDB.authDB", "admin");
+            config.setProperty("mongoDB.defaultDB", "cloud");
+            config.setProperty("mongoDB.port", "27017");
 
             // nats.io connector configuration
-            this.configAPI.setProperty("nats.hostname", "127.0.0.0.1");
-            this.configAPI.setProperty("nats.port", "4222");
-            this.configAPI.setProperty("nats.token", "token");
+            config.setProperty("nats.hostname", "127.0.0.0.1");
+            config.setProperty("nats.port", "4222");
+            config.setProperty("nats.token", "token");
 
-            this.configAPI.saveToFile();
+            config.saveToFile();
         }
     }
 

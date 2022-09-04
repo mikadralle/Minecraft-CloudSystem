@@ -2,7 +2,7 @@ package de.leantwi.cloudsystem.master.listeners;
 
 import de.leantwi.cloudsystem.api.event.Listener;
 import de.leantwi.cloudsystem.api.event.PacketListener;
-import de.leantwi.cloudsystem.api.events.bungeecord.UnRegisterBungeeCordEvent;
+import de.leantwi.cloudsystem.api.events.proxy.UnRegisterBungeeCordEvent;
 import de.leantwi.cloudsystem.master.MasterBootstrap;
 
 public class UnRegisterBungeeCordListener implements Listener {

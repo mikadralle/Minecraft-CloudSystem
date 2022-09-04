@@ -1,6 +1,5 @@
 package de.leantwi.cloudsystem.api;
 
-import de.leantwi.cloudsystem.CloudProxy;
 import de.leantwi.cloudsystem.api.gameserver.GameServerData;
 import lombok.Getter;
 import lombok.Setter;
@@ -37,7 +36,7 @@ public abstract class CloudPlayerAPI {
 
     public abstract boolean isOnline();
 
-    public abstract CloudProxy getProxy();
+    public abstract CloudProxyAPI getProxy();
 
     public abstract void sendMessage(String message);
 

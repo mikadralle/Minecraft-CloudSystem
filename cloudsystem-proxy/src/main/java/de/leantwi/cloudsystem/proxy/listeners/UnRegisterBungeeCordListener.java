@@ -2,7 +2,7 @@ package de.leantwi.cloudsystem.proxy.listeners;
 
 import de.leantwi.cloudsystem.api.event.Listener;
 import de.leantwi.cloudsystem.api.event.PacketListener;
-import de.leantwi.cloudsystem.api.events.bungeecord.UnRegisterBungeeCordEvent;
+import de.leantwi.cloudsystem.api.events.proxy.UnRegisterBungeeCordEvent;
 import de.leantwi.cloudsystem.proxy.ProxyConnector;
 import net.md_5.bungee.api.ProxyServer;
 

@@ -22,8 +22,8 @@ public class GameTypeChangeListener implements Listener {
             return;
         }
         if (gameState == GameState.SHUTDOWN) {
+
             ProxyConnector.getInstance().getProxyHandler().removeServer(serverName);
-            return;
         }
 
 
