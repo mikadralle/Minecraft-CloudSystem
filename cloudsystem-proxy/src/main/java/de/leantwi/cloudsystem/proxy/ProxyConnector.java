@@ -91,6 +91,7 @@ public class ProxyConnector extends Plugin {
         CloudSystem.getEventAPI().registerListener(new ConnectCloudPlayerToServerListener());
         CloudSystem.getEventAPI().registerListener(new SendMessageToCloudPlayerListener());
 
+
         //proxies events
         CloudSystem.getEventAPI().registerListener(new StopProxyServerListener());
         CloudSystem.getEventAPI().registerListener(new ShutdownSystemListener());
@@ -100,7 +101,7 @@ public class ProxyConnector extends Plugin {
         ProxyServer.getInstance().getPluginManager().registerCommand(this, new ProxyInfoCommand());
 
 
-        ProxyServer.getInstance().getPluginManager().registerListener(this, new LoginListener());
+        ProxyServer.getInstance().getPluginManager().registerListener(this, new PostLoginListener());
         ProxyServer.getInstance().getPluginManager().registerListener(this, new LogoutListener());
 
         CloudSystem.getEventAPI().registerListener(new CloudPlayerJoinNetworkListener());

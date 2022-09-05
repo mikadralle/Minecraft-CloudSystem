@@ -6,7 +6,6 @@ import de.leantwi.cloudsystem.api.CloudProxyAPI;
 import de.leantwi.cloudsystem.api.CloudSystemAPI;
 import de.leantwi.cloudsystem.api.events.proxy.UnRegisterBungeeCordEvent;
 import de.leantwi.cloudsystem.api.gameserver.GameServerData;
-import de.leantwi.cloudsystem.api.gameserver.GameState;
 import de.leantwi.cloudsystem.proxy.ProxyConnector;
 import net.md_5.bungee.api.ProxyServer;
 import net.md_5.bungee.api.config.ServerInfo;
@@ -54,6 +53,9 @@ public class CloudProxy extends CloudProxyAPI {
         }
 
 
+        this.cloudSystemAPI.getAllGameServers().forEach(gameServerData -> addServer(gameServerData.getServerName(), gameServerData.getHostName(), gameServerData.getPort()));
+        this.cloudSystemAPI.updateCloudProxy(this);
+        /*
         this.cloudSystemAPI.getAllGameServers().stream().
                 filter(gameServerData -> gameServerData.getGameState() != GameState.STARTS && gameServerData.getGameState() != GameState.SHUTDOWN).
                 forEach(gameServerData -> {
