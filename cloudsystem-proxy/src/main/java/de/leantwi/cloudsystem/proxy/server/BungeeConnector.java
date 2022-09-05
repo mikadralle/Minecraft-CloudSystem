@@ -9,7 +9,6 @@ import net.md_5.bungee.api.ProxyServer;
 import net.md_5.bungee.api.config.ServerInfo;
 
 import java.util.*;
-import java.util.stream.Collectors;
 
 @Getter
 public class BungeeConnector {
@@ -18,15 +17,14 @@ public class BungeeConnector {
     private final CloudSystemAPI cloudSystemAPI = CloudSystem.getAPI();
 
 
-
     public ServerInfo getLobbyServer() {
 
         final Map<String, Integer> lobbies = new HashMap<>();
 
         List<GameServerData> gameServerData = this.cloudSystemAPI.getAllGameServerBySubGroupName("lobby");
         gameServerData.forEach(gameServer -> {
-            lobbies.put(gameServer.getServerName(),gameServer.getOnlinePlayers());
-        } );
+            lobbies.put(gameServer.getServerName(), gameServer.getOnlinePlayers());
+        });
 
         final List<Integer> list = new ArrayList<>();
         lobbies.keySet().forEach(name -> list.add(lobbies.get(name)));
@@ -35,7 +33,6 @@ public class BungeeConnector {
 
         return ProxyServer.getInstance().getServerInfo(lobbies.keySet().stream().filter(name -> lobbies.get(name).equals(min)).findFirst().get());
     }
-
 
 
 }

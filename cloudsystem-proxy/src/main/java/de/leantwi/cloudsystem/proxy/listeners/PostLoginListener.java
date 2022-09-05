@@ -11,6 +11,6 @@ public class PostLoginListener implements Listener {
 
     @EventHandler
     public void onPostLoginEvent(PostLoginEvent event) {
-        CloudSystem.getEventAPI().callEvent(new CloudPlayerJoinNetworkEvent(event.getPlayer().getUniqueId(), event.getPlayer().getName(), event.getPlayer().getServer().getInfo().getName(), ProxyConnector.getInstance().getCloudProxy().getProxyID()));
+        CloudSystem.getEventAPI().callEvent(new CloudPlayerJoinNetworkEvent(event.getPlayer().getUniqueId(), event.getPlayer().getName(), ProxyConnector.getInstance().getCloudProxy().getProxyID()));
     }
 }

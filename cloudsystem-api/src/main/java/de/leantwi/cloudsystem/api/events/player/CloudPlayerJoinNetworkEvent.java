@@ -13,7 +13,7 @@ import java.util.UUID;
 public class CloudPlayerJoinNetworkEvent extends Event {
 
     private final UUID uniqueID;
-    private final String playerName, serverName, ProxyID;
+    private final String playerName, ProxyID;
 
 
 }

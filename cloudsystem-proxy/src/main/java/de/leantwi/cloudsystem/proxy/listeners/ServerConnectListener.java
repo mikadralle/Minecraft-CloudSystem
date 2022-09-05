@@ -1,5 +1,7 @@
 package de.leantwi.cloudsystem.proxy.listeners;
 
+import de.leantwi.cloudsystem.CloudSystem;
+import de.leantwi.cloudsystem.api.CloudPlayer;
 import de.leantwi.cloudsystem.proxy.ProxyConnector;
 import de.leantwi.cloudsystem.proxy.server.BungeeConnector;
 import net.md_5.bungee.api.event.ServerConnectEvent;
@@ -18,8 +20,11 @@ public class ServerConnectListener implements Listener {
 
         if (event.getTarget().getName().equalsIgnoreCase("fallbackServer")) {
             event.setTarget(this.bungeeConnector.getLobbyServer());
+            return;
         }
-
+        CloudPlayer cloudPlayer = CloudPlayer.getCloudPlayer(event.getPlayer().getUniqueId());
+        cloudPlayer.setServerName(event.getTarget().getName());
+        CloudSystem.getAPI().updateCloudPlayer(cloudPlayer);
 
 
     }

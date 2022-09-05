@@ -16,7 +16,7 @@ public class CloudPlayerJoinNetworkListener implements Listener {
     @PacketListener
     public void onCloudPlayerJoinNetworkEvent(CloudPlayerJoinNetworkEvent event) {
 
-        CloudPlayerAPI cloudPlayer = new CloudPlayer(event.getPlayerName(), event.getServerName(), event.getProxyID(), event.getUniqueID(), System.currentTimeMillis());
+        CloudPlayerAPI cloudPlayer = new CloudPlayer(event.getPlayerName(), "fallbackServer", event.getProxyID(), event.getUniqueID(), System.currentTimeMillis());
         CloudSystem.getAPI().updateCloudPlayer(cloudPlayer);
 
         ProxiedPlayer player = ProxyServer.getInstance().getPlayer(event.getUniqueID());
