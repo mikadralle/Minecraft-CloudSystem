@@ -61,12 +61,6 @@ public class CloudProxy extends CloudProxyAPI {
                 });
 
         this.cloudSystemAPI.updateCloudProxy(this);
-        /*
-        this.cloudSystemAPI.getAllGameServer().forEach(gameServerData -> {
-            addServer(gameServerData.getServerName(), gameServerData.getHostName(), gameServerData.getPort());
-        });
-
-         */
     }
 
     public void logoutProxyServer() {
@@ -90,9 +84,11 @@ public class CloudProxy extends CloudProxyAPI {
 
     public void removeServer(String serverName) {
 
-        ServerInfo kickTo = ProxyConnector.getInstance().getBungeeConnector().getLobbyServer();
-        ProxyServer.getInstance().getServerInfo(serverName).getPlayers().forEach(players -> players.connect(kickTo));
+
         ProxyServer.getInstance().getServers().remove(serverName);
+        ServerInfo kickTo = ProxyConnector.getInstance().getBungeeConnector().getLobbyServer();
+
+        ProxyServer.getInstance().getServerInfo(serverName).getPlayers().forEach(players -> players.connect(kickTo));
         ProxyServer.getInstance().getPlayers().stream().filter(players -> players.hasPermission("cloud.use")).forEach(players -> players.sendMessage(this.prefix + "The server " + serverName + " §7is now §coffline§7."));
         ProxyServer.getInstance().getConsole().sendMessage(this.prefix + "The server " + serverName + " §7is now §coffline§7.");
     }
