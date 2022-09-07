@@ -91,6 +91,10 @@ public class SpigotFolderHandler implements SetupServerHandlerAPI {
         argumentList.add("-AmdS");
         argumentList.add(serverName.toLowerCase());
         argumentList.add("java");
+        argumentList.add("--add-opens=java.base/java.lang=ALL-UNNAMED");
+        argumentList.add("--add-opens=java.base/java.lang.reflect=ALL-UNNAMED");
+
+
         argumentList.add("-Xmx" + memory + "M");
         //cloud configuration
         argumentList.add("-Dcloud.serverName=" + serverName.toLowerCase());
@@ -110,8 +114,11 @@ public class SpigotFolderHandler implements SetupServerHandlerAPI {
         argumentList.add("-Dnats.hostname=" + natsData.getHostName());
         argumentList.add("-Dnats.token=" + natsData.getToken());
         argumentList.add("-Dnats.port=" + natsData.getPort());
+
+
         argumentList.add("-jar");
         argumentList.add("spigot.jar");
+
 
         argumentList.add("--port");
         argumentList.add(String.valueOf(gameServerData.getPort()));
