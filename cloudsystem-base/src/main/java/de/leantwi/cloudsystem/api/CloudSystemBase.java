@@ -288,4 +288,9 @@ public class CloudSystemBase implements CloudSystemAPI {
 
     }
 
+    @Override
+    public GameServerData getGameServerByUniqueID(UUID uniqueID) {
+        return getAllGameServers().stream().filter(gameServerData -> gameServerData.getServerID().equals(uniqueID)).findFirst().get();
+    }
+
 }

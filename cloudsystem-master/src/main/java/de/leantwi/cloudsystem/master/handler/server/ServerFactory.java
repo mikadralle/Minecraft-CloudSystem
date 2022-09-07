@@ -9,6 +9,8 @@ import de.leantwi.cloudsystem.api.gameserver.groups.SubGroupDB;
 import de.leantwi.cloudsystem.api.gameserver.server.ServerDB;
 import de.leantwi.cloudsystem.master.MasterBootstrap;
 
+import java.util.UUID;
+
 
 public class ServerFactory {
 
@@ -34,7 +36,7 @@ public class ServerFactory {
         //create class GameServerData
         GameServerData gameServerData = new GameServerData(hostName, serverName, wrapperName,
                 subGroupDB.getSubGroupName(), subGroupDB.getMainGroupName(),
-                port, 0, 0, serverDB.getMaxPlayer(), subGroupDB.getServerDB().isStaticMode(), GameState.STARTS);
+                port, 0, 0, serverDB.getMaxPlayer(), subGroupDB.getServerDB().isStaticMode(), GameState.STARTS, UUID.randomUUID());
         //sets data into redis.
         this.cloudSystem.updateGameServer(gameServerData);
 

@@ -16,6 +16,7 @@ import redis.clients.jedis.JedisPool;
 import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 public interface CloudSystemAPI {
 
@@ -81,5 +82,7 @@ public interface CloudSystemAPI {
     void updateCloudProxy(CloudProxyAPI cloudProxyAPI);
 
     void deleteCloudProxy(CloudProxyAPI cloudProxyAPI);
+
+    GameServerData getGameServerByUniqueID(UUID uniqueID);
 
 }

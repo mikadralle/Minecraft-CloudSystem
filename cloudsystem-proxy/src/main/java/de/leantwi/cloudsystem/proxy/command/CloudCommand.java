@@ -34,13 +34,13 @@ public class CloudCommand extends Command {
             if (strings[0].equalsIgnoreCase("stop")) {
                 ProxiedPlayer player = (ProxiedPlayer) commandSender;
                 CloudPlayer cloudPlayer = CloudPlayer.getCloudPlayer(player.getUniqueId());
-                CloudSystem.getEventAPI().callEvent(new StopGameServerEvent(cloudPlayer.getGameServerName()));
+                CloudSystem.getEventAPI().callEvent(new StopGameServerEvent(cloudPlayer.getServerName()));
                 return;
             }
             if (strings[0].equalsIgnoreCase("info")) {
                 ProxiedPlayer player = (ProxiedPlayer) commandSender;
                 CloudPlayer cloudPlayer = CloudPlayer.getCloudPlayer(player.getUniqueId());
-                cloudPlayer.sendMessage("Du bist auf " + cloudPlayer.getGameServerName() + " online.");
+                cloudPlayer.sendMessage("Du bist auf " + cloudPlayer.getServerName() + " online.");
                 return;
             }
             commandSender.sendMessage("§c/cloud stop : You will be stopping the current GameServer");
@@ -55,7 +55,7 @@ public class CloudCommand extends Command {
                 CloudPlayer cloudPlayer = CloudPlayer.getCloudPlayer(player.getUniqueId());
                 CloudPlayer targetCloudPlayer = CloudPlayer.getCloudPlayer(strings[1].toLowerCase());
                 if (targetCloudPlayer != null) {
-                    cloudPlayer.sendMessage("Der Spieler " + targetCloudPlayer.getPlayerName() + " ist auf " + targetCloudPlayer.getGameServerName() + " online.");
+                    cloudPlayer.sendMessage("Der Spieler " + targetCloudPlayer.getPlayerName() + " ist auf " + targetCloudPlayer.getServerName() + " online.");
                     return;
                 }
                 cloudPlayer.sendMessage("Der Spieler " + strings[1] + " ist nicht online!");
