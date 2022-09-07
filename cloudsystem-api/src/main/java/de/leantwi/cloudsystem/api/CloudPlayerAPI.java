@@ -31,9 +31,6 @@ public abstract class CloudPlayerAPI {
 
     public abstract void connect(GameServerData gameServerData);
 
-
-    public abstract String getGameServerName();
-
     public abstract boolean isOnline();
 
     public abstract String getProxyID();

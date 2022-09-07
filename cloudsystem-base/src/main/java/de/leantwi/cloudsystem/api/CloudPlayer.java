@@ -49,10 +49,6 @@ public class CloudPlayer extends CloudPlayerAPI {
         CloudSystem.getEventAPI().callEvent(new ConnectCloudPlayerToServerEvent(uniqueID, gameServerData.getServerName()));
     }
 
-    @Override
-    public String getGameServerName() {
-        return getServerName();
-    }
 
     @Override
     public boolean isOnline() {
