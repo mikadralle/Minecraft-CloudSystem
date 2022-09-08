@@ -10,8 +10,6 @@ import de.leantwi.cloudsystem.proxy.command.ProxyInfoCommand;
 import de.leantwi.cloudsystem.proxy.config.IniFile;
 import de.leantwi.cloudsystem.proxy.handler.CloudProxy;
 import de.leantwi.cloudsystem.proxy.listeners.*;
-import de.leantwi.cloudsystem.proxy.listeners.players.CloudPlayerJoinNetworkListener;
-import de.leantwi.cloudsystem.proxy.listeners.players.CloudPlayerQuitNetworkListener;
 import de.leantwi.cloudsystem.proxy.listeners.players.ConnectCloudPlayerToServerListener;
 import de.leantwi.cloudsystem.proxy.listeners.players.SendMessageToCloudPlayerListener;
 import de.leantwi.cloudsystem.proxy.listeners.proxy.ShutdownSystemListener;
@@ -104,8 +102,6 @@ public class ProxyConnector extends Plugin {
         ProxyServer.getInstance().getPluginManager().registerListener(this, new PostLoginListener());
         ProxyServer.getInstance().getPluginManager().registerListener(this, new LogoutListener());
 
-        CloudSystem.getEventAPI().registerListener(new CloudPlayerJoinNetworkListener());
-        CloudSystem.getEventAPI().registerListener(new CloudPlayerQuitNetworkListener());
         //ProxyServer.getInstance().getPluginManager().registerListener(this, new KickListener());
 
     }

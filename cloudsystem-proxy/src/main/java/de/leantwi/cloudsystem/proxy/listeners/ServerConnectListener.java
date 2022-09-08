@@ -4,8 +4,10 @@ import de.leantwi.cloudsystem.CloudSystem;
 import de.leantwi.cloudsystem.api.CloudPlayer;
 import de.leantwi.cloudsystem.proxy.ProxyConnector;
 import de.leantwi.cloudsystem.proxy.server.BungeeConnector;
+import net.md_5.bungee.api.ProxyServer;
 import net.md_5.bungee.api.config.ServerInfo;
 import net.md_5.bungee.api.event.ServerConnectEvent;
+import net.md_5.bungee.api.event.ServerConnectedEvent;
 import net.md_5.bungee.api.plugin.Listener;
 import net.md_5.bungee.event.EventHandler;
 import net.md_5.bungee.event.EventPriority;
@@ -27,11 +29,21 @@ public class ServerConnectListener implements Listener {
                 event.getPlayer().disconnect("§cCould not find central server!");
                 return;
             }
+            ProxyServer.getInstance().getConsole().sendMessage("§cgo to §e" + serverInfo.getName());
             event.setTarget(serverInfo);
-            return;
         }
+
+
+    }
+
+
+    @EventHandler
+    public void onServerConnectedListener(ServerConnectedEvent event) {
+
+
         CloudPlayer cloudPlayer = CloudPlayer.getCloudPlayer(event.getPlayer().getUniqueId());
-        cloudPlayer.setServerName(event.getTarget().getName());
+        cloudPlayer.setServerName(event.getServer().getInfo().getName());
+        ProxyServer.getInstance().getConsole().sendMessage("Current Server-Name: §d" + event.getServer().getInfo().getName());
         CloudSystem.getAPI().updateCloudPlayer(cloudPlayer);
 
 
