@@ -14,7 +14,7 @@ import java.util.UUID;
 @NoArgsConstructor
 public class ConnectCloudPlayerToServerEvent extends Event {
 
-    private UUID uuid;
+    private UUID uniqueID;
 
     private String targetServerName;
 

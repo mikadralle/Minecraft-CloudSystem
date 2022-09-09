@@ -10,7 +10,7 @@ public class ConnectCloudPlayerToServerListener implements Listener {
 
     @PacketListener
     public void onConnectCloudPlayerToServerEvent(ConnectCloudPlayerToServerEvent event) {
-        ProxiedPlayer player = ProxyServer.getInstance().getPlayer(event.getUuid());
+        ProxiedPlayer player = ProxyServer.getInstance().getPlayer(event.getUniqueID());
         if (player != null) {
             player.connect(ProxyServer.getInstance().getServerInfo(event.getTargetServerName()));
         }
