@@ -34,7 +34,6 @@
             <scope>compile</scope>
         </dependency>
 
-
         <!-- MongoDB driver -->
         <dependency>
             <groupId>org.mongodb</groupId>
