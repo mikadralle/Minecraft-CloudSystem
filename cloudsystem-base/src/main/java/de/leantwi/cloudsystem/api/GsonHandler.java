@@ -8,13 +8,10 @@ public class GsonHandler {
 
     private static final GsonBuilder gsonBuilder = new GsonBuilder().registerTypeAdapter(CloudPlayerAPI.class, new PacketSerializer<CloudPlayerAPI>());
 
-
     public static Gson getGson() {
         gsonBuilder.setPrettyPrinting();
         return gsonBuilder.create();
-
     }
-
 
     static class PacketSerializer<T> implements JsonSerializer<T>, JsonDeserializer<T> {
 

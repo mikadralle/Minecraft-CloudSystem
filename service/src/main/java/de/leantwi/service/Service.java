@@ -24,38 +24,44 @@ public abstract class Service {
 
     private final ExecutorService executorService = Executors.newCachedThreadPool();
     private Logger logger;
-    private CloudSystemInit cloudSystemInit;
     private final CommandHandler commandHandler;
     private LibraryLoader libraryLoader;
     private final IniFile configAPI;
+    private CloudSystemInit cloudSystemInit;
 
     public Service() {
 
-
+        System.out.println("Debug-1");
         this.configAPI = new IniFile("database.ini");
         loadConfig();
         final long timeStamp = System.currentTimeMillis();
         commandHandler = new CommandHandler(this);
+        System.out.println("Debug-2");
         registerCommands();
 
         ConsoleReader consoleReader = null;
         try {
+            System.out.println("Debug-3");
             consoleReader = new ConsoleReader();
             consoleReader.setExpandEvents(false);
 
             ConsoleReader finalConsoleReader = consoleReader;
-
+            System.out.println("Debug-4");
             this.logger = new ServiceLogger("cloud", consoleReader, "cloud", "log/");
             //init class library
+            System.out.println("Debug-5");
             this.libraryLoader = new LibraryLoader(this.logger);
             // load all libraries in the folder libraries
+            System.out.println("Debug-6");
             this.libraryLoader.loadLibraries();
+            sleep();
+            System.out.println("Debug-7");
             RedisData redisData = new RedisData(
                     this.configAPI.getProperty("redis.hostname"),
                     this.configAPI.getProperty("redis.password"),
                     Integer.parseInt(this.configAPI.getProperty("redis.port")),
                     Integer.parseInt(this.configAPI.getProperty("redis.databaseID")));
-
+            System.out.println("Debug-8");
             MongoDBData mongoDBData = new MongoDBData(
                     this.configAPI.getProperty("mongoDB.hostname"),
                     this.configAPI.getProperty("mongoDB.password"),
@@ -68,13 +74,13 @@ public abstract class Service {
                     this.configAPI.getProperty("nats.hostname"),
                     this.configAPI.getProperty("nats.token"),
                     Integer.parseInt(this.configAPI.getProperty("nats.port")));
-
-            this.cloudSystemInit = new CloudSystemInit(redisData, mongoDBData, natsData);
-
+            System.out.println("Debug-9");
+            this.cloudSystemInit = new CloudSystemInit(redisData, mongoDBData, natsData, logger);
+            System.out.println("Debug-10");
             this.executorService.execute(() -> {
-
+                System.out.println("Debug-11");
                 while (!Thread.currentThread().isInterrupted()) {
-
+                    System.out.println("Debug-12");
                     String line = null;
 
                     try {
@@ -88,9 +94,9 @@ public abstract class Service {
                 }
             });
 
-
+            System.out.println("Debug-13");
             onBootstrap();
-
+            System.out.println("Debug-14");
 
             Runtime.getRuntime().addShutdownHook(new Thread(() -> {
                 try {
@@ -145,6 +151,15 @@ public abstract class Service {
             this.configAPI.setProperty("nats.token", "token");
 
             this.configAPI.saveToFile();
+        }
+    }
+
+    private void sleep() {
+
+        try {
+            Thread.sleep(1000);
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
         }
     }
 

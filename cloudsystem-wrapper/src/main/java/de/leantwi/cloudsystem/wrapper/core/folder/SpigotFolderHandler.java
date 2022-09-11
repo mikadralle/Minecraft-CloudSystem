@@ -98,6 +98,7 @@ public class SpigotFolderHandler implements SetupServerHandlerAPI {
         argumentList.add("-Xmx" + memory + "M");
         //cloud configuration
         argumentList.add("-Dcloud.serverName=" + serverName.toLowerCase());
+        argumentList.add("-Dcloud.libraries.path=" + this.cloudSystemAPI.getLibrariesPathName());
         //mongoDB configuration
         argumentList.add("-DmongoDB.hostname=" + mongoDBData.getHostName());
         argumentList.add("-DmongoDB.port=" + mongoDBData.getPort());

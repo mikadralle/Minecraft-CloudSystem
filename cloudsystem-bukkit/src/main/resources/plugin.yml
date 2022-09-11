@@ -1,4 +1,4 @@
 name: BukkitConnector
 author: Lentry
-version: 1.0
+version: 2.0-SNAPSHOT
 main: de.leantwi.cloudsystem.bukkit.BukkitConnector

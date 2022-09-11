@@ -57,8 +57,9 @@ public class MasterBootstrap extends Service {
     //
     //private HetznerCloudAPI hetznerCloudAPI;
     private HosterCloud hosterCloud;
-
     public static void main(String[] strings) {
+
+
         instance = new MasterBootstrap();
         instance.onEnable();
     }

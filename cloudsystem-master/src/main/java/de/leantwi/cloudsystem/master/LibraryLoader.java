@@ -1,4 +1,4 @@
-package de.leantwi.service.loader;
+package de.leantwi.cloudsystem.master;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -7,22 +7,21 @@ import java.io.File;
 import java.lang.reflect.Method;
 import java.net.URL;
 import java.net.URLClassLoader;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 
 @RequiredArgsConstructor
 public class LibraryLoader {
 
-    private final MyClassloader myClassloader = new MyClassloader(new URL[0], LibraryLoader.class.getClassLoader());
-
-    private final File LIBRARY_FOLDER = new File("/opt/cloud/libraries/");
     @Getter
     public final Logger logger;
+    private final MyClassloader myClassloader = new MyClassloader(new URL[0], LibraryLoader.class.getClassLoader());
+    private final File LIBRARY_FOLDER = new File("/opt/cloud/libraries/");
 
     /**
      * Loads the libraries into the classpath
      */
     public void loadLibraries() {
+
 
         if (!LIBRARY_FOLDER.exists()) {
             LIBRARY_FOLDER.mkdir();
@@ -41,9 +40,9 @@ public class LibraryLoader {
                 method.setAccessible(true);
                 method.invoke(this.myClassloader, libraryFile.toURI().toURL());
 
-                this.logger.info("Loaded library " + libraryFile.getName());
+                System.out.println("Loaded library " + libraryFile.getName());
             } catch (Exception ex) {
-                this.logger.log(Level.WARNING, "Couldn't load library " + libraryFile.getName(), ex);
+                System.out.println("Couldn't load library " + libraryFile.getName() + ex);
             }
         }
     }

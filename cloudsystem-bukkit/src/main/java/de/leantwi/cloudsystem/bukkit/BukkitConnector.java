@@ -29,6 +29,7 @@ public class BukkitConnector extends JavaPlugin {
     @Override
     public void onLoad() {
 
+
         this.cloudSystemInit = new CloudSystemInit(
                 new RedisData(
                         System.getProperty("redis.hostname"),
@@ -44,7 +45,7 @@ public class BukkitConnector extends JavaPlugin {
                         Integer.parseInt(System.getProperty("mongoDB.port"))),
                 new NatsData(System.getProperty("nats.hostname"),
                         System.getProperty("nats.token"),
-                        Integer.parseInt(System.getProperty("nats.port"))));
+                        Integer.parseInt(System.getProperty("nats.port"))), null);
 
     }
 

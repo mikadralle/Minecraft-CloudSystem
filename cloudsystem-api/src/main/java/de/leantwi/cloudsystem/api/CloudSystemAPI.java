@@ -85,4 +85,6 @@ public interface CloudSystemAPI {
 
     GameServerData getGameServerByUniqueID(UUID uniqueID);
 
+    String getLibrariesPathName();
+
 }

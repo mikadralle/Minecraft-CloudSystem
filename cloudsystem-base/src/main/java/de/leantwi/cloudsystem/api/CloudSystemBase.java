@@ -293,4 +293,9 @@ public class CloudSystemBase implements CloudSystemAPI {
         return getAllGameServers().stream().filter(gameServerData -> gameServerData.getServerID().equals(uniqueID)).findFirst().get();
     }
 
+    @Override
+    public String getLibrariesPathName() {
+        return "/opt/cloud/libraries/";
+    }
+
 }

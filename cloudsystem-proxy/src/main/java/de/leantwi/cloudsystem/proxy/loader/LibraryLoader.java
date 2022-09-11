@@ -1,4 +1,4 @@
-package de.leantwi.service.loader;
+package de.leantwi.cloudsystem.proxy.loader;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -13,16 +13,16 @@ import java.util.logging.Logger;
 @RequiredArgsConstructor
 public class LibraryLoader {
 
-    private final MyClassloader myClassloader = new MyClassloader(new URL[0], LibraryLoader.class.getClassLoader());
-
-    private final File LIBRARY_FOLDER = new File("/opt/cloud/libraries/");
     @Getter
     public final Logger logger;
+    private final MyClassloader myClassloader = new MyClassloader(new URL[0], this.getClass().getClassLoader());
+    private final File LIBRARY_FOLDER = new File(System.getProperty("cloud.libraries.path"));
 
     /**
      * Loads the libraries into the classpath
      */
     public void loadLibraries() {
+
 
         if (!LIBRARY_FOLDER.exists()) {
             LIBRARY_FOLDER.mkdir();
@@ -31,15 +31,18 @@ public class LibraryLoader {
             return;
         }
 
+
         for (File libraryFile : LIBRARY_FOLDER.listFiles()) {
             if (!libraryFile.getName().endsWith(".jar")) {
                 continue;
             }
 
+
             try {
-                Method method = this.myClassloader.getClass().getMethod("addURL", URL.class);
+
+                Method method = myClassloader.getClass().getMethod("addURL", URL.class);
                 method.setAccessible(true);
-                method.invoke(this.myClassloader, libraryFile.toURI().toURL());
+                method.invoke(myClassloader, libraryFile.toURI().toURL());
 
                 this.logger.info("Loaded library " + libraryFile.getName());
             } catch (Exception ex) {

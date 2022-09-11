@@ -14,6 +14,7 @@ import de.leantwi.cloudsystem.proxy.listeners.players.ConnectCloudPlayerToServer
 import de.leantwi.cloudsystem.proxy.listeners.players.SendMessageToCloudPlayerListener;
 import de.leantwi.cloudsystem.proxy.listeners.proxy.ShutdownSystemListener;
 import de.leantwi.cloudsystem.proxy.listeners.proxy.StopProxyServerListener;
+import de.leantwi.cloudsystem.proxy.loader.LibraryLoader;
 import de.leantwi.cloudsystem.proxy.server.BungeeConnector;
 import lombok.Getter;
 import net.md_5.bungee.api.ProxyServer;
@@ -32,12 +33,17 @@ public class ProxyConnector extends Plugin {
     private BungeeConnector bungeeConnector;
     private CloudSystemInit cloudSystemInit;
 
+    private LibraryLoader libraryLoader;
+
     public static ProxyConnector getInstance() {
         return instance;
     }
 
     @Override
     public void onLoad() {
+
+        this.libraryLoader = new LibraryLoader(ProxyServer.getInstance().getLogger());
+        this.libraryLoader.loadLibraries();
 
         IniFile configAPI = new IniFile("database.ini");
         this.loadConfig(configAPI);
@@ -60,7 +66,7 @@ public class ProxyConnector extends Plugin {
                 configAPI.getProperty("nats.token"),
                 Integer.parseInt(configAPI.getProperty("nats.port")));
 
-        this.cloudSystemInit = new CloudSystemInit(redisData, mongoDBData, natsData);
+        this.cloudSystemInit = new CloudSystemInit(redisData, mongoDBData, natsData, null);
     }
 
     @Override
