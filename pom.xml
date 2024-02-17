@@ -47,11 +47,10 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
 
-
     <repositories>
         <repository>
-            <id>leantwi-dev</id>
-            <url>https://nexus.lentry.de/artifactory/leantwi-dev/</url>
+            <id>gitlab-maven</id>
+            <url>https://gitlab.lentry.de/api/v4/projects/92/packages/maven</url>
         </repository>
         <repository>
             <id>central</id>
@@ -61,19 +60,17 @@
 
     <distributionManagement>
         <repository>
-            <id>leantwi-dev</id>
-            <url>https://nexus.lentry.de/artifactory/leantwi-dev/</url>
+            <id>gitlab-maven</id>
+            <url>https://gitlab.lentry.de/api/v4/projects/92/packages/maven</url>
         </repository>
-
         <snapshotRepository>
-            <id>leantwi-dev</id>
-            <url>https://nexus.lentry.de/artifactory/leantwi-dev/</url>
+            <id>gitlab-maven</id>
+            <url>https://gitlab.lentry.de/api/v4/projects/92/packages/maven</url>
         </snapshotRepository>
     </distributionManagement>
 
+
     <dependencies>
-
-
         <!-- Lombok -->
         <dependency>
             <groupId>org.projectlombok</groupId>
@@ -108,22 +105,21 @@
                     </execution>
                 </executions>
             </plugin>
-            <!--
-                        <plugin>
-                            <artifactId>maven-deploy-plugin</artifactId>
-                            <version>${plugin.deploy.version}</version>
-                            <executions>
-                                <execution>
-                                    <id>default-deploy</id>
-                                    <phase>deploy</phase>
-                                    <goals>
-                                        <goal>deploy</goal>
-                                    </goals>
-                                </execution>
-                            </executions>
-                        </plugin>
 
-            -->
+            <plugin>
+                <artifactId>maven-deploy-plugin</artifactId>
+                <version>${plugin.deploy.version}</version>
+                <executions>
+                    <execution>
+                        <id>default-deploy</id>
+                        <phase>deploy</phase>
+                        <goals>
+                            <goal>deploy</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-source-plugin</artifactId>

@@ -16,18 +16,34 @@
         <maven.compiler.target>11</maven.compiler.target>
     </properties>
 
+    <build>
+
+        <plugins>
+            <!-- skip deploy -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-deploy-plugin</artifactId>
+                <version>2.7</version>
+                <configuration>
+                    <skip>true</skip>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+
     <repositories>
         <repository>
             <id>papermc</id>
             <url>https://papermc.io/repo/repository/maven-public/</url>
         </repository>
     </repositories>
+
     <dependencies>
         <!-- Paper Spigot -->
         <dependency>
             <groupId>io.papermc.paper</groupId>
             <artifactId>paper-api</artifactId>
-            <version>1.18.2-R0.1-SNAPSHOT</version>
+            <version>1.20.4-R0.1-SNAPSHOT</version>
             <scope>provided</scope>
         </dependency>
         <!-- CloudSystem Base -->
@@ -39,5 +55,6 @@
         </dependency>
 
     </dependencies>
+
 
 </project>
