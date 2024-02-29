@@ -1,6 +1,6 @@
 package de.leantwi.cloudsystem.api;
 
-import com.mongodb.MongoClient;
+import com.mongodb.client.MongoClient;
 import de.leantwi.cloudsystem.api.database.NatsConnectorAPI;
 import de.leantwi.cloudsystem.api.database.RedisConnectorAPI;
 import de.leantwi.cloudsystem.api.database.data.MongoDBData;

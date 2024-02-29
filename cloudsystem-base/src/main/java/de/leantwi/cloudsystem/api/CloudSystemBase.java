@@ -1,7 +1,7 @@
 package de.leantwi.cloudsystem.api;
 
 import com.google.gson.Gson;
-import com.mongodb.MongoClient;
+import com.mongodb.client.MongoClient;
 import de.leantwi.cloudsystem.CloudSystem;
 import de.leantwi.cloudsystem.api.database.NatsConnectorAPI;
 import de.leantwi.cloudsystem.api.database.RedisConnectorAPI;

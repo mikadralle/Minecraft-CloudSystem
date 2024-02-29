@@ -31,7 +31,7 @@
         <cloudsystem.base.version>2.0-SNAPSHOT</cloudsystem.base.version>
         <cloudsystem.api.version>2.0-SNAPSHOT</cloudsystem.api.version>
 
-        <mongodb.version>3.12.11</mongodb.version>
+        <mongodb.version>4.11.1</mongodb.version>
         <nats.version>2.15.6</nats.version>
         <redis.version>4.2.3</redis.version>
 
